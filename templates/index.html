@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="/static/output.css">
+
+        <title>Dispatch LSMS</title>
+    </head>
+    <body class="bg-red-300 m-16">
+        <h1 class="text-4xl font-bold mb-5">Dispatch LSMS</h1>
+        <div class="flex text-white">
+            <div class="bg-white shadow-md rounded-md w-fit">
+                <div class="p-4">
+                    <h2 class="text-2xl font-bold mb-4">Hopital</h2>
+                    {% for salle in salles %}
+                        <div class="bg-red-500 p-4 rounded-md mb-4">
+                            {{ salle.name }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- doctor -->
+            <div class="bg-white shadow-md rounded-md ml-5 w-fit">
+                <div class="p-4">
+                    <h2 class="text-2xl font-bold mb-4">Docteur</h2>
+                    {% for doctor in doctors %}
+                        <div class="{{ doctor.grade.color }} p-1 rounded-md mb-4">
+                            <h1 class="mr-2">{{ doctor.name }}</h1>
+                            <!-- make sitcker with grade -->
+                            <div class="p-1 rounded-md ml-2">
+                                {{ doctor.grade.name }}
+                            </div>
+                            <!-- make little sticker with other info -->
+                            <div class="flex">
+                                {% for specialite in doctor.specialite %}
+                                    <div class="p-1 rounded-md ml-2 bg-black bg-opacity-50 w-fit">
+                                        {{ specialite.name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- hidden div to build all grades colors -->
+        <div class="hidden">
+            <div class="bg-red-500"></div>
+            <div class="bg-red-400"></div>
+            <div class="bg-orange-400"></div>
+            <div class="bg-blue-800"></div>
+            <div class="bg-blue-500"></div>
+            <div class="bg-blue-400"></div>
+            <div class="bg-green-500"></div>
+        </div>
+    </body>
+</html>
