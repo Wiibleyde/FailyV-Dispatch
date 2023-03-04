@@ -10,7 +10,7 @@ class SpecialiteSecondaire:
     def __init__(self, nom):
         self.nom = nom
 
-class Hopital:
+class Salle:
     def __init__(self, salle):
         self.salle = salle
     
@@ -23,9 +23,8 @@ class Status:
         self.status = status
 
 class Intervention:
-    def __init__(self, name, planBlanc):
+    def __init__(self, name):
         self.name = name
-        self.planBlanc = planBlanc
 
 class Docteur:
     def __init__(self, nom, specialite, specialiteSecondaire, hopital, helico, status, Intervention):
@@ -37,12 +36,69 @@ class Docteur:
         self.status = status
         self.Intervention = Intervention
 
-    def setStatus(self, status):
-        self.status = status
+def createSpecialite():
+    chirugie = Specialite("Chirurgie")
+    psychologie = Specialite("Psychologie")
+    inspection = Specialite("Inspection")
+    traumatologie = Specialite("Traumatologie")
+    return chirugie, psychologie, inspection, traumatologie
 
-    def setSalles(self, salles):
-        self.hopital = salles
+def createGrade():
+    directeur = Grade("Directeur")
+    directeurAdjoint = Grade("Directeur Adjoint")
+    chefDeService = Grade("Chef de Service")
+    specialiste = Grade("Spécialiste")
+    titulaire = Grade("Titulaire")
+    resident = Grade("Résident")
+    interne = Grade("Interne")
+    return directeur, directeurAdjoint, chefDeService, specialiste, titulaire, resident, interne
 
-def createIntervention(name):
-    return Intervention(name)
+def createSpecialiteSecondaire():
+    stock = SpecialiteSecondaire("Stock")
+    communication = SpecialiteSecondaire("Communication")
+    secourisme = SpecialiteSecondaire("Secourisme")
+    ppa = SpecialiteSecondaire("PPA")
+    triage = SpecialiteSecondaire("Triage")
+    return stock, communication, secourisme, ppa, triage
+
+def createHelico():
+    helico0 = Helico(0)
+    helico1 = Helico(1)
+    helico2 = Helico(2)
+    return helico0, helico1, helico2
+
+def createStatus():
+    enService = Status("En Service")
+    horsService = Status("Hors Service")
+    occupe = Status("Occupé")
+    enHelico = Status("En Hélico")
+    return enService, horsService, occupe, enHelico
+
+def createSalles():
+    harper = Salle("Harper")
+    kyle = Salle("Kyle")
+    sam = Salle("Sam")
+    wilfried = Salle("Wilfried")
+    bloc1 = Salle("Bloc 1")
+    bloc2 = Salle("Bloc 2")
+    bloc3 = Salle("Bloc 3")
+    bloc4 = Salle("Bloc 4")
+    laboratoire = Salle("Laboratoire")
+    bureaux = Salle("Bureaux")
+    return harper, kyle, sam, wilfried, bloc1, bloc2, bloc3, bloc4, laboratoire, bureaux
+
+def createIntervention():
+    planBlanc = Intervention("Plan Blanc")
+    planBleu = Intervention("Plan Bleu")
+    return planBlanc, planBleu
+
+
+if __name__=='__name__':
+    chirugie, psychologie, inspection, traumatologie = createSpecialite()
+    directeur, directeurAdjoint, chefDeService, specialiste, titulaire, resident, interne = createGrade()
+    stock, communication, secourisme, ppa, triage = createSpecialiteSecondaire()
+    helico0, helico1, helico2 = createHelico()
+    enService, horsService, occupe, enHelico = createStatus()
+    harper, kyle, sam, wilfried, bloc1, bloc2, bloc3, bloc4, laboratoire, bureaux = createSalles()
+    planBlanc, planBleu = createIntervention()
     
