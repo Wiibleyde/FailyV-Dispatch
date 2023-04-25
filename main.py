@@ -24,10 +24,29 @@ def index():
         flash('Intervention ajoutée avec succès !')
         return redirect(url_for('index'))
     doctors = database.selectDoc()
-    doctorsObj = []
+    directeurs = []
+    directeursAdjoint = []
+    chefsService = []
+    specialistes = []
+    titulaire = []
+    resident = []
+    interne = []
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
-        doctorsObj.append(doc)
+        if doc.grade == "Directeur":
+            directeurs.append(doc)
+        elif doc.grade == "Directeur Adjoint":
+            directeursAdjoint.append(doc)
+        elif doc.grade == "Chef de service":
+            chefsService.append(doc)
+        elif doc.grade == "Spécialiste":
+            specialistes.append(doc)
+        elif doc.grade == "Titulaire":
+            titulaire.append(doc)
+        elif doc.grade == "Résident":
+            resident.append(doc)
+        elif doc.grade == "Interne":
+            interne.append(doc)
     interventions = database.selectInt()
     interventionsObj = []
     for int in interventions:
@@ -38,7 +57,7 @@ def index():
     for salle in salles:
         salle = SalleObj(salle[0], salle[1])
         sallesObj.append(salle)
-    return render_template('index.html', form=form, doctors=doctorsObj, interventions=interventionsObj, salles=sallesObj)
+    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, directeurs=directeurs, directeursAdjoints=directeursAdjoint, chefsServices=chefsService, specialistes=specialistes, titulaires=titulaire, residents=resident, internes=interne)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
