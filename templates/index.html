@@ -16,27 +16,43 @@
             <div class="col-12">
                 <h1 class="text-2xl font-bold">Dispatch</h1>
             </div>
+            <div class="col-12">
+                <h2 class="text-lg font-bold mt-5">Créer une intervention :</h2>
+                {% block createInter %}
+                <form method="post" class="flex flex-col items-center justify-center">
+                    {{ form.hidden_tag }}
+                    <div class="flex flex-col items-center justify-center text-black my-1">
+                        {{ form.Nom }}
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-black my-1">
+                        {{ form.Exterieur }}
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        {{ form.Submit }}
+                    </div>
+                </form>
+            {% endblock %}
             <div class="flex flex-wrap">
                 {% for doctor in doctors %}
                     <div class="bg-white rounded-md shadow-md p-3 mb-3 me-3">
                         {% with service=doctor.service, indispo=doctor.indispo %}
                             {% if service == 1 and indispo == 0 %}
-                            <div class="text-green-600 mb-3 me-3">
-                                <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
-                                <a href="/unsetDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700 mr-2">FDS</a>
-                                <a href="/setDoctorIndispo/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
-                            </div>
+                                <div class="text-green-600 mb-3 me-3">
+                                    <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
+                                    <a href="/unsetDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700 mr-2">FDS</a>
+                                    <a href="/setDoctorIndispo/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                </div>
                             {% elif service == 1 and indispo == 1 %}
-                            <div class="text-red-600 mb-3 me-3">
-                                <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
-                                <a href="/unsetDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700 mr-2">FDS</a>
-                                <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                            </div>
+                                <div class="text-red-600 mb-3 me-3">
+                                    <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
+                                    <a href="/unsetDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700 mr-2">FDS</a>
+                                    <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
+                                </div>
                             {% elif service == 0 and indispo == 0 %}
-                            <div class="text-yellow-500 mb-3 me-3">
-                                <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
-                                <a href="/setDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
-                            </div>
+                                <div class="text-yellow-500 mb-3 me-3">
+                                    <p class="mb-1">{{ doctor }} <i class="bi bi-circle-fill"></i></p>
+                                    <a href="/setDoctorService/{{ doctor.id }}" class="inline-block py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
+                                </div>
                             {% endif %}
                         {% endwith %}
                     </div>

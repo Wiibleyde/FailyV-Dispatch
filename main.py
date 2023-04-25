@@ -8,19 +8,21 @@ from services.ObjectsService import DocteurObj, InterventionObj, SalleObj
 
 def addDoctorsToDatabase(docs):
     for doc in docs:
-        database.insertDoc(doc.getNom(), doc.getPrenom(), doc.getGrade(), doc.getService(), doc.getIndispo())
+        database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo)
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret key'
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = AddInterventionForm()
-    # if form.validate_on_submit():
-    #     nom = form.nomInt.data
-    #     exterieur = form.exterieurInt.data
-    #     database.insertInt(nom, exterieur)
-    #     flash('Intervention ajoutée avec succès !')
-    #     return redirect(url_for('index'))
+    if form.validate_on_submit():
+        nom = form.nomInt.data
+        exterieur = form.exterieurInt.data
+        database.insertInt(nom, exterieur)
+        flash('Intervention ajoutée avec succès !')
+        return redirect(url_for('index'))
     doctors = database.selectDoc()
     doctorsObj = []
     for doc in doctors:
