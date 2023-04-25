@@ -31,8 +31,13 @@
                     <h2>Salles :</h2>
                     <ul>
                         {% for salle in salles %}
-                            
+                            {% if salle.indisponible == false %}
+                                <li class="text-success">{{ salle.nom }}</li>
+                            {% else %}
+                                <li class="text-danger">{{ salle.nom }}</li>
+                            {% endif %}
                         {% endfor %}
+
                     </ul>
                 </div>
             </div>
