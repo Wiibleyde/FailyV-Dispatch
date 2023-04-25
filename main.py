@@ -77,6 +77,27 @@ def unsetDoctorIndispo(id):
     database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], False)
     return redirect(url_for('index'))
 
+@app.route('/setDoctor/<int:idDoc>/toSalle/<string:idSalle>', methods=['GET', 'POST'])
+def setDoctorToSalle(idDoc, idSalle):
+    doc = database.selectDocById(idDoc)
+    database.insertSalleDoc(idDoc, idSalle)
+    return redirect(url_for('index'))
+
+@app.route('/unsetDoctor/<int:idDoc>/fromSalle/<string:idSalle>', methods=['GET', 'POST'])
+def unsetDoctorFromSalle(idDoc, idSalle):
+    database.deleteSalleDoc(idDoc, idSalle)
+    return redirect(url_for('index'))
+
+@app.route('/setDoctor/<int:idDoc>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
+def setDoctorToIntervention(idDoc, idInt):
+    doc = database.selectDocById(idDoc)
+    database.insertIntDoc(idDoc, idInt)
+    return redirect(url_for('index'))
+
+@app.route('/unsetDoctor/<int:idDoc>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
+def unsetDoctorFromIntervention(idDoc, idInt):
+    database.deleteIntDoc(idDoc, idInt)
+    return redirect(url_for('index'))
 
 if __name__=='__main__':
     database = SqlService('database.db')

@@ -8,10 +8,10 @@ class DocteurObj:
         self.indispo = indispo
 
     def __str__(self):
-        return self.nom + " " + self.prenom
+        return self.prenom + " " + self.nom
     
     def __repr__(self):
-        return self.nom + " " + self.prenom
+        return self.prenom + " " + self.nom
     
     def __getattribute__(self, __name: str):
         return object.__getattribute__(self, __name)
