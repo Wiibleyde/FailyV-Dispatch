@@ -1,30 +1,42 @@
 from flask import Flask, render_template, redirect, url_for, flash
+import re
 
 from utils.flaskForms import AddDocteurForm, AddInterventionForm
+from utils.regexUtils import RegexUtils
 from services.SqlService import SqlService
 from services.ObjectsService import DocteurObj, InterventionObj, SalleObj
+
+def addDoctorsToDatabase(docs):
+    for doc in docs:
+        database.insertDoc(doc.getNom(), doc.getPrenom(), doc.getGrade(), doc.getService(), doc.getIndispo())
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = AddInterventionForm()
-    if form.validate_on_submit():
-        nom = form.nomInt.data
-        exterieur = form.exterieurInt.data
-        database.insertInt(nom, exterieur)
-        flash('Intervention ajoutée avec succès !')
-        return redirect(url_for('index'))
-    doctors = database.selectDocs()
+    # if form.validate_on_submit():
+    #     nom = form.nomInt.data
+    #     exterieur = form.exterieurInt.data
+    #     database.insertInt(nom, exterieur)
+    #     flash('Intervention ajoutée avec succès !')
+    #     return redirect(url_for('index'))
+    doctors = database.selectDoc()
+    doctorsObj = []
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
-    interventions = database.selectInts()
+        doctorsObj.append(doc)
+    interventions = database.selectInt()
+    interventionsObj = []
     for int in interventions:
         int = InterventionObj(int[0], int[1], int[2])
-    salles = database.selectSalles()
+        interventionsObj.append(int)
+    salles = database.selectSalle()
+    sallesObj = []
     for salle in salles:
         salle = SalleObj(salle[0], salle[1])
-    return render_template('index.html', form=form, doctors=doctors, interventions=interventions, salles=salles)
+        sallesObj.append(salle)
+    return render_template('index.html', form=form, doctors=doctorsObj, interventions=interventionsObj, salles=sallesObj)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
@@ -41,48 +53,71 @@ def doctors():
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
     return render_template('doctors.html', form=form, doctors=doctors)
 
-@app.route('/addDocToInt?idInt=<idInt>&docId=<docId>')
-def addDocToInt(idInt, docId):
-    database.insertIntDoc(idInt, docId)
-    intervention = database.selectIntById(idInt)
-    flash(f"Docteur ajouté à l'intervention {intervention[1]} avec succès !")
+@app.route('/setDoctorService/<int:id>', methods=['GET', 'POST'])
+def setDoctorServer(id):
+    doc = database.selectDocById(id)
+    database.updateDoc(id, doc[1], doc[2], doc[3], True, doc[5])
     return redirect(url_for('index'))
 
-@app.route('/addDocToSalle?idSalle=<idSalle>&docId=<docId>')
-def addDocToSalle(idSalle, docId):
-    database.insertSalleDoc(idSalle, docId)
-    salle = database.selectSalleById(idSalle)
-    flash(f"Docteur ajouté à la salle {salle[1]} avec succès !")
+@app.route('/unsetDoctorService/<int:id>', methods=['GET', 'POST'])
+def unsetDoctorServer(id):
+    doc = database.selectDocById(id)
+    database.updateDoc(id, doc[1], doc[2], doc[3], False, False)
     return redirect(url_for('index'))
 
-@app.route('/setService?docId=<docId>')
-def setService(docId):
-    doc = database.selectDocById(docId)
-    database.updateDoc(docId, doc[1], doc[2], doc[3], True, doc[5])
-    flash(f"Prise du service de {doc[1]} {doc[2]} avec succès !")
-    return redirect(url_for('doctors'))
-
-@app.route('/unsetService?docId=<docId>')
-def unsetService(docId):
-    doc = database.selectDocById(docId)
-    database.updateDoc(docId, doc[1], doc[2], doc[3], False, doc[5])
-    flash(f"Fin du service de {doc[1]} {doc[2]} avec succès !")
+@app.route('/setDoctorIndispo/<int:id>', methods=['GET', 'POST'])
+def setDoctorIndispo(id):
+    doc = database.selectDocById(id)
+    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], True)
     return redirect(url_for('index'))
 
-@app.route('/setIndispo?docId=<docId>')
-def setIndispo(docId):
-    doc = database.selectDocById(docId)
-    database.updateDoc(docId, doc[1], doc[2], doc[3], doc[4], True)
-    flash(f"{doc[1]} {doc[2]} est maintenant indisponible !")
+@app.route('/unsetDoctorIndispo/<int:id>', methods=['GET', 'POST'])
+def unsetDoctorIndispo(id):
+    doc = database.selectDocById(id)
+    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], False)
     return redirect(url_for('index'))
 
-@app.route('/unsetIndispo?docId=<docId>')
-def unsetIndispo(docId):
-    doc = database.selectDocById(docId)
-    database.updateDoc(docId, doc[1], doc[2], doc[3], doc[4], False)
-    flash(f"{doc[1]} {doc[2]} est maintenant disponible !")
-    return redirect(url_for('index'))
 
 if __name__=='__main__':
     database = SqlService('database.db')
+    docs = RegexUtils.doctorToList("""29/06/2021 - 555-2023 Vassily Medved""","Directeur")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""14/09/2021 - 555-2650 Cletus Christopoulos""","Directeur Adjoint")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""24/03/2022 - 555-6440 Douglas Wade
+        05/02/2021 - 555-7015 Maxime Cross
+        26/07/2022 - 555-6548 Shawn Castillo""","Chef de service")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""14/07/2022 - 555-8990 Adam McKern
+        03/08/2022 - 555-2879 Astrid Vogelstein
+        21/10/2022 - 555-7476 Karl Vogelstein
+        16/07/2022 - 555-4769 Lucia Winston
+        27/10/2022 - 555-5299 Victoire Medved
+        12/11/2022 - 555-3430 Eva Ionadi""","Spécialiste")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""09/11/2022 - 555-5420 Nathan Prale
+        13/11/2022 - 555-2428 Samuel Galopin
+        07/01/2023 - 555-2190 Cassie Montgomery
+        23/11/2022 - 555-4960 Ruben Nielsen
+        19/11/2022 - 555-8680 Kyra Walker
+        19/12/2022 - 555-1129 Thomas Jewison-Reddington""","Titulaire")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""29/11/2022 - 555-9244 Greg Mouse 
+        07/01/2023 - 555-6365 Victorien Herve 
+        17/03/2023 - 555-1201 Alvaro Gomez Ortega
+        31/03/2023 - 555-3425 Cecil Madera""","Résident")
+    addDoctorsToDatabase(docs)
+    docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
+        19/04/2023 - 555-7330 Williams Guster
+        21/04/2023 - 555-1412 Emma Vandamme 
+        ""","Interne")
+    addDoctorsToDatabase(docs)
+    database.insertSalle("Harper")
+    database.insertSalle("Kyle")
+    database.insertSalle("Sam")
+    database.insertSalle("Wilfrid")
+    database.insertSalle("Bloc 1")
+    database.insertSalle("Bloc 2")
+    database.insertSalle("Bloc 3")
+    database.insertSalle("Bloc 4")
     app.run(debug=True)
