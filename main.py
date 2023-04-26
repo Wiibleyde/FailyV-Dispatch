@@ -4,7 +4,7 @@ import re
 from utils.flaskForms import AddDocteurForm, AddInterventionForm
 from utils.regexUtils import RegexUtils
 from services.SqlService import SqlService
-from services.ObjectsService import DocteurObj, InterventionObj, SalleObj
+from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, InterventionDocteursObj
 
 def addDoctorsToDatabase(docs):
     for doc in docs:
@@ -62,10 +62,12 @@ def index():
     intDocs = database.selectIntDoc()
     intDocsObj = []
     for intDoc in intDocs:
+        intDoc = InterventionDocteursObj(intDoc[0], intDoc[1], intDoc[2])
         intDocsObj.append(intDoc)
     salleDocs = database.selectSalleDoc()
     salleDocsObj = []
     for salleDoc in salleDocs:
+        salleDoc = InterventionDocteursObj(salleDoc[0], salleDoc[1], salleDoc[2])
         salleDocsObj.append(salleDoc)
     return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, directeurs=directeurs, directeursAdjoints=directeursAdjoint, chefsServices=chefsService, specialistes=specialistes, titulaires=titulaire, residents=resident, internes=interne, intDocs=intDocsObj, salleDocs=salleDocsObj)
 
@@ -83,6 +85,11 @@ def doctors():
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
     return render_template('doctors.html', form=form, doctors=doctors)
+
+@app.route('/deleteIntervention/<int:id>', methods=['GET', 'POST'])
+def deleteIntervention(id):
+    database.deleteInt(id)
+    return redirect(url_for('index'))
 
 @app.route('/setDoctorService/<int:id>', methods=['GET', 'POST'])
 def setDoctorServer(id):
@@ -127,7 +134,7 @@ def setDoctorToIntervention(idDoc, idInt):
 
 @app.route('/unsetDoctor/<int:idDoc>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
 def unsetDoctorFromIntervention(idDoc, idInt):
-    database.deleteIntDoc(idInt, idDoc)
+    database.deleteDocFromInt(idDoc, idInt)
     return redirect(url_for('index'))
 
 if __name__=='__main__':
@@ -172,4 +179,4 @@ if __name__=='__main__':
     database.insertSalle("Bloc 2")
     database.insertSalle("Bloc 3")
     database.insertSalle("Bloc 4")
-    app.run(debug=True)
+    app.run(debug=True,port=5000)

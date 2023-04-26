@@ -79,16 +79,16 @@ class SalleObj:
         return self.nom
 
 class InterventionDocteursObj:
-    def __init__(self, id, id_intervention, id_docteur):
+    def __init__(self, id, idIntervention, idDocteur):
         self.id = id
-        self.id_intervention = id_intervention
-        self.id_docteur = id_docteur
+        self.idIntervention = idIntervention
+        self.idDocteur = idDocteur
         
     def __str__(self):
-        return self.id_intervention + " " + self.id_docteur
+        return self.idIntervention + " " + self.idDocteur
     
     def __repr__(self):
-        return self.id_intervention + " " + self.id_docteur
+        return self.idIntervention + " " + self.idDocteur
     
     def __getattribute__(self, __name: str):
         return object.__getattribute__(self, __name)
@@ -97,22 +97,22 @@ class InterventionDocteursObj:
         return self.id
     
     def getIdIntervention(self):
-        return self.id_intervention
+        return self.idIntervention
     
     def getIdDocteur(self):
-        return self.id_docteur
+        return self.idDocteur
     
-class InterventionSallesObj:
-    def __init__(self, id, id_intervention, id_salle):
+class SalleDocteurObj:
+    def __init__(self, id, idSalle, idDocteur):
         self.id = id
-        self.id_intervention = id_intervention
-        self.id_salle = id_salle
+        self.idSalle = idSalle
+        self.idDocteur = idDocteur
         
     def __str__(self):
-        return self.id_intervention + " " + self.id_salle
+        return self.idSalle + " " + self.idDocteur
     
     def __repr__(self):
-        return self.id_intervention + " " + self.id_salle
+        return self.idSalle + " " + self.idDocteur
     
     def __getattribute__(self, __name: str):
         return object.__getattribute__(self, __name)
@@ -120,5 +120,8 @@ class InterventionSallesObj:
     def getId(self):
         return self.id
     
-    def getIdIntervention(self):
-        return self.id_intervention
+    def getIdSalle(self):
+        return self.idSalle
+    
+    def getIdDocteur(self):
+        return self.idDocteur
