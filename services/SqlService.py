@@ -46,6 +46,8 @@ class SqlService:
             connection.commit()
 
     def insertIntDoc(self, idIntervention, idDocteur):
+        if self.selectIntDocByIntIdDocId(idIntervention, idDocteur) is not None:
+            return
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "INSERT INTO InterventionsDocteurs (idIntervention, idDocteur) VALUES (?,?)"
@@ -53,6 +55,8 @@ class SqlService:
             connection.commit()
 
     def insertSalleDoc(self, idSalle, idDocteur):
+        if self.selectSalleDocByDocIdSalleId(idSalle, idDocteur) is not None:
+            return
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "INSERT INTO SallesDocteurs (idSalle, idDocteur) VALUES (?,?)"
@@ -108,6 +112,13 @@ class SqlService:
             req = "SELECT * FROM InterventionsDocteurs WHERE id = ?"
             cursor.execute(req, (id,))
             return cursor.fetchone()
+        
+    def selectIntDocByIntIdDocId(self, idIntervention, idDocteur):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ? AND idDocteur = ?"
+            cursor.execute(req, (idIntervention, idDocteur))
+            return cursor.fetchone()
     
     def selectIntByDocId(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -143,6 +154,7 @@ class SqlService:
             req = "SELECT * FROM SallesDocteurs WHERE idDocteur = ?"
             cursor.execute(req, (id,))
             return cursor.fetchall()
+        
     
     def selectDocBySalleId(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -158,12 +170,12 @@ class SqlService:
             cursor.execute(req, (id,))
             return cursor.fetchone()
     
-    def selectSalleByIntId(self, id):
+    def selectSalleDocByDocIdSalleId(self, idSalle, idDocteur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
-            req = "SELECT * FROM SallesDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
+            req = "SELECT * FROM SallesDocteurs WHERE idSalle = ? AND idDocteur = ?"
+            cursor.execute(req, (idSalle, idDocteur))
+            return cursor.fetchone()
     
     def selectIntBySalleId(self, id):
         with sqlite3.connect(self.filename) as connection:

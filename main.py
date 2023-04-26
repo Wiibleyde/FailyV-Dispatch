@@ -24,6 +24,7 @@ def index():
         flash('Intervention ajoutée avec succès !')
         return redirect(url_for('index'))
     doctors = database.selectDoc()
+    doctorsObj = []
     directeurs = []
     directeursAdjoint = []
     chefsService = []
@@ -33,6 +34,7 @@ def index():
     interne = []
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
+        doctorsObj.append(doc)
         if doc.grade == "Directeur":
             directeurs.append(doc)
         elif doc.grade == "Directeur Adjoint":
@@ -57,7 +59,15 @@ def index():
     for salle in salles:
         salle = SalleObj(salle[0], salle[1])
         sallesObj.append(salle)
-    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, directeurs=directeurs, directeursAdjoints=directeursAdjoint, chefsServices=chefsService, specialistes=specialistes, titulaires=titulaire, residents=resident, internes=interne)
+    intDocs = database.selectIntDoc()
+    intDocsObj = []
+    for intDoc in intDocs:
+        intDocsObj.append(intDoc)
+    salleDocs = database.selectSalleDoc()
+    salleDocsObj = []
+    for salleDoc in salleDocs:
+        salleDocsObj.append(salleDoc)
+    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, directeurs=directeurs, directeursAdjoints=directeursAdjoint, chefsServices=chefsService, specialistes=specialistes, titulaires=titulaire, residents=resident, internes=interne, intDocs=intDocsObj, salleDocs=salleDocsObj)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
@@ -112,12 +122,12 @@ def unsetDoctorFromSalle(idDoc, idSalle):
 @app.route('/setDoctor/<int:idDoc>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
 def setDoctorToIntervention(idDoc, idInt):
     doc = database.selectDocById(idDoc)
-    database.insertIntDoc(idDoc, idInt)
+    database.insertIntDoc(idInt, idDoc)
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctor/<int:idDoc>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
 def unsetDoctorFromIntervention(idDoc, idInt):
-    database.deleteIntDoc(idDoc, idInt)
+    database.deleteIntDoc(idInt, idDoc)
     return redirect(url_for('index'))
 
 if __name__=='__main__':

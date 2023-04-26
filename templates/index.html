@@ -31,76 +31,96 @@
                     </form>
                 {% endblock %}
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                <div>
-                    <p class="text-lg font-bold mt-5">Directeur :</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {% for directeur in directeurs %}
-                            <div class="bg-white rounded-md shadow-md p-3">
-                                {% with service=directeur.service, indispo=directeur.indispo %}
-                                    {% if service == 1 and indispo == 0 %}
-                                        <div class="text-green-600 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
-                                            <div class="flex justify-between">
-                                                <a href="/unsetDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                                <a href="/setDoctorIndispo/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
-                                            </div>
-                                        </div>
-                                    {% elif service == 1 and indispo == 1 %}
-                                        <div class="text-red-600 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
-                                            <div class="flex justify-between">
-                                                <a href="/unsetDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                                <a href="/unsetDoctorIndispo/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                                            </div>
-                                        </div>
-                                    {% elif service == 0 and indispo == 0 %}
-                                        <div class="text-yellow-500 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
-                                            <div class="flex justify-end">
-                                                <a href="/setDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
-                                            </div>
+            <div>
+                <h2 class="text-lg font-bold mt-5">Intervention :</h2>
+                {% for intervention in interventions %}
+                    <div class="bg-white rounded-md shadow-md p-3">
+                        <p class="mb-1 flex items-center">{{ intervention }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                            {% for intDoc in intDocs %}
+                                {% for doctor in doctors %}
+                                    {% if intDoc.intervention == intervention and intDoc.doctor == doctor %}
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctor/{{ doctor.id }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">Retirer</a>
                                         </div>
                                     {% endif %}
-                                {% endwith %}
-                            </div>
-                        {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
+                {% endfor %}
+            </div>
+            <div class="col-12">
+                <p class="text-lg font-bold mt-5">Directeur :</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {% for directeur in directeurs %}
+                        <div class="bg-white rounded-md shadow-md p-3">
+                            {% with service=directeur.service, indispo=directeur.indispo %}
+                                {% if service == 1 and indispo == 0 %}
+                                    <div class="text-green-600 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                            <a href="/setDoctorIndispo/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                            {% for intervention in interventions %}
+                                                <a href="/setDoctor/{{ directeur.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% elif service == 1 and indispo == 1 %}
+                                    <div class="text-red-600 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                            <a href="/unsetDoctorIndispo/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
+                                        </div>
+                                    </div>
+                                {% elif service == 0 and indispo == 0 %}
+                                    <div class="text-yellow-500 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeur }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                        <div class="flex justify-end">
+                                            <a href="/setDoctorService/{{ directeur.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
                 </div>
-                <div>
-                    <p class="text-lg font-bold mt-5">Directeur adjoint :</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {% for directeurAdjoint in directeursAdjoints %}
-                            <div class="bg-white rounded-md shadow-md p-3">
-                                {% with service=directeurAdjoint.service, indispo=directeurAdjoint.indispo %}
-                                    {% if service == 1 and indispo == 0 %}
-                                        <div class="text-green-600 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
-                                            <div class="flex justify-between">
-                                                <a href="/unsetDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                                <a href="/setDoctorIndispo/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
-                                            </div>
+                <p class="text-lg font-bold mt-5">Directeur adjoint :</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {% for directeurAdjoint in directeursAdjoints %}
+                        <div class="bg-white rounded-md shadow-md p-3">
+                            {% with service=directeurAdjoint.service, indispo=directeurAdjoint.indispo %}
+                                {% if service == 1 and indispo == 0 %}
+                                    <div class="text-green-600 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                            <a href="/setDoctorIndispo/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                            {% for intervention in interventions %}
+                                                <a href="/setDoctor/{{ directeurAdjoint.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                            {% endfor %}
                                         </div>
-                                    {% elif service == 1 and indispo == 1 %}
-                                        <div class="text-red-600 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
-                                            <div class="flex justify-between">
-                                                <a href="/unsetDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                                <a href="/unsetDoctorIndispo/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                                            </div>
+                                    </div>
+                                {% elif service == 1 and indispo == 1 %}
+                                    <div class="text-red-600 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                            <a href="/unsetDoctorIndispo/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
                                         </div>
-                                    {% elif service == 0 and indispo == 0 %}
-                                        <div class="text-yellow-500 mb-2">
-                                            <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
-                                            <div class="flex justify-end">
-                                                <a href="/setDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
-                                            </div>
+                                    </div>
+                                {% elif service == 0 and indispo == 0 %}
+                                    <div class="text-yellow-500 mb-2">
+                                        <p class="mb-1 flex items-center">{{ directeurAdjoint }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                        <div class="flex justify-end">
+                                            <a href="/setDoctorService/{{ directeurAdjoint.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
                                         </div>
-                                    {% endif %}
-                                {% endwith %}
-                            </div>
-                        {% endfor %}
-                    </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
             <p class="text-lg font-bold mt-5">Chefs de service :</p>
@@ -114,6 +134,9 @@
                                     <div class="flex justify-between">
                                         <a href="/unsetDoctorService/{{ chefService.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                         <a href="/setDoctorIndispo/{{ chefService.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ chefService.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% elif service == 1 and indispo == 1 %}
@@ -147,6 +170,9 @@
                                     <div class="flex justify-between">
                                         <a href="/unsetDoctorService/{{ specialiste.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                         <a href="/setDoctorIndispo/{{ specialiste.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ specialiste.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% elif service == 1 and indispo == 1 %}
@@ -180,6 +206,9 @@
                                     <div class="flex justify-between">
                                         <a href="/unsetDoctorService/{{ titulaire.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                         <a href="/setDoctorIndispo/{{ titulaire.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ titulaire.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% elif service == 1 and indispo == 1 %}
@@ -213,6 +242,9 @@
                                     <div class="flex justify-between">
                                         <a href="/unsetDoctorService/{{ resident.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                         <a href="/setDoctorIndispo/{{ resident.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ resident.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% elif service == 1 and indispo == 1 %}
@@ -246,6 +278,9 @@
                                     <div class="flex justify-between">
                                         <a href="/unsetDoctorService/{{ interne.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                         <a href="/setDoctorIndispo/{{ interne.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ interne.id }}/toIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">Envoyer vers : {{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% elif service == 1 and indispo == 1 %}
