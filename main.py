@@ -102,7 +102,7 @@ def unsetDoctorIndispo(id):
 
 @app.route('/setDoctor/<int:idDoc>/toSalle/<string:idSalle>', methods=['GET', 'POST'])
 def setDoctorToSalle(idDoc, idSalle):
-    database.insertSalleDoc(idDoc, idSalle)
+    database.insertSalleDoc(idSalle, idDoc)
     doc = database.selectDocById(idDoc)
     flash(f'{doc[2]} {doc[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('index'))
@@ -160,7 +160,6 @@ if __name__=='__main__':
         31/03/2023 - 555-3425 Cecil Madera""","Résident")
     addDoctorsToDatabase(docs)
     docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
-        19/04/2023 - 555-7330 Williams Guster
         21/04/2023 - 555-1412 Emma Vandamme 
         ""","Interne")
     addDoctorsToDatabase(docs)

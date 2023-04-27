@@ -13,124 +13,135 @@
     </header>
     <body class="bg-gray-100">
         <div class="container mx-auto px-2 py-3">
-            <div class="grid grid-cols-12 gap-4">
-                <div>
-                    <div class="col-12">
-                        <h1 class="text-2xl font-bold">Dispatch LSMS</h1>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="justify-start">
+                    <div>
+                        <h1 class="text-2xl font-bold">Dispatch <img src="https://media.discordapp.net/attachments/1078290195620835350/1078290236787929168/logo.png?width=1039&height=671" alt="LSMS Logo" class="w-12"></h1>
                     </div>
-                    <div class="col-12">
+                    <div>
                         <h2 class="text-lg font-bold mt-5">Créer une intervention :</h2>
                         {% block createInter %}
-                            <form method="post" class="">
+                            <form method="post" class="flex flex-col">
                                 {{ form.hidden_tag() }}
                                 <div class="text-black my-1">
                                     {{ form.nomInt }}
                                 </div>
-                                <div class="">
+                                <div class="text-black my-1">
                                     {{ form.submitInt }}
                                 </div>
                             </form>
                         {% endblock %}
                     </div>
                 </div>
-                <div>
-                    <div class="col-12 mb-4">
-                        <h2 class="text-lg font-bold mt-5">Intervention :</h2>
+                <div class="justify-center">
+                    <div>
+                        <h2 class="text-lg font-bold mt-5">Salles :</h2>
                         <div class="grid grid-cols-5 gap-4">
-                            {% for intervention in interventions %}
+                            {% for salle in salles %}
                                 <div class="bg-white rounded-md shadow-md p-3">
-                                    <p class="mb-1">{{ intervention }} <a href="/deleteIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
+                                    <p class="mb-1">{{ salle }}</p>
+                                    <div class="flex justify-between">
+                                        {% for salleDoc in salleDocs %}
+                                            {% if salleDoc.idIntervention == salle.id %}
+                                                <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-1 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[salleDoc.idDocteur - 1].prenom }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="justify-end">
+                    <h2 class="text-lg font-bold mt-5">Intervention :</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        {% for intervention in interventions %}
+                            <div class="bg-white rounded-md shadow-md p-3">
+                                <p class="mb-1">{{ intervention }} <a href="/deleteIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
+                                <div class="flex justify-between">
                                     {% for intDoc in intDocs %}
                                         {% if intDoc.idIntervention == intervention.id %}
-                                            <div class="flex justify-between">
-                                                <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[intDoc.idDocteur - 1] }}</a>
-                                            </div>
+                                            <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[intDoc.idDocteur - 1].prenom }}</a>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="col-12">
-                        <div class="grid grid-cols-5 gap-4">
-                            {% for doctor in doctors %}
-                                {% if doctor.grade == "Directeur"%}
-                                    <div class="bg-red-600 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Directeur Adjoint" %}
-                                    <div class="bg-red-500 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Chef de service" %}
-                                    <div class="bg-orange-300 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Spécialiste" %}
-                                    <div class="bg-blue-600 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Titulaire" %}
-                                    <div class="bg-blue-400 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Résident" %}
-                                    <div class="bg-blue-200 rounded-md shadow-md p-1">
-                                {% elif doctor.grade == "Interne" %}
-                                    <div class="bg-green-400 rounded-md shadow-md p-1">
-                                {% else %}
-                                    <div class="bg-gray-300 rounded-md shadow-md p-1">
-                                {% endif %}
-                                    {% with service=doctor.service, indispo=doctor.indispo %}
-                                        {% if service == 1 and indispo == 0 %}
-                                            <div class="text-green-600 mb-2">
-                                                <div class="bg-gray-100 rounded-md shadow-md p-1">
-                                                    <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
-                                                </div>
-                                                <div class="flex justify-between">
-                                                    <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
-                                                    <a href="/setDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
-                                                    <div class="dropdown inline-block relative">
-                                                        <button onclick="dropdown('{{ doctor.id }}')" class="dropbtn bg-blue-500 text-white p-1 text-sm border-none cursor-pointer rounded-md">Inter</button>
-                                                        <div id="interDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
-                                                            {% for intervention in interventions %}
-                                                                <a href="/setDoctor/{{ doctor.id }}/toIntervention/{{ intervention.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ intervention }}</a>
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% elif service == 1 and indispo == 1 %}
-                                            <div class="text-red-600 mb-2">
-                                                <div class="bg-gray-100 rounded-md shadow-md p-1">
-                                                    <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
-                                                </div>
-                                                <div class="flex justify-between">
-                                                    <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                                    <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                                                </div>
-                                            </div>
-                                        {% elif service == 0 and indispo == 0 %}
-                                            <div class="text-yellow-500 mb-2">
-                                                <div class="bg-gray-100 rounded-md shadow-md p-1">
-                                                    <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
-                                                </div>
-                                                <div class="flex justify-end">
-                                                    <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endwith %}
-                                </div>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-12">
-                <h2 class="text-lg font-bold mt-5">Salles :</h2>
-                <ul class="list-disc pl-5">
-                    {% for salle in salles %}
-                        {% if salle.indisponible == '0' %}
-                            <li class="text-green-600">{{ salle.nom }}</li>
+            <div class=" mt-4">
+                <div class="grid grid-cols-5 gap-4">
+                    {% for doctor in doctors %}
+                        {% if doctor.grade == "Directeur"%}
+                            <div class="bg-red-600 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Directeur Adjoint" %}
+                            <div class="bg-red-500 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Chef de service" %}
+                            <div class="bg-orange-300 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Spécialiste" %}
+                            <div class="bg-blue-600 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Titulaire" %}
+                            <div class="bg-blue-400 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Résident" %}
+                            <div class="bg-blue-200 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Interne" %}
+                            <div class="bg-green-400 rounded-md shadow-md p-1">
                         {% else %}
-                            <li class="text-red-600">{{ salle.nom }}</li>
+                            <div class="bg-gray-300 rounded-md shadow-md p-1">
                         {% endif %}
+                            {% with service=doctor.service, indispo=doctor.indispo %}
+                                {% if service == 1 and indispo == 0 %}
+                                    <div class="text-green-600 mb-2">
+                                        <div class="bg-gray-100 rounded-md shadow-md p-1">
+                                            <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
+                                            <a href="/setDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
+                                            <div class="dropdown inline-block relative">
+                                                <button onclick="interDropdown('{{ doctor.id }}')" class="dropbtn bg-blue-500 text-white p-1 text-sm border-none cursor-pointer rounded-md">Inter</button>
+                                                <div id="interDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
+                                                    {% for intervention in interventions %}
+                                                        <a href="/setDoctor/{{ doctor.id }}/toIntervention/{{ intervention.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ intervention }}</a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="dropdown inline-block relative">
+                                                <button onclick="salleDropdown('{{ doctor.id + 500 }}')" class="dropbtn bg-blue-500 text-white p-1 text-sm border-none cursor-pointer rounded-md">Salle</button>
+                                                <div id="salleDrop{{ doctor.id + 500 }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
+                                                    {% for salle in salles %}
+                                                        <a href="/setDoctor/{{ doctor.id }}/toSalle/{{ salle.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ salle }}</a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elif service == 1 and indispo == 1 %}
+                                    <div class="text-red-600 mb-2">
+                                        <div class="bg-gray-100 rounded-md shadow-md p-1">
+                                            <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                            <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
+                                        </div>
+                                    </div>
+                                {% elif service == 0 and indispo == 0 %}
+                                    <div class="text-yellow-500 mb-2">
+                                        <div class="bg-gray-100 rounded-md shadow-md p-1">
+                                            <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
                     {% endfor %}
-                </ul>
-            </div> -->
+                </div>
+            </div>
         </div>
     </body>
     <footer>
@@ -139,19 +150,19 @@
             <p><a href="https://github.com/Wiibleyde/FailyV-Dispatch" class="text-gray-600 hover:text-gray-800"><i class="bi bi-github"></i> Code source</a></p>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
     <script>
-        function dropdown(id) {
-            $("#interDrop" + id).toggleClass("show");
+        function interDropdown(id) {
+            $("#interDrop" + id).toggleClass("show")
+        }
+
+        function salleDropdown(id) {
+            $("#salleDrop" + id).toggleClass("show")
         }
 
         $(document).on("click", function(event) {
             if (!$(event.target).closest(".dropbtn").length) {
-                $(".dropdown-content.show").removeClass("show");
+                $(".dropdown-content.show").removeClass("show")
             }
-        });
-
-    
+        })
     </script>
 </html>

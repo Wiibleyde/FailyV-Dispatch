@@ -264,11 +264,11 @@ class SqlService:
             cursor.execute(req, (idDoc, idInt))
             connection.commit()
 
-    def deleteSalleDoc(self, id):
+    def deleteSalleDoc(self, idDoc, idSalle):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
-            req = "DELETE FROM SallesDocteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            req = "DELETE FROM SallesDocteurs WHERE idDocteur = ? AND idSalle = ?"
+            cursor.execute(req, (idDoc, idSalle))
             connection.commit()
 
     
