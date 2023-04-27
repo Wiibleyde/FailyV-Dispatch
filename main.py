@@ -21,34 +21,13 @@ def index():
         nom = form.nomInt.data
         exterieur = form.exterieurInt.data
         database.insertInt(nom, exterieur)
-        flash('Intervention ajoutée avec succès !')
+        flash(f'Intervention {nom} ajoutée avec succès !', 'success')
         return redirect(url_for('index'))
     doctors = database.selectDoc()
     doctorsObj = []
-    directeurs = []
-    directeursAdjoint = []
-    chefsService = []
-    specialistes = []
-    titulaire = []
-    resident = []
-    interne = []
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
         doctorsObj.append(doc)
-        if doc.grade == "Directeur":
-            directeurs.append(doc)
-        elif doc.grade == "Directeur Adjoint":
-            directeursAdjoint.append(doc)
-        elif doc.grade == "Chef de service":
-            chefsService.append(doc)
-        elif doc.grade == "Spécialiste":
-            specialistes.append(doc)
-        elif doc.grade == "Titulaire":
-            titulaire.append(doc)
-        elif doc.grade == "Résident":
-            resident.append(doc)
-        elif doc.grade == "Interne":
-            interne.append(doc)
     interventions = database.selectInt()
     interventionsObj = []
     for int in interventions:
@@ -69,7 +48,7 @@ def index():
     for salleDoc in salleDocs:
         salleDoc = InterventionDocteursObj(salleDoc[0], salleDoc[1], salleDoc[2])
         salleDocsObj.append(salleDoc)
-    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, directeurs=directeurs, directeursAdjoints=directeursAdjoint, chefsServices=chefsService, specialistes=specialistes, titulaires=titulaire, residents=resident, internes=interne, intDocs=intDocsObj, salleDocs=salleDocsObj)
+    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
@@ -79,7 +58,7 @@ def doctors():
         prenom = form.prenomDoc.data
         grade = form.gradeDoc.data
         database.insertDoc(nom, prenom, grade)
-        flash('Docteur ajouté avec succès !')
+        flash(f'{prenom} ajouté avec succès !', 'success')
         return redirect(url_for('doctors'))
     doctors = database.selectDocs()
     for doc in doctors:
@@ -88,53 +67,67 @@ def doctors():
 
 @app.route('/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 def deleteIntervention(id):
+    inter = database.selectIntById(id)
     database.deleteInt(id)
+    flash(f'{inter[1]} supprimée avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/setDoctorService/<int:id>', methods=['GET', 'POST'])
 def setDoctorServer(id):
     doc = database.selectDocById(id)
     database.updateDoc(id, doc[1], doc[2], doc[3], True, doc[5])
+    flash(f'{doc[2]} {doc[1]} ajouté au service avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctorService/<int:id>', methods=['GET', 'POST'])
 def unsetDoctorServer(id):
     doc = database.selectDocById(id)
     database.updateDoc(id, doc[1], doc[2], doc[3], False, False)
+    flash(f'{doc[2]} {doc[1]} retiré du service avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/setDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 def setDoctorIndispo(id):
     doc = database.selectDocById(id)
     database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], True)
+    flash(f"{doc[2]} {doc[1]} mis en indisponibilité avec succès !", 'success')
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 def unsetDoctorIndispo(id):
     doc = database.selectDocById(id)
     database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], False)
+    flash(f"{doc[2]} {doc[1]} retiré de l\'indisponibilité avec succès !", 'success')
     return redirect(url_for('index'))
 
 @app.route('/setDoctor/<int:idDoc>/toSalle/<string:idSalle>', methods=['GET', 'POST'])
 def setDoctorToSalle(idDoc, idSalle):
-    doc = database.selectDocById(idDoc)
     database.insertSalleDoc(idDoc, idSalle)
+    doc = database.selectDocById(idDoc)
+    flash(f'{doc[2]} {doc[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctor/<int:idDoc>/fromSalle/<string:idSalle>', methods=['GET', 'POST'])
 def unsetDoctorFromSalle(idDoc, idSalle):
     database.deleteSalleDoc(idDoc, idSalle)
+    doc = database.selectDocById(idDoc)
+    flash(f'{doc[2]} {doc[1]} retiré de la salle avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/setDoctor/<int:idDoc>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
 def setDoctorToIntervention(idDoc, idInt):
-    doc = database.selectDocById(idDoc)
     database.insertIntDoc(idInt, idDoc)
+    doc = database.selectDocById(idDoc)
+    inter = database.selectIntById(idInt)
+    flash(f'{doc[2]} {doc[1]} ajouté à l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctor/<int:idDoc>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
 def unsetDoctorFromIntervention(idDoc, idInt):
     database.deleteDocFromInt(idDoc, idInt)
+    doc = database.selectDocById(idDoc)
+    inter = database.selectIntById(idInt)
+    flash(f'{doc[2]} {doc[1]} retiré de l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('index'))
 
 if __name__=='__main__':
