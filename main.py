@@ -25,9 +25,15 @@ def index():
         return redirect(url_for('index'))
     doctors = database.selectDoc()
     doctorsObj = []
+    enService = []
+    horsService = []
     for doc in doctors:
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
         doctorsObj.append(doc)
+        if doc.service:
+            enService.append(doc)
+        else:
+            horsService.append(doc)
     interventions = database.selectInt()
     interventionsObj = []
     for int in interventions:
@@ -48,7 +54,7 @@ def index():
     for salleDoc in salleDocs:
         salleDoc = InterventionDocteursObj(salleDoc[0], salleDoc[1], salleDoc[2])
         salleDocsObj.append(salleDoc)
-    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj)
+    return render_template('index.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj, enService=enService, horsService=horsService)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():

@@ -64,8 +64,9 @@
                 </div>
             </div>
             <div class="mt-4">
+                <h2 class="text-2xl font-bold mt-5">En service :</h2>
                 <div class="grid grid-cols-5 gap-4">
-                    {% for doctor in doctors %}
+                    {% for doctor in enService %}
                         {% if doctor.grade == "Directeur"%}
                             <div class="bg-red-600 rounded-md shadow-md p-1">
                         {% elif doctor.grade == "Directeur Adjoint" %}
@@ -131,6 +132,38 @@
                                     </div>
                                 {% endif %}
                             {% endwith %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Hors service :</h2>
+                <div class="grid grid-cols-5 gap-4">
+                    {% for doctor in horsService %}
+                        {% if doctor.grade == "Directeur"%}
+                            <div class="bg-red-600 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Directeur Adjoint" %}
+                            <div class="bg-red-500 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Chef de service" %}
+                            <div class="bg-orange-300 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Spécialiste" %}
+                            <div class="bg-blue-600 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Titulaire" %}
+                            <div class="bg-blue-400 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Résident" %}
+                            <div class="bg-blue-200 rounded-md shadow-md p-1">
+                        {% elif doctor.grade == "Interne" %}
+                            <div class="bg-green-400 rounded-md shadow-md p-1">
+                        {% else %}
+                            <div class="bg-gray-300 rounded-md shadow-md p-1">
+                        {% endif %}
+                            <div class="text-yellow-500 mb-2">
+                                <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
+                                    <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                </div>
+                                <div class="flex justify-end">
+                                    <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
+                                </div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
