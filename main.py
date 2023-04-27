@@ -171,4 +171,4 @@ if __name__=='__main__':
     database.insertSalle("Bloc 2")
     database.insertSalle("Bloc 3")
     database.insertSalle("Bloc 4")
-    app.run(debug=True,port=9999)
+    app.run(port=9123,host='0.0.0.0')

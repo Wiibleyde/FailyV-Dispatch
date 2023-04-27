@@ -3,7 +3,7 @@ import sqlite3
 class SqlService:
     def __init__(self,filename):
         self.filename = filename
-        connection = sqlite3.connect(self.filename)
+        connection = sqlite3.connect("data/" + self.filename)
         cursor = connection.cursor()
         req0 = "CREATE TABLE IF NOT EXISTS Docteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN)"
         req2 = "CREATE TABLE IF NOT EXISTS Interventions (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, exterieur BOOLEAN)"

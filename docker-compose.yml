@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  dispatch:
+    build: .
+    image: wiibleyde/dispatch:latest
+    container_name: dispatch
+    restart: unless-stopped
+    ports:
+      - "9123:9123"
+    volumes:
+      - /srv/dispatch:/app/data
