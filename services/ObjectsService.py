@@ -1,11 +1,13 @@
 class DocteurObj:
-    def __init__(self, id, nom, prenom, grade, service, indispo):
+    def __init__(self, id, nom, prenom, grade, service, indispo, inInter, inSalle):
         self.id = id
         self.nom = nom
         self.prenom = prenom
         self.grade = grade
         self.service = service
         self.indispo = indispo
+        self.inInter = inInter
+        self.inSalle = inSalle
 
     def __str__(self):
         return self.prenom + " " + self.nom
@@ -33,6 +35,12 @@ class DocteurObj:
     
     def getIndispo(self):
         return self.indispo
+    
+    def getInInter(self):
+        return self.inInter
+    
+    def getInSalle(self):
+        return self.inSalle
 
 class InterventionObj:
     def __init__(self, id, nom, exterieur):

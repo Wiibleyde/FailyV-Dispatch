@@ -1,14 +1,8 @@
 
 
 .dropbtn {
-    background-color: #3498DB;
-    color: white;
     border: none;
     cursor: pointer;
-}
-
-.dropbtn:hover, .dropbtn:focus {
-    background-color: #2980B9;
 }
 
 .dropdown {

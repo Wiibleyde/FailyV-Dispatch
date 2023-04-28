@@ -8,7 +8,7 @@ class SqlService:
             os.makedirs("data")
         connection = sqlite3.connect(self.filename)
         cursor = connection.cursor()
-        req0 = "CREATE TABLE IF NOT EXISTS Docteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN)"
+        req0 = "CREATE TABLE IF NOT EXISTS Docteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN, inIntervention BOOLEAN, inSalle BOOLEAN)"
         req2 = "CREATE TABLE IF NOT EXISTS Interventions (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, exterieur BOOLEAN)"
         req3 = "CREATE TABLE IF NOT EXISTS Salles (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT)"
         req4 = "CREATE TABLE IF NOT EXISTS InterventionsDocteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, idIntervention INTEGER, idDocteur INTEGER, FOREIGN KEY(idIntervention) REFERENCES Interventions(id), FOREIGN KEY(idDocteur) REFERENCES Docteurs(id))"
@@ -21,13 +21,13 @@ class SqlService:
         connection.commit()
 
 
-    def insertDoc(self, nom, prenom, grade, service, indisponible):
+    def insertDoc(self, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         if self.selectDocByNomPrenom(nom, prenom) is not None:
             return
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
-            req = "INSERT INTO Docteurs (nom, prenom, grade, service, indisponible) VALUES (?,?,?,?,?)"
-            cursor.execute(req, (nom, prenom, grade, service, indisponible))
+            req = "INSERT INTO Docteurs (nom, prenom, grade, service, indisponible, inIntervention, inSalle) VALUES (?,?,?,?,?,?,?)"
+            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle))
             connection.commit()
 
     def insertInt(self, nom, exterieur):
@@ -290,11 +290,11 @@ class SqlService:
             cursor.execute(req, (idDoc, idSalle))
             connection.commit()
     
-    def updateDoc(self, id, nom, prenom, grade, service, indisponible):
+    def updateDoc(self, id, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
-            req = "UPDATE Docteurs SET nom = ?, prenom = ?, grade = ?, service = ?, indisponible = ? WHERE id = ?"
-            cursor.execute(req, (nom, prenom, grade, service, indisponible, id))
+            req = "UPDATE Docteurs SET nom = ?, prenom = ?, grade = ?, service = ?, indisponible = ?, inIntervention = ?, inSalle = ? WHERE id = ?"
+            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle, id))
             connection.commit()
 
     def updateInt(self, id, nom, exterieur):

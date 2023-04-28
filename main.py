@@ -8,7 +8,7 @@ from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, Inter
 
 def addDoctorsToDatabase(docs):
     for doc in docs:
-        database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo)
+        database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo, doc.inInter, doc.inSalle)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret key'
@@ -28,7 +28,13 @@ def index():
     enService = []
     horsService = []
     for doc in doctors:
-        doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
+        inInter = False
+        inSalle = False
+        if doc[6] == 1:
+            inInter = True
+        if doc[7] == 1:
+            inSalle = True
+        doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5], inInter, inSalle)
         doctorsObj.append(doc)
         if doc.service:
             enService.append(doc)
@@ -81,21 +87,21 @@ def deleteIntervention(id):
 @app.route('/setDoctorService/<int:id>', methods=['GET', 'POST'])
 def setDoctorServer(id):
     doc = database.selectDocById(id)
-    database.updateDoc(id, doc[1], doc[2], doc[3], True, doc[5])
+    database.updateDoc(id, doc[1], doc[2], doc[3], True, doc[5], doc[6], doc[7])
     flash(f'{doc[2]} {doc[1]} ajouté au service avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/unsetDoctorService/<int:id>', methods=['GET', 'POST'])
 def unsetDoctorServer(id):
     doc = database.selectDocById(id)
-    database.updateDoc(id, doc[1], doc[2], doc[3], False, False)
+    database.updateDoc(id, doc[1], doc[2], doc[3], False, False, doc[6], doc[7])
     flash(f'{doc[2]} {doc[1]} retiré du service avec succès !', 'success')
     return redirect(url_for('index'))
 
 @app.route('/setDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 def setDoctorIndispo(id):
     doc = database.selectDocById(id)
-    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], True)
+    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], True, doc[6], doc[7])
     flash(f"{doc[2]} {doc[1]} mis en indisponibilité avec succès !", 'success')
     return redirect(url_for('index'))
 
@@ -110,6 +116,7 @@ def unsetDoctorIndispo(id):
 def setDoctorToSalle(idDoc, idSalle):
     database.insertSalleDoc(idSalle, idDoc)
     doc = database.selectDocById(idDoc)
+    database.updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], doc[6], True)
     flash(f'{doc[2]} {doc[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('index'))
 
@@ -117,6 +124,7 @@ def setDoctorToSalle(idDoc, idSalle):
 def unsetDoctorFromSalle(idDoc, idSalle):
     database.deleteSalleDoc(idDoc, idSalle)
     doc = database.selectDocById(idDoc)
+    database.updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], doc[6], False)
     flash(f'{doc[2]} {doc[1]} retiré de la salle avec succès !', 'success')
     return redirect(url_for('index'))
 
@@ -124,6 +132,7 @@ def unsetDoctorFromSalle(idDoc, idSalle):
 def setDoctorToIntervention(idDoc, idInt):
     database.insertIntDoc(idInt, idDoc)
     doc = database.selectDocById(idDoc)
+    database.updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], True, doc[7])
     inter = database.selectIntById(idInt)
     flash(f'{doc[2]} {doc[1]} ajouté à l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('index'))
@@ -132,6 +141,7 @@ def setDoctorToIntervention(idDoc, idInt):
 def unsetDoctorFromIntervention(idDoc, idInt):
     database.deleteDocFromInt(idDoc, idInt)
     doc = database.selectDocById(idDoc)
+    database.updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], False, doc[7])
     inter = database.selectIntById(idInt)
     flash(f'{doc[2]} {doc[1]} retiré de l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('index'))
