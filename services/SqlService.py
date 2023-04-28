@@ -3,10 +3,10 @@ import os
 
 class SqlService:
     def __init__(self,filename):
-        self.filename = filename
+        self.filename = "data/" + filename
         if not os.path.exists("data"):
             os.makedirs("data")
-        connection = sqlite3.connect("data/" + self.filename)
+        connection = sqlite3.connect(self.filename)
         cursor = connection.cursor()
         req0 = "CREATE TABLE IF NOT EXISTS Docteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN)"
         req2 = "CREATE TABLE IF NOT EXISTS Interventions (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, exterieur BOOLEAN)"
@@ -60,6 +60,8 @@ class SqlService:
     def insertSalleDoc(self, idSalle, idDocteur):
         if self.selectSalleDocByDocIdSalleId(idSalle, idDocteur) is not None:
             return
+        if self.selectSalleDocByDocId(idDocteur) is not None:
+            self.deleteSalleDocByDocId(idDocteur)
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "INSERT INTO SallesDocteurs (idSalle, idDocteur) VALUES (?,?)"
@@ -172,6 +174,13 @@ class SqlService:
             req = "SELECT * FROM SallesDocteurs WHERE id = ?"
             cursor.execute(req, (id,))
             return cursor.fetchone()
+        
+    def selectSalleDocByDocId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM SallesDocteurs WHERE idDocteur = ?"
+            cursor.execute(req, (id,))
+            return cursor.fetchone()
     
     def selectSalleDocByDocIdSalleId(self, idSalle, idDocteur):
         with sqlite3.connect(self.filename) as connection:
@@ -267,13 +276,19 @@ class SqlService:
             cursor.execute(req, (idDoc, idInt))
             connection.commit()
 
+    def deleteSalleDocByDocId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM SallesDocteurs WHERE idDocteur = ?"
+            cursor.execute(req, (id,))
+            connection.commit()
+
     def deleteSalleDoc(self, idDoc, idSalle):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM SallesDocteurs WHERE idDocteur = ? AND idSalle = ?"
             cursor.execute(req, (idDoc, idSalle))
             connection.commit()
-
     
     def updateDoc(self, id, nom, prenom, grade, service, indisponible):
         with sqlite3.connect(self.filename) as connection:
