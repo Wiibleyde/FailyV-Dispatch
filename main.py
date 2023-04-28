@@ -66,16 +66,26 @@ def index():
 def doctors():
     form = AddDocteurForm()
     if form.validate_on_submit():
-        nom = form.nomDoc.data
-        prenom = form.prenomDoc.data
-        grade = form.gradeDoc.data
-        database.insertDoc(nom, prenom, grade)
-        flash(f'{prenom} ajouté avec succès !', 'success')
+        doc = RegexUtils.doctorToList(form.zoneText.data, form.grade.data)
+        addDoctorsToDatabase(doc)
+        strDoc = ''
+        for d in doc:
+            strDoc += f'{d.prenom} {d.nom}, '
+        flash(f'{strDoc} ajoutés avec succès !', 'success')
         return redirect(url_for('doctors'))
-    doctors = database.selectDocs()
+    doctors = database.selectDoc()
+    doctorsObj = []
     for doc in doctors:
-        doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5])
-    return render_template('doctors.html', form=form, doctors=doctors)
+        doc = DocteurObj(*doc)
+        doctorsObj.append(doc)
+    return render_template('doctors.html', form=form, doctors=doctorsObj)
+
+@app.route('/doctor/delete/<int:id>', methods=['GET', 'POST'])
+def deleteDoctor(id):
+    doc = database.selectDocById(id)
+    database.deleteDoc(id)
+    flash(f'{doc[2]} {doc[1]} supprimé avec succès !', 'success')
+    return redirect(url_for('doctors'))
 
 @app.route('/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 def deleteIntervention(id):
@@ -176,8 +186,7 @@ if __name__=='__main__':
         31/03/2023 - 555-3425 Cecil Madera""","Résident")
     addDoctorsToDatabase(docs)
     docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
-        21/04/2023 - 555-1412 Emma Vandamme 
-        ""","Interne")
+        21/04/2023 - 555-1412 Emma Vandamme""","Interne")
     addDoctorsToDatabase(docs)
     database.insertSalle("Harper")
     database.insertSalle("Kyle")

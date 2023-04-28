@@ -239,8 +239,8 @@ class SqlService:
             req = "DELETE FROM Docteurs WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.getDocByDocId(id) != []:
-                self.updateDocDoc(self.getDocByDocId(id)[0][0], None, None)
+            self.deleteSalleDocByDocId(id)
+            self.deleteIntDocByDocId(id)
 
     def deleteInt(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -266,6 +266,13 @@ class SqlService:
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsDocteurs WHERE id = ?"
+            cursor.execute(req, (id,))
+            connection.commit()
+
+    def deleteIntDocByDocId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsDocteurs WHERE idDocteur = ?"
             cursor.execute(req, (id,))
             connection.commit()
             
