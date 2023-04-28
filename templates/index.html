@@ -94,7 +94,7 @@
                                             <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
                                             <a href="/setDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
                                             <div class="dropdown inline-block relative">
-                                                <button onclick="interDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inInter %} bg-red-400 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
+                                                <button onclick="interDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inInter %} bg-red-500 hover:bg-red-700 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
                                                     Inter
                                                 </button>
                                                 <div id="interDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
@@ -107,7 +107,7 @@
                                                 </div>
                                             </div>
                                             <div class="dropdown inline-block relative">
-                                                <button onclick="salleDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inSalle %} bg-red-400 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
+                                                <button onclick="salleDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inSalle %} bg-red-500 hover:bg-red-700 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
                                                     Salle
                                                 </button>
                                                 <div id="salleDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">

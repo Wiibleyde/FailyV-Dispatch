@@ -108,7 +108,7 @@ def setDoctorIndispo(id):
 @app.route('/unsetDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 def unsetDoctorIndispo(id):
     doc = database.selectDocById(id)
-    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], False)
+    database.updateDoc(id, doc[1], doc[2], doc[3], doc[4], False, doc[6], doc[7])
     flash(f"{doc[2]} {doc[1]} retiré de l\'indisponibilité avec succès !", 'success')
     return redirect(url_for('index'))
 
