@@ -1,8 +1,11 @@
 import sqlite3
+import os
 
 class SqlService:
     def __init__(self,filename):
         self.filename = filename
+        if not os.path.exists("data"):
+            os.makedirs("data")
         connection = sqlite3.connect("data/" + self.filename)
         cursor = connection.cursor()
         req0 = "CREATE TABLE IF NOT EXISTS Docteurs (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN)"
