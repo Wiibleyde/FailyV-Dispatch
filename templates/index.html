@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% include "fragments/import.html" %}
         <link rel="stylesheet" href="/static/output.css">
+        <script src="/static/dropdown.js"></script>
         <title>Dispatch</title>
     </head>
     <header>
@@ -37,7 +38,12 @@
                                 <div>
                                     {% for salleDoc in salleDocs %}
                                         {% if salleDoc.idIntervention == salle.id %}
-                                            <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-1 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[salleDoc.idDocteur - 1].prenom }}</a>
+                                            {% for doctor in enService %}
+                                                {% if doctor.id == salleDoc.idDocteur %}
+                                                    <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <!-- <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-1 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[salleDoc.idDocteur - 1].prenom }}</a> -->
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -54,7 +60,11 @@
                                 <div>
                                     {% for intDoc in intDocs %}
                                         {% if intDoc.idIntervention == intervention.id %}
-                                            <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctors[intDoc.idDocteur - 1].prenom }}</a>
+                                            {% for doctor in enService %}
+                                                {% if doctor.id == intDoc.idDocteur %}
+                                                    <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                                {% endif %}
+                                            {% endfor %}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -181,24 +191,6 @@
         </div>
     </body>
     <footer>
-        <div class="container mx-auto text-center bottom-4 w-full bg-gray-200 shadow-md rounded-md">
-            <h1 class="text-sm text-gray-600">©Wiibleyde</h1>
-            <p><a href="https://github.com/Wiibleyde/FailyV-Dispatch" class="text-gray-600 hover:text-gray-800"><i class="bi bi-github"></i> Code source</a></p>
-        </div>
+        {% include "fragments/footer.html" %}
     </footer>
-    <script>
-        function interDropdown(id) {
-            $("#interDrop" + id).toggleClass("show")
-        }
-
-        function salleDropdown(id) {
-            $("#salleDrop" + id).toggleClass("show")
-        }
-
-        $(document).on("click", function(event) {
-            if (!$(event.target).closest(".dropbtn").length) {
-                $(".dropdown-content.show").removeClass("show")
-            }
-        })
-    </script>
 </html>

@@ -15,7 +15,7 @@
         }
     </script>
 
-    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% with errors = get_flashed_messages(category_filter=["danger"]) %}
         {% if errors %}
             <div class="py-5 px-5">
                 {% for compteur in range(0, errors|length) %}

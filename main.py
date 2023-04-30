@@ -6,13 +6,18 @@ from utils.regexUtils import RegexUtils
 from services.SqlService import SqlService
 from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, InterventionDocteursObj
 
+# ======================================================================================================================
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret key'
+# ======================================================================================================================
+
 def addDoctorsToDatabase(docs):
     for doc in docs:
         database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo, doc.inInter, doc.inSalle)
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret key'
-
+def sortDocsByGrade(docs):
+    orderGrade = ["Directeur", "Directeur Adjoint", "Chef de service", "Spécialiste", "Titulaire", "Résident", "Interne"]
+    docs.sort(key=lambda x: orderGrade.index(x.grade))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -36,7 +41,10 @@ def index():
             inSalle = True
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5], inInter, inSalle)
         doctorsObj.append(doc)
+    sortDocsByGrade(doctorsObj)
+    for doc in doctorsObj:
         if doc.service:
+            print(doc.id)
             enService.append(doc)
         else:
             horsService.append(doc)
@@ -67,17 +75,28 @@ def doctors():
     form = AddDocteurForm()
     if form.validate_on_submit():
         doc = RegexUtils.doctorToList(form.zoneText.data, form.grade.data)
-        addDoctorsToDatabase(doc)
-        strDoc = ''
-        for d in doc:
-            strDoc += f'{d.prenom} {d.nom}, '
-        flash(f'{strDoc} ajoutés avec succès !', 'success')
-        return redirect(url_for('doctors'))
+        if len(doc) == 0:
+            doc = RegexUtils.doctorToString(form.zoneText.data, form.grade.data)
+            if doc == None:
+                flash(f'Veuillez entrer docteur valide ([PRENOM] [NOM]) !', 'danger')
+                return redirect(url_for('doctors'))
+            else:
+                database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo, doc.inInter, doc.inSalle)
+                flash(f'{doc.prenom} {doc.nom} ajouté avec succès !', 'success')
+                return redirect(url_for('doctors'))
+        else:
+            addDoctorsToDatabase(doc)
+            strDoc = ''
+            for d in doc:
+                strDoc += f'{d.prenom} {d.nom}, '
+            flash(f'{strDoc} ajoutés avec succès !', 'success')
+            return redirect(url_for('doctors'))
     doctors = database.selectDoc()
     doctorsObj = []
     for doc in doctors:
         doc = DocteurObj(*doc)
         doctorsObj.append(doc)
+    sortDocsByGrade(doctorsObj)
     return render_template('doctors.html', form=form, doctors=doctorsObj)
 
 @app.route('/doctor/delete/<int:id>', methods=['GET', 'POST'])
@@ -104,7 +123,9 @@ def setDoctorServer(id):
 @app.route('/unsetDoctorService/<int:id>', methods=['GET', 'POST'])
 def unsetDoctorServer(id):
     doc = database.selectDocById(id)
-    database.updateDoc(id, doc[1], doc[2], doc[3], False, False, doc[6], doc[7])
+    database.updateDoc(id, doc[1], doc[2], doc[3], False, False, False, False)
+    database.deleteIntDocByDocId(id)
+    database.deleteSalleDocByDocId(id)
     flash(f'{doc[2]} {doc[1]} retiré du service avec succès !', 'success')
     return redirect(url_for('index'))
 
@@ -158,36 +179,36 @@ def unsetDoctorFromIntervention(idDoc, idInt):
 
 if __name__=='__main__':
     database = SqlService('database.db')
-    docs = RegexUtils.doctorToList("""29/06/2021 - 555-2023 Vassily Medved""","Directeur")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""14/09/2021 - 555-2650 Cletus Christopoulos""","Directeur Adjoint")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""24/03/2022 - 555-6440 Douglas Wade
-        05/02/2021 - 555-7015 Maxime Cross
-        26/07/2022 - 555-6548 Shawn Castillo""","Chef de service")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""14/07/2022 - 555-8990 Adam McKern
-        03/08/2022 - 555-2879 Astrid Vogelstein
-        21/10/2022 - 555-7476 Karl Vogelstein
-        16/07/2022 - 555-4769 Lucia Winston
-        27/10/2022 - 555-5299 Victoire Medved
-        12/11/2022 - 555-3430 Eva Ionadi""","Spécialiste")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""09/11/2022 - 555-5420 Nathan Prale
-        13/11/2022 - 555-2428 Samuel Galopin
-        07/01/2023 - 555-2190 Cassie Montgomery
-        23/11/2022 - 555-4960 Ruben Nielsen
-        19/11/2022 - 555-8680 Kyra Walker
-        19/12/2022 - 555-1129 Thomas Jewison-Reddington""","Titulaire")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""29/11/2022 - 555-9244 Greg Mouse 
-        07/01/2023 - 555-6365 Victorien Herve 
-        17/03/2023 - 555-1201 Alvaro Gomez Ortega
-        31/03/2023 - 555-3425 Cecil Madera""","Résident")
-    addDoctorsToDatabase(docs)
-    docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
-        21/04/2023 - 555-1412 Emma Vandamme""","Interne")
-    addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""29/06/2021 - 555-2023 Vassily Medved""","Directeur")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""14/09/2021 - 555-2650 Cletus Christopoulos""","Directeur Adjoint")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""24/03/2022 - 555-6440 Douglas Wade
+    #     05/02/2021 - 555-7015 Maxime Cross
+    #     26/07/2022 - 555-6548 Shawn Castillo""","Chef de service")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""14/07/2022 - 555-8990 Adam McKern
+    #     03/08/2022 - 555-2879 Astrid Vogelstein
+    #     21/10/2022 - 555-7476 Karl Vogelstein
+    #     16/07/2022 - 555-4769 Lucia Winston
+    #     27/10/2022 - 555-5299 Victoire Medved
+    #     12/11/2022 - 555-3430 Eva Ionadi""","Spécialiste")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""09/11/2022 - 555-5420 Nathan Prale
+    #     13/11/2022 - 555-2428 Samuel Galopin
+    #     07/01/2023 - 555-2190 Cassie Montgomery
+    #     23/11/2022 - 555-4960 Ruben Nielsen
+    #     19/11/2022 - 555-8680 Kyra Walker
+    #     19/12/2022 - 555-1129 Thomas Jewison-Reddington""","Titulaire")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""29/11/2022 - 555-9244 Greg Mouse 
+    #     07/01/2023 - 555-6365 Victorien Herve 
+    #     17/03/2023 - 555-1201 Alvaro Gomez Ortega
+    #     31/03/2023 - 555-3425 Cecil Madera""","Résident")
+    # addDoctorsToDatabase(docs)
+    # docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
+    #     21/04/2023 - 555-1412 Emma Vandamme""","Interne")
+    # addDoctorsToDatabase(docs)
     database.insertSalle("Harper")
     database.insertSalle("Kyle")
     database.insertSalle("Sam")

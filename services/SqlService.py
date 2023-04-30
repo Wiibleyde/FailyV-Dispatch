@@ -200,7 +200,7 @@ class SqlService:
     def selectDoc(self):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
-            req = "SELECT * FROM Docteurs"
+            req = "SELECT * FROM Docteurs ORDER BY prenom"
             cursor.execute(req)
             return cursor.fetchall()
     
