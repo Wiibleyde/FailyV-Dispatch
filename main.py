@@ -44,7 +44,6 @@ def index():
     sortDocsByGrade(doctorsObj)
     for doc in doctorsObj:
         if doc.service:
-            print(doc.id)
             enService.append(doc)
         else:
             horsService.append(doc)
