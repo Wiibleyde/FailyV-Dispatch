@@ -127,9 +127,9 @@
                         {% endif %}
                             {% with service=doctor.service, indispo=doctor.indispo %}
                                 {% if service == 1 and indispo == 0 %}
-                                    <div class="text-green-600 mb-2">
+                                    <div class="mb-2">
                                         <div class="bg-gray-100 bg-opacity-70 rounded-md shadow-md p-1">
-                                            <p class="mb-1 flex items-center">{{ doctor.prenom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                            <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
                                         </div>
                                         <div class="flex justify-between">
                                             <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
@@ -163,22 +163,13 @@
                                         </div>
                                     </div>
                                 {% elif service == 1 and indispo == 1 %}
-                                    <div class="text-red-600 mb-2">
+                                    <div class="mb-2">
                                         <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                            <p class="mb-1 flex items-center">{{ doctor.prenom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                            <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
                                         </div>
                                         <div class="flex justify-between">
                                             <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
                                             <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                                        </div>
-                                    </div>
-                                {% elif service == 0 and indispo == 0 %}
-                                    <div class="text-yellow-500 mb-2">
-                                        <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                            <p class="mb-1 flex items-center">{{ doctor.prenom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
-                                        </div>
-                                        <div class="flex justify-end">
-                                            <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -209,7 +200,7 @@
                         {% endif %}
                             <div class="text-yellow-500 mb-2">
                                 <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                    <p class="mb-1 flex items-center">{{ doctor }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                    <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
                                 </div>
                                 <div class="flex justify-end">
                                     <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
