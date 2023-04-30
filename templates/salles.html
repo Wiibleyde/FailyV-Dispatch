@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% include "fragments/import.html" %}
+        <link rel="stylesheet" href="/static/output.css">
+        <title>Salles</title>
+    </head>
+    <header>
+        {% include "fragments/message.html" %}
+    </header>
+    <body class="bg-gray-100">
+        <div class="container mx-auto grid grid-cols-2 gap-4">
+            <div id="salleList" class="grid grid-cols-5 gap-4">
+                {% for salle in salles %}
+                    <div class="bg-gray-300 rounded-md shadow-md p-1">
+                        <h1 class="text-xl font-bold">{{ salle }}</h1>
+                        <a href="/salle/delete/{{ salle.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="bg-gray-400 rounded-md p-3">
+                <h2 class="text-lg font-bold mt-5">Ajouter une salle :</h2>
+                {% block createDoc %}
+                    <form method="post" class="flex flex-col">
+                        {{ form.hidden_tag() }}
+                        <div class="text-black my-1">
+                            {{ form.nomSalle }}
+                        </div>
+                        <div>
+                            {{ form.submitSalle }}
+                        </div>
+                    </form>
+                {% endblock %}
+            </div>
+        </div>
+    </body>
+    <footer>
+        {% include "fragments/footer.html" %}
+    </footer>
+</html>

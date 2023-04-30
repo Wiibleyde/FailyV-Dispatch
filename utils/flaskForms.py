@@ -11,3 +11,7 @@ class AddInterventionForm(FlaskForm):
     nomInt = StringField('nomInt', validators=[DataRequired()], render_kw={"placeholder": "Nom de l'intervention"})
     exterieurInt = BooleanField('exterieurInt')
     submitInt = SubmitField('submitInt', render_kw={"value": "Créer l'intervention"})
+
+class AddSalleForm(FlaskForm):
+    nomSalle = StringField('nomSalle', validators=[DataRequired()], render_kw={"placeholder": "Nom de la salle"})
+    submitSalle = SubmitField('submitSalle', render_kw={"value": "Créer la salle"})

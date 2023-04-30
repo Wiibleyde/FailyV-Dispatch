@@ -259,8 +259,6 @@ class SqlService:
             req = "DELETE FROM Salles WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.getSalleBySalleId(id) != []:
-                self.updateSalleDoc(self.getSalleBySalleId(id)[0][0], None, None)
 
     def deleteIntDoc(self, id):
         with sqlite3.connect(self.filename) as connection:

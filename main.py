@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash
 import re
 
-from utils.flaskForms import AddDocteurForm, AddInterventionForm
+from utils.flaskForms import AddDocteurForm, AddInterventionForm, AddSalleForm
 from utils.regexUtils import RegexUtils
 from services.SqlService import SqlService
 from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, InterventionDocteursObj
@@ -98,12 +98,34 @@ def doctors():
     sortDocsByGrade(doctorsObj)
     return render_template('doctors.html', form=form, doctors=doctorsObj)
 
+@app.route('/salles', methods=['GET', 'POST'])
+def salles():
+    form = AddSalleForm()
+    if form.validate_on_submit():
+        nom = form.nomSalle.data
+        database.insertSalle(nom)
+        flash(f'Salle {nom} ajoutée avec succès !', 'success')
+        return redirect(url_for('salles'))
+    salles = database.selectSalle()
+    sallesObj = []
+    for salle in salles:
+        salle = SalleObj(salle[0], salle[1])
+        sallesObj.append(salle)
+    return render_template('salles.html', form=form, salles=sallesObj)
+
 @app.route('/doctor/delete/<int:id>', methods=['GET', 'POST'])
 def deleteDoctor(id):
     doc = database.selectDocById(id)
     database.deleteDoc(id)
     flash(f'{doc[2]} {doc[1]} supprimé avec succès !', 'success')
     return redirect(url_for('doctors'))
+
+@app.route('/salle/delete/<int:id>', methods=['GET', 'POST'])
+def deleteSalle(id):
+    salle = database.selectSalleById(id)
+    database.deleteSalle(id)
+    flash(f'{salle[1]} supprimée avec succès !', 'success')
+    return redirect(url_for('salles'))
 
 @app.route('/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 def deleteIntervention(id):
@@ -208,12 +230,12 @@ if __name__=='__main__':
     # docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
     #     21/04/2023 - 555-1412 Emma Vandamme""","Interne")
     # addDoctorsToDatabase(docs)
-    database.insertSalle("Harper")
-    database.insertSalle("Kyle")
-    database.insertSalle("Sam")
-    database.insertSalle("Wilfrid")
-    database.insertSalle("Bloc 1")
-    database.insertSalle("Bloc 2")
-    database.insertSalle("Bloc 3")
-    database.insertSalle("Bloc 4")
+    # database.insertSalle("Harper")
+    # database.insertSalle("Kyle")
+    # database.insertSalle("Sam")
+    # database.insertSalle("Wilfrid")
+    # database.insertSalle("Bloc 1")
+    # database.insertSalle("Bloc 2")
+    # database.insertSalle("Bloc 3")
+    # database.insertSalle("Bloc 4")
     app.run(port=9123,host='0.0.0.0')
