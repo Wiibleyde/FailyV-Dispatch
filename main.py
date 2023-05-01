@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, flash
 import re
 
-from utils.flaskForms import AddDocteurForm, AddInterventionForm, AddSalleForm
-from utils.regexUtils import RegexUtils
+from services.flaskForms import AddDocteurForm, AddInterventionForm, AddSalleForm
+from services.regexUtils import RegexUtils
 from services.SqlService import SqlService
 from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, InterventionDocteursObj
 
