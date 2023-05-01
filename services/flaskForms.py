@@ -15,3 +15,14 @@ class AddInterventionForm(FlaskForm):
 class AddSalleForm(FlaskForm):
     nomSalle = StringField('nomSalle', validators=[DataRequired()], render_kw={"placeholder": "Nom de la salle","autofocus": True})
     submitSalle = SubmitField('submitSalle', render_kw={"value": "Créer la salle"})
+
+class LoginForm(FlaskForm):
+    usernameLogin = StringField('usernameLogin', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True})
+    passwordLogin = StringField('passwordLogin', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    submitLogin = SubmitField('submitLogin', render_kw={"value": "Se connecter"})
+
+class RegisterForm(FlaskForm):
+    usernameRegister = StringField('usernameRegister', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True})
+    passwordRegister = StringField('passwordRegister', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    confirmPasswordRegister = StringField('confirmPasswordRegister', validators=[DataRequired()], render_kw={"placeholder": "Confirmer le mot de passe"})
+    submitRegister = SubmitField('submitRegister', render_kw={"value": "S'inscrire"})

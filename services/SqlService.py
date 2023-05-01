@@ -294,6 +294,7 @@ class SqlService:
             req = "DELETE FROM SallesDocteurs WHERE idDocteur = ? AND idSalle = ?"
             cursor.execute(req, (idDoc, idSalle))
             connection.commit()
+
     
     def updateDoc(self, id, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         with sqlite3.connect(self.filename) as connection:

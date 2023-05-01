@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {% include "fragments/import.html" %}
+        
+        <title>Dispatch - S'enregister</title>
+    </head>
+    <header>
+        {% include "fragments/message.html" %}
+    </header>
+    <body class="bg-gray-100">
+        <div class="bg-gray-400 rounded-md p-3">
+            <h2 class="text-lg font-bold mt-5">Se connecter :</h2>
+            {% block register %}
+                <form method="post" class="flex flex-col">
+                    {{ form.hidden_tag() }}
+                    <div class="text-black my-1">
+                        {{ form.usernameRegister }}
+                    </div>
+                    <div class="text-black my-1">
+                        {{ form.passwordRegister }}
+                    </div>
+                    <div class="text-black my-1">
+                        {{ form.confirmPasswordRegister }}
+                    </div>
+                    <div>
+                        {{ form.submitRegister }}
+                    </div>
+                </form>
+            {% endblock %}
+        </div>
+    </body>
+    <footer>
+        {% include "fragments/footer.html" %}
+    </footer>
+</html>
