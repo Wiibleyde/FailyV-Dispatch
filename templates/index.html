@@ -4,10 +4,10 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         {% include "fragments/import.html" %}
-        <link rel="stylesheet" href="/static/output.css">
-        <script src="/static/dropdown.js"></script>
-        <title>Dispatch</title>
+        
+        <title>Dispatch - Home</title>
     </head>
     <header>
         {% include "fragments/message.html" %}
@@ -35,17 +35,15 @@
                         {% for salle in salles %}
                             <div class="bg-white rounded-md shadow-md p-3">
                                 <p class="mb-1">{{ salle }}</p>
-                                <div>
-                                    {% for salleDoc in salleDocs %}
-                                        {% if salleDoc.idIntervention == salle.id %}
-                                            {% for doctor in enService %}
-                                                {% if doctor.id == salleDoc.idDocteur %}
-                                                    <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
+                                {% for salleDoc in salleDocs %}
+                                    {% if salleDoc.idIntervention == salle.id %}
+                                        {% for doctor in enService %}
+                                            {% if doctor.id == salleDoc.idDocteur %}
+                                                <a href="/unsetDoctor/{{ salleDoc.idDocteur }}/fromSalle/{{ salle.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         {% endfor %}
                     </div>
@@ -57,47 +55,41 @@
                             {% if intervention.nom == 'Triage' %}
                                 <div class="bg-blue-400 rounded-md shadow-md p-3">
                                     <p class="mb-1">{{ intervention }} <a href="/deleteIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
-                                    <div>
-                                        {% for intDoc in intDocs %}
-                                            {% if intDoc.idIntervention == intervention.id %}
-                                                {% for doctor in enService %}
-                                                    {% if doctor.id == intDoc.idDocteur %}
-                                                        <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
+                                    {% for intDoc in intDocs %}
+                                        {% if intDoc.idIntervention == intervention.id %}
+                                            {% for doctor in enService %}
+                                                {% if doctor.id == intDoc.idDocteur %}
+                                                    <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             {% elif intervention.nom == 'Dispatch' %}
                                 <div class="bg-red-400 rounded-md shadow-md p-3">
                                     <p class="mb-1">{{ intervention }} <a href="/deleteIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
-                                    <div>
-                                        {% for intDoc in intDocs %}
-                                            {% if intDoc.idIntervention == intervention.id %}
-                                                {% for doctor in enService %}
-                                                    {% if doctor.id == intDoc.idDocteur %}
-                                                        <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
+                                    {% for intDoc in intDocs %}
+                                        {% if intDoc.idIntervention == intervention.id %}
+                                            {% for doctor in enService %}
+                                                {% if doctor.id == intDoc.idDocteur %}
+                                                    <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             {% else %}
                                 <div class="bg-gray-100 rounded-md shadow-md p-3">
                                     <p class="mb-1">{{ intervention }} <a href="/deleteIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
-                                    <div>
-                                        {% for intDoc in intDocs %}
-                                            {% if intDoc.idIntervention == intervention.id %}
-                                                {% for doctor in enService %}
-                                                    {% if doctor.id == intDoc.idDocteur %}
-                                                        <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
+                                    {% for intDoc in intDocs %}
+                                        {% if intDoc.idIntervention == intervention.id %}
+                                            {% for doctor in enService %}
+                                                {% if doctor.id == intDoc.idDocteur %}
+                                                    <a href="/unsetDoctor/{{ intDoc.idDocteur }}/fromIntervention/{{ intervention.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ doctor.prenom }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -107,111 +99,111 @@
             <div class="mt-4">
                 <h2 class="text-2xl font-bold mt-5">En service :</h2>
                 <div class="grid grid-cols-5 gap-4">
-                    {% for doctor in enService %}
-                        {% if doctor.grade == "Directeur"%}
-                            <div class="bg-red-600 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Directeur Adjoint" %}
-                            <div class="bg-red-500 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Chef de service" %}
-                            <div class="bg-orange-300 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Spécialiste" %}
-                            <div class="bg-blue-600 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Titulaire" %}
-                            <div class="bg-blue-400 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Résident" %}
-                            <div class="bg-blue-200 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Interne" %}
-                            <div class="bg-green-400 rounded-md shadow-md p-1">
-                        {% else %}
-                            <div class="bg-gray-300 rounded-md shadow-md p-1">
-                        {% endif %}
-                            {% with service=doctor.service, indispo=doctor.indispo %}
-                                {% if service == 1 and indispo == 0 %}
-                                    <div class="mb-2">
-                                        <div class="bg-gray-100 bg-opacity-70 rounded-md shadow-md p-1">
-                                            <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
-                                            <a href="/setDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
-                                            <div class="dropdown inline-block relative">
-                                                <button onclick="interDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inInter %} bg-red-500 hover:bg-red-700 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
-                                                    Inter
-                                                </button>
-                                                <div id="interDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
-                                                    {% if doctor.inInter %}
-                                                        <p class="block px-4 py-2">Déjà en intervention</p>
-                                                    {% endif %}
-                                                    {% for intervention in interventions %}
-                                                        <a href="/setDoctor/{{ doctor.id }}/toIntervention/{{ intervention.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ intervention }}</a>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            <div class="dropdown inline-block relative">
-                                                <button onclick="salleDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inSalle %} bg-red-500 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
-                                                    Salle
-                                                </button>
-                                                <div id="salleDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
-                                                    {% if doctor.inSalle %}
-                                                        <p class="block px-4 py-2">Déjà en salle</p>
-                                                    {% endif %}
-                                                    {% for salle in salles %}
-                                                        <a href="/setDoctor/{{ doctor.id }}/toSalle/{{ salle.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ salle }}</a>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>      
-                                        </div>
+                {% for doctor in enService %}
+                    {% if doctor.grade == "Directeur"%}
+                    <div class="bg-red-600 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Directeur Adjoint" %}
+                    <div class="bg-red-500 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Chef de service" %}
+                    <div class="bg-orange-300 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Spécialiste" %}
+                    <div class="bg-blue-600 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Titulaire" %}
+                    <div class="bg-blue-400 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Résident" %}
+                    <div class="bg-blue-200 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Interne" %}
+                    <div class="bg-green-400 rounded-md shadow-md p-1">
+                    {% else %}
+                    <div class="bg-gray-300 rounded-md shadow-md p-1">
+                    {% endif %}
+                    {% with service=doctor.service, indispo=doctor.indispo %}
+                        {% if service == 1 and indispo == 0 %}
+                        <div class="mb-2">
+                            <div class="bg-gray-100 bg-opacity-70 rounded-md shadow-md p-1">
+                                <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                            </div>
+                            <div class="flex justify-between">
+                                <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
+                                <a href="/setDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
+                                <div class="dropdown inline-block relative">
+                                    <button onclick="interDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inInter %} bg-red-500 hover:bg-red-700 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
+                                        Inter
+                                    </button>
+                                    <div id="interDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
+                                        {% if doctor.inInter %}
+                                            <p class="block px-4 py-2">Déjà en intervention</p>
+                                        {% endif %}
+                                        {% for intervention in interventions %}
+                                            <a href="/setDoctor/{{ doctor.id }}/toIntervention/{{ intervention.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ intervention }}</a>
+                                        {% endfor %}
                                     </div>
-                                {% elif service == 1 and indispo == 1 %}
-                                    <div class="mb-2">
-                                        <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                            <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
-                                            <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
-                                        </div>
+                                </div>
+                                <div class="dropdown inline-block relative">
+                                    <button onclick="salleDropdown('{{ doctor.id }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if doctor.inSalle %} bg-red-500 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
+                                        Salle
+                                    </button>
+                                    <div id="salleDrop{{ doctor.id }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
+                                        {% if doctor.inSalle %}
+                                            <p class="block px-4 py-2">Déjà en salle</p>
+                                        {% endif %}
+                                        {% for salle in salles %}
+                                            <a href="/setDoctor/{{ doctor.id }}/toSalle/{{ salle.id }}" class="block px-4 py-2 hover:bg-gray-300">{{ salle }}</a>
+                                        {% endfor %}
                                     </div>
-                                {% endif %}
-                            {% endwith %}
+                                </div>      
+                            </div>
                         </div>
-                    {% endfor %}
-                    </div>
+                        {% elif service == 1 and indispo == 1 %}
+                        <div class="mb-2">
+                            <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
+                                <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                            </div>
+                            <div class="flex justify-between">
+                                <a href="/unsetDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">FDS</a>
+                                <a href="/unsetDoctorIndispo/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                {% endfor %}
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Hors service :</h2>
                 <div class="grid grid-cols-5 gap-4">
-                    {% for doctor in horsService %}
-                        {% if doctor.grade == "Directeur"%}
-                            <div class="bg-red-600 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Directeur Adjoint" %}
-                            <div class="bg-red-500 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Chef de service" %}
-                            <div class="bg-orange-300 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Spécialiste" %}
-                            <div class="bg-blue-600 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Titulaire" %}
-                            <div class="bg-blue-400 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Résident" %}
-                            <div class="bg-blue-200 rounded-md shadow-md p-1">
-                        {% elif doctor.grade == "Interne" %}
-                            <div class="bg-green-400 rounded-md shadow-md p-1">
-                        {% else %}
-                            <div class="bg-gray-300 rounded-md shadow-md p-1">
-                        {% endif %}
-                            <div class="text-yellow-500 mb-2">
-                                <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                    <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
-                                </div>
-                                <div class="flex justify-end">
-                                    <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
-                                </div>
+                {% for doctor in horsService %}
+                    {% if doctor.grade == "Directeur"%}
+                    <div class="bg-red-600 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Directeur Adjoint" %}
+                    <div class="bg-red-500 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Chef de service" %}
+                    <div class="bg-orange-300 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Spécialiste" %}
+                    <div class="bg-blue-600 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Titulaire" %}
+                    <div class="bg-blue-400 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Résident" %}
+                    <div class="bg-blue-200 rounded-md shadow-md p-1">
+                    {% elif doctor.grade == "Interne" %}
+                    <div class="bg-green-400 rounded-md shadow-md p-1">
+                    {% else %}
+                    <div class="bg-gray-300 rounded-md shadow-md p-1">
+                    {% endif %}
+                        <div class="text-yellow-500 mb-2">
+                            <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
+                                <p class="mb-1 flex items-center text-black font-bold">{{ doctor.prenom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                            </div>
+                            <div class="flex justify-end">
+                                <a href="/setDoctorService/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
     </body>
+    <script src="/static/dropdown.js"></script>
     <footer>
         {% include "fragments/footer.html" %}
     </footer>

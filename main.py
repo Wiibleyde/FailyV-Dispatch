@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, flash
-import re
+import argparse
 
 from services.flaskForms import AddDocteurForm, AddInterventionForm, AddSalleForm
-from services.regexUtils import RegexUtils
+from services.regexFunc import RegexUtils
 from services.SqlService import SqlService
 from services.ObjectsService import DocteurObj, InterventionObj, SalleObj, InterventionDocteursObj
 
@@ -18,6 +18,13 @@ def addDoctorsToDatabase(docs):
 def sortDocsByGrade(docs):
     orderGrade = ["Directeur", "Directeur Adjoint", "Chef de service", "Spécialiste", "Titulaire", "Résident", "Interne"]
     docs.sort(key=lambda x: orderGrade.index(x.grade))
+
+def readArgs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--debug", help="Run in debug mode", action="store_true")
+    parser.add_argument("-p", "--port", help="Port to run on", type=int)
+    args = parser.parse_args()
+    return args
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -77,7 +84,7 @@ def doctors():
         if len(doc) == 0:
             doc = RegexUtils.doctorToString(form.zoneText.data, form.grade.data)
             if doc == None:
-                flash(f'Veuillez entrer docteur valide ([PRENOM] [NOM]) !', 'danger')
+                flash(f'Veuillez entrer docteur valide ([Prénom] [Nom]) !', 'danger')
                 return redirect(url_for('doctors'))
             else:
                 database.insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo, doc.inInter, doc.inSalle)
@@ -199,43 +206,9 @@ def unsetDoctorFromIntervention(idDoc, idInt):
     return redirect(url_for('index'))
 
 if __name__=='__main__':
+    args = readArgs()
+    port = 9123
+    if args.port != None:
+        port = args.port
     database = SqlService('database.db')
-    # docs = RegexUtils.doctorToList("""29/06/2021 - 555-2023 Vassily Medved""","Directeur")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""14/09/2021 - 555-2650 Cletus Christopoulos""","Directeur Adjoint")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""24/03/2022 - 555-6440 Douglas Wade
-    #     05/02/2021 - 555-7015 Maxime Cross
-    #     26/07/2022 - 555-6548 Shawn Castillo""","Chef de service")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""14/07/2022 - 555-8990 Adam McKern
-    #     03/08/2022 - 555-2879 Astrid Vogelstein
-    #     21/10/2022 - 555-7476 Karl Vogelstein
-    #     16/07/2022 - 555-4769 Lucia Winston
-    #     27/10/2022 - 555-5299 Victoire Medved
-    #     12/11/2022 - 555-3430 Eva Ionadi""","Spécialiste")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""09/11/2022 - 555-5420 Nathan Prale
-    #     13/11/2022 - 555-2428 Samuel Galopin
-    #     07/01/2023 - 555-2190 Cassie Montgomery
-    #     23/11/2022 - 555-4960 Ruben Nielsen
-    #     19/11/2022 - 555-8680 Kyra Walker
-    #     19/12/2022 - 555-1129 Thomas Jewison-Reddington""","Titulaire")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""29/11/2022 - 555-9244 Greg Mouse 
-    #     07/01/2023 - 555-6365 Victorien Herve 
-    #     17/03/2023 - 555-1201 Alvaro Gomez Ortega
-    #     31/03/2023 - 555-3425 Cecil Madera""","Résident")
-    # addDoctorsToDatabase(docs)
-    # docs = RegexUtils.doctorToList("""04/04/2023 - 555-0271 Elliot Hawkins
-    #     21/04/2023 - 555-1412 Emma Vandamme""","Interne")
-    # addDoctorsToDatabase(docs)
-    # database.insertSalle("Harper")
-    # database.insertSalle("Kyle")
-    # database.insertSalle("Sam")
-    # database.insertSalle("Wilfrid")
-    # database.insertSalle("Bloc 1")
-    # database.insertSalle("Bloc 2")
-    # database.insertSalle("Bloc 3")
-    # database.insertSalle("Bloc 4")
-    app.run(port=9123,host='0.0.0.0')
+    app.run(port=port,host='0.0.0.0', debug=args.debug)
