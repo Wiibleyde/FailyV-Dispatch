@@ -13,19 +13,23 @@
         {% include "fragments/message.html" %}
     </header>
     <body class="bg-gray-100">
-        <div class="bg-gray-400 rounded-md p-3">
-            <h2 class="text-lg font-bold mt-5">Se connecter :</h2>
+        <div class="bg-gray-400 rounded-md p-6">
+            <h2 class="text-xl font-bold mb-4">Se connecter :</h2>
             {% block login %}
                 <form method="post" class="flex flex-col">
                     {{ form.hidden_tag() }}
-                    <div class="text-black my-1">
-                        {{ form.usernameLogin }}
+                    <div class="mb-4">
+                        <!-- {{ form.usernameLogin.label(class='block text-gray-700 font-bold mb-2') }} -->
+                        <p class='block text-gray-700 font-bold mb-2'>Nom d'utilisateur</p>
+                        {{ form.usernameLogin(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline') }}
                     </div>
-                    <div class="text-black my-1">
-                        {{ form.passwordLogin }}
+                    <div class="mb-4">
+                        <!-- {{ form.passwordLogin.label(class='block text-gray-700 font-bold mb-2') }} -->
+                        <p class='block text-gray-700 font-bold mb-2'>Mot de passe</p>
+                        {{ form.passwordLogin(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline') }}
                     </div>
                     <div>
-                        {{ form.submitLogin }}
+                        {{ form.submitLogin(class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded') }}
                     </div>
                 </form>
             {% endblock %}
