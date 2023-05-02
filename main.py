@@ -50,12 +50,12 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.passwordRegister.data != form.confirmPasswordRegister.data:
-            flash('Passwords do not match')
+            flash('Passwords do not match', 'danger')
         elif accounts.checkIfExist(form.usernameRegister.data):
-            flash('Username already exists')
+            flash('Username already exists', 'danger')
         else:
             accounts.insertAccount(form.usernameRegister.data, form.passwordRegister.data)
-            flash('Account created successfully')
+            flash('Account created successfully', 'success')
             return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -69,7 +69,7 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         else:
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
