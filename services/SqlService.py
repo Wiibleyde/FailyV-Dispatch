@@ -20,6 +20,7 @@ class SqlService:
         cursor.execute(req5)
         connection.commit()
 
+    # Insertion functions
 
     def insertDoc(self, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         if self.selectDocByNomPrenom(nom, prenom) is not None:
@@ -68,6 +69,7 @@ class SqlService:
             cursor.execute(req, (idSalle, idDocteur))
             connection.commit()
 
+    # Selection functions
 
     def selectDocById(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -159,7 +161,6 @@ class SqlService:
             req = "SELECT * FROM SallesDocteurs WHERE idDocteur = ?"
             cursor.execute(req, (id,))
             return cursor.fetchall()
-        
     
     def selectDocBySalleId(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -196,7 +197,6 @@ class SqlService:
             cursor.execute(req, (id,))
             return cursor.fetchall()
 
-
     def selectDoc(self):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
@@ -232,6 +232,7 @@ class SqlService:
             cursor.execute(req)
             return cursor.fetchall()
     
+    # Delete functions
 
     def deleteDoc(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -295,6 +296,7 @@ class SqlService:
             cursor.execute(req, (idDoc, idSalle))
             connection.commit()
 
+    # Update functions
     
     def updateDoc(self, id, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         with sqlite3.connect(self.filename) as connection:
@@ -331,7 +333,8 @@ class SqlService:
             cursor.execute(req, (idSalle, idDocteur, id))
             connection.commit()
 
-    
+    # Insert functions
+
     def close(self):
         with sqlite3.connect(self.filename) as connection:
             connection.close()

@@ -97,7 +97,9 @@
                 </div>
             </div>
             <div class="mt-4">
-                <h2 class="text-2xl font-bold mt-5">En service :</h2>
+                {% if enService|length > 0 %}
+                    <h2 class="text-2xl font-bold mt-5">En service :</h2>
+                {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for doctor in enService %}
                     {% if doctor.grade == "Directeur"%}
@@ -169,7 +171,9 @@
                 </div>
                 {% endfor %}
                 </div>
-                <h2 class="text-2xl font-bold mb-2">Hors service :</h2>
+                {% if horsService|length > 0 %}
+                    <h2 class="text-2xl font-bold mb-2">Hors service :</h2>
+                {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for doctor in horsService %}
                     {% if doctor.grade == "Directeur"%}

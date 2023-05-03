@@ -9,4 +9,4 @@ services:
     ports:
       - "9123:9123"
     volumes:
-      - /srv/dispatch:/app/data
+      - /var/dispatch/data/:/app/data
