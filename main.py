@@ -43,19 +43,25 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    flash('Vous devez être connecté pour accèder à cette page !', 'danger')
     return redirect(url_for('login'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    flash("Page introuvable, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.passwordRegister.data != form.confirmPasswordRegister.data:
-            flash('Passwords do not match', 'danger')
+            flash('Les mots de passe sont différents.', 'danger')
         elif accounts.checkIfExist(form.usernameRegister.data):
-            flash('Username already exists', 'danger')
+            flash("Un compte avec le même nom d'utilisateur existe déjà.", 'danger')
         else:
             accounts.insertAccount(form.usernameRegister.data, form.passwordRegister.data)
-            flash('Account created successfully', 'success')
+            flash('Compte enregistré !', 'success')
             return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -69,14 +75,15 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         else:
-            flash('Invalid username or password', 'danger')
+            flash("Mauvais nom d'utilisateur ou mot de passe.", 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    flash('Vous êtes déconnecté.', 'success')
+    return redirect(url_for('login'))
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
