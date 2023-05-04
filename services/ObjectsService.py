@@ -41,6 +41,50 @@ class DocteurObj:
     
     def getInSalle(self):
         return self.inSalle
+    
+class AgentObj:
+    def __init__(self, id, nom, prenom, grade, service, indispo, inInter, inSalle):
+        self.id = id
+        self.nom = nom
+        self.prenom = prenom
+        self.grade = grade
+        self.service = service
+        self.indispo = indispo
+        self.inInter = inInter
+        self.inSalle = inSalle
+
+    def __str__(self):
+        return self.prenom + " " + self.nom
+    
+    def __repr__(self):
+        return self.prenom + " " + self.nom
+    
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getId(self):
+        return self.id
+    
+    def getNom(self):
+        return self.nom
+    
+    def getPrenom(self):
+        return self.prenom
+    
+    def getGrade(self):
+        return self.grade
+    
+    def getService(self):
+        return self.service
+    
+    def getIndispo(self):
+        return self.indispo
+    
+    def getInInter(self):
+        return self.inInter
+    
+    def getInSalle(self):
+        return self.inSalle
 
 class InterventionObj:
     def __init__(self, id, nom, exterieur):
@@ -110,6 +154,30 @@ class InterventionDocteursObj:
     def getIdDocteur(self):
         return self.idDocteur
     
+class InterventionAgentsObj:
+    def __init__(self, id, idIntervention, idAgent):
+        self.id = id
+        self.idIntervention = idIntervention
+        self.idAgent = idAgent
+        
+    def __str__(self):
+        return self.idIntervention + " " + self.idAgent
+    
+    def __repr__(self):
+        return self.idIntervention + " " + self.idAgent
+    
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getId(self):
+        return self.id
+    
+    def getIdIntervention(self):
+        return self.idIntervention
+    
+    def getIdAgent(self):
+        return self.idAgent
+    
 class SalleDocteurObj:
     def __init__(self, id, idSalle, idDocteur):
         self.id = id
@@ -133,3 +201,27 @@ class SalleDocteurObj:
     
     def getIdDocteur(self):
         return self.idDocteur
+    
+class SalleAgentObj:
+    def __init__(self, id, idSalle, idAgent):
+        self.id = id
+        self.idSalle = idSalle
+        self.idAgent = idAgent
+        
+    def __str__(self):
+        return self.idSalle + " " + self.idAgent
+    
+    def __repr__(self):
+        return self.idSalle + " " + self.idAgent
+    
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getId(self):
+        return self.id
+    
+    def getIdSalle(self):
+        return self.idSalle
+    
+    def getIdAgent(self):
+        return self.idAgent
