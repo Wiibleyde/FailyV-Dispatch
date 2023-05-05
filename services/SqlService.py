@@ -407,6 +407,17 @@ class LSPDSqlService:
             cursor.execute(req, (idSalle, idAgent))
             connection.commit()
 
+    def insertSalleAge(self, idSalle, idAgent):
+        if self.selectSalleAgeByAgeIdSalleId(idSalle, idAgent) is not None:
+            return
+        if self.selectSalleAgeByAgeId(idAgent) is not None:
+            self.deleteSalleAgeByAgeId(idAgent)
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "INSERT INTO SallesAgents (idSalle, idAgent) VALUES (?,?)"
+            cursor.execute(req, (idSalle, idAgent))
+            connection.commit()
+
     # Selection functions
 
     def selectAgeById(self, id):
@@ -588,9 +599,9 @@ class LSPDSqlService:
             cursor.execute(req, (id,))
             connection.commit()
             if self.selectIntByIntId(id) != []:
-                self.updateIntDoc(self.selectIntByIntId(id)[0][0], None, None)
+                self.updateIntAge(self.selectIntByIntId(id)[0][0], None, None)
             if self.selectIntByIntId(id) != []:
-                self.updateSalleDoc(self.selectIntByIntId(id)[0][0], None, None)
+                self.updateSalleAge(self.selectIntByIntId(id)[0][0], None, None)
 
     def deleteSalle(self, id):
         with sqlite3.connect(self.filename) as connection:
