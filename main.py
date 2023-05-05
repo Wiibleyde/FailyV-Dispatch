@@ -459,11 +459,10 @@ def lsmsSetDoctorToIntervention(idDoc, idInt):
 def lspdSetAgentToIntervention(idAgent, idInt):
     LSPDSqlService(f"{current_user.id}-lspd.db").insertIntAge(idInt, idAgent)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], True, agent[5], True, agent[7])
-    inter = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntById(idInt)
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], True, agent[7])
+    inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(idInt)
     flash(f'{agent[2]} {agent[1]} ajouté à l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
-
 
 
 
