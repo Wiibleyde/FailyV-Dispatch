@@ -52,7 +52,7 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash('Vous devez être connecté pour accèder à cette page !', 'danger')
+    flash('Vous devez être connecté pour accèder à cette page !', 'warning')
     return redirect(url_for('login'))
 
 @app.errorhandler(404)
@@ -62,6 +62,9 @@ def page_not_found(e):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        flash("Vous êtes déjà connecté.", 'warning')
+        return redirect(url_for('index'))
     form = RegisterForm()
     if form.validate_on_submit():
         if form.passwordRegister.data != form.confirmPasswordRegister.data:
@@ -76,6 +79,9 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        flash("Vous êtes déjà connecté.", 'warning')
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
         if accounts.checkAccount(form.usernameLogin.data, form.passwordLogin.data):
@@ -98,6 +104,18 @@ def logout():
 @login_required
 def index():
     return render_template('index.html')
+
+@app.route('/lscs')
+@login_required
+def lscs():
+    flash("Soon™ (Si quelqu'un demande)", 'warning')
+    return redirect(url_for('index'))
+
+@app.route('/bcms')
+@login_required
+def bcms():
+    flash("Soon™ (Si quelqu'un demande)", 'warning')
+    return redirect(url_for('index'))
 
 @app.route('/lsms/dispatch', methods=['GET', 'POST'])
 @login_required

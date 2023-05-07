@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField, SelectField, TextAreaField
+from wtforms import StringField, SubmitField, BooleanField, SelectField, TextAreaField, PasswordField
 from wtforms.validators import DataRequired
 
 class AddLspdForm(FlaskForm):
@@ -23,11 +23,11 @@ class AddSalleForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     usernameLogin = StringField('usernameLogin', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True})
-    passwordLogin = StringField('passwordLogin', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    passwordLogin = PasswordField('passwordLogin', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
     submitLogin = SubmitField('submitLogin', render_kw={"value": "Se connecter"})
 
 class RegisterForm(FlaskForm):
     usernameRegister = StringField('usernameRegister', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True})
-    passwordRegister = StringField('passwordRegister', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
-    confirmPasswordRegister = StringField('confirmPasswordRegister', validators=[DataRequired()], render_kw={"placeholder": "Confirmer le mot de passe"})
+    passwordRegister = PasswordField('passwordRegister', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    confirmPasswordRegister = PasswordField('confirmPasswordRegister', validators=[DataRequired()], render_kw={"placeholder": "Confirmer le mot de passe"})
     submitRegister = SubmitField('submitRegister', render_kw={"value": "S'inscrire"})

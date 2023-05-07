@@ -13,32 +13,33 @@
         {% include "fragments/message.html" %}
     </header>
     <body class="bg-gray-100">
-        <div class="bg-gray-400 rounded-md p-6">
-            <h2 class="text-xl font-bold mb-4">Se connecter :</h2>
-            {% block register %}
+        <div class="flex justify-center items-center h-screen">
+            <div class="bg-white rounded-md shadow-lg p-8 w-96">
+                <h2 class="text-2xl font-bold mb-6">Se connecter :</h2>
+                {% block register %}
                 <form method="post" class="flex flex-col">
                     {{ form.hidden_tag() }}
                     <div class="mb-4">
-                        <!-- {{ form.usernameRegister.label(class='block text-gray-700 font-bold mb-2') }} -->
-                        <p class='block text-gray-700 font-bold mb-2'>Nom d'utilisateur</p>
-                        {{ form.usernameRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline') }}
+                        <label class="block text-gray-700 font-bold mb-2" for="username">Nom d'utilisateur:</label>
+                        {{ form.usernameRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', id="username") }}
                     </div>
                     <div class="mb-4">
-                        <!-- {{ form.passwordRegister.label(class='block text-gray-700 font-bold mb-2') }} -->
-                        <p class='block text-gray-700 font-bold mb-2'>Mot de passe</p>
-                        {{ form.passwordRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline') }}
+                        <label class="block text-gray-700 font-bold mb-2" for="password">Mot de passe:</label>
+                        {{ form.passwordRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', id="password") }}
                     </div>
                     <div class="mb-4">
-                        <!-- {{ form.confirmPasswordRegister.label(class='block text-gray-700 font-bold mb-2') }} -->
-                        <p class='block text-gray-700 font-bold mb-2'>Confirmer le mot de passe</p>
-                        {{ form.confirmPasswordRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline') }}
+                        <label class="block text-gray-700 font-bold mb-2" for="confirm-password">Confirmer le mot de passe:</label>
+                        {{ form.confirmPasswordRegister(class='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', id="confirm-password") }}
                     </div>
                     <div>
                         {{ form.submitRegister(class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded') }}
                     </div>
                 </form>
-            {% endblock %}
-            <p>Vous avez déjà un compte ? <a href="/login">Se connecter</a></p>
+                {% endblock %}
+                <p class="mt-4 text-gray-700">
+                    Vous avez déjà un compte ? <a href="/login" class="text-blue-500 hover:text-blue-700 font-bold">Se connecter</a>
+                </p>
+            </div>
         </div>
     </body>
     <footer>
