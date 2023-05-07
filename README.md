@@ -1,5 +1,7 @@
 # FailyV-Dispatch
 
+![GitHub license](https://img.shields.io/github/license/Wiibleyde/FailyV-Dispatch) ![GitHub issues](https://img.shields.io/github/issues/Wiibleyde/FailyV-Dispatch) ![GitHub pull requests](https://img.shields.io/github/issues-pr/Wiibleyde/FailyV-Dispatch) ![GitHub last commit](https://img.shields.io/github/last-commit/Wiibleyde/FailyV-Dispatch) ![GitHub repo size](https://img.shields.io/github/repo-size/Wiibleyde/FailyV-Dispatch) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Wiibleyde/FailyV-Dispatch) ![GitHub language count](https://img.shields.io/github/languages/count/Wiibleyde/FailyV-Dispatch) ![GitHub top language](https://img.shields.io/github/languages/top/Wiibleyde/FailyV-Dispatch)
+
 **NOT AN OFFICIAL FAILYV PROJECT**
 
 This is a simple dispatch system for the web designed for FailyV the LSMS, and adapted for the LSPD (and could be adapted for any other service).
