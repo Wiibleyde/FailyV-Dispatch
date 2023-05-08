@@ -348,6 +348,11 @@ def lspdDeleteSalle(id):
 def lsmsDeleteIntervention(id):
     inter = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteInt(id)
+    intDoc = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntDocById(id)
+    if intDoc:
+        for idDoc in intDoc:
+            doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc[2])
+            LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(doc[0], doc[1], doc[3], doc[4], doc[5], doc[6], False, doc[8])
     flash(f'{inter[1]} supprimée avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
@@ -356,6 +361,11 @@ def lsmsDeleteIntervention(id):
 def lspdDeleteIntervention(id):
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteInt(id)
+    intAge = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntAgeById(id)
+    if intAge:
+        for idAge in intAge:
+            age = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAge[2])
+            LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(age[0], age[1], age[3], age[4], age[5], age[6], False, age[8])
     flash(f'{inter[1]} supprimée avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 

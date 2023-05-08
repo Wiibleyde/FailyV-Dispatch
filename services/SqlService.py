@@ -127,34 +127,6 @@ class LSMSSqlService:
             cursor.execute(req, (idIntervention, idDocteur))
             return cursor.fetchone()
     
-    def selectIntByDocId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsDocteurs WHERE idDocteur = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectDocByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectIntByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectDocByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
     def selectSalleByDocId(self, id):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
@@ -249,10 +221,8 @@ class LSMSSqlService:
             req = "DELETE FROM Interventions WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.selectIntByIntId(id) != []:
-                self.updateIntDoc(self.selectIntByIntId(id)[0][0], None, None)
-            if self.selectIntByIntId(id) != []:
-                self.updateSalleDoc(self.selectIntByIntId(id)[0][0], None, None)
+            if self.selectIntDocById(id) != []:
+                self.updateIntDoc(self.selectIntDocById(id)[0][0], None, None)
 
     def deleteSalle(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -475,32 +445,18 @@ class LSPDSqlService:
             req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ? AND idAgent = ?"
             cursor.execute(req, (idIntervention, idAgent))
             return cursor.fetchone()
+        
+    def selectIntAgeByAgeId(self, idAgent):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsAgents WHERE idAgent = ?"
+            cursor.execute(req, (idAgent,))
+            return cursor.fetchall()
     
     def selectIntByAgeId(self, id):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectAgeByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectIntByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
-            return cursor.fetchall()
-    
-    def selectAgeByIntId(self, id):
-        with sqlite3.connect(self.filename) as connection:
-            cursor = connection.cursor()
-            req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
             cursor.execute(req, (id,))
             return cursor.fetchall()
     
@@ -598,10 +554,8 @@ class LSPDSqlService:
             req = "DELETE FROM Interventions WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.selectIntByIntId(id) != []:
-                self.updateIntAge(self.selectIntByIntId(id)[0][0], None, None)
-            if self.selectIntByIntId(id) != []:
-                self.updateSalleAge(self.selectIntByIntId(id)[0][0], None, None)
+            if self.selectIntAgeByAgeId(id) != []:
+                self.updateIntAge(self.selectIntAgeByAgeId(id)[0][0], None, None)
 
     def deleteSalle(self, id):
         with sqlite3.connect(self.filename) as connection:
