@@ -221,8 +221,8 @@ class LSMSSqlService:
             req = "DELETE FROM Interventions WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.selectIntDocById(id) != []:
-                self.updateIntDoc(self.selectIntDocById(id)[0][0], None, None)
+            if self.selectIntDocByIntIdDocId(id, None) != None:
+                self.deleteIntDocByIntId(id)
 
     def deleteSalle(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -245,6 +245,13 @@ class LSMSSqlService:
             cursor.execute(req, (id,))
             connection.commit()
             
+    def deleteIntDocByIntId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsDocteurs WHERE idIntervention = ?"
+            cursor.execute(req, (id,))
+            connection.commit()
+
     def deleteDocFromInt(self, idDoc, idInt):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
@@ -554,8 +561,8 @@ class LSPDSqlService:
             req = "DELETE FROM Interventions WHERE id = ?"
             cursor.execute(req, (id,))
             connection.commit()
-            if self.selectIntAgeByAgeId(id) != []:
-                self.updateIntAge(self.selectIntAgeByAgeId(id)[0][0], None, None)
+            if self.selectIntAgeByIntIdAgeId(id, None) != None:
+                self.deleteIntAgeByIntId(id)
 
     def deleteSalle(self, id):
         with sqlite3.connect(self.filename) as connection:
@@ -575,6 +582,13 @@ class LSPDSqlService:
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsAgents WHERE idAgent = ?"
+            cursor.execute(req, (id,))
+            connection.commit()
+
+    def deleteIntAgeByIntId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsAgents WHERE idIntervention = ?"
             cursor.execute(req, (id,))
             connection.commit()
             
