@@ -14,8 +14,7 @@
     </header>
     <body class="bg-gray-100">
         <div class="container py-2 mx-auto grid grid-cols-2 gap-4">
-            <div id="doctorList" class="grid grid-cols-5 gap-4">
-            {% for agent in agents %}
+            <div id="agentList" class="grid grid-cols-5 gap-4">
                 {% if agent.grade == "Commissaire"%}
                 <div class="bg-blue-800 rounded-md shadow-md p-1">
                 {% elif agent.grade == "Capitaine" %}
@@ -40,18 +39,13 @@
                     <h1 class="text-xl font-bold">{{ agent.prenom }} {{ agent.nom }}</h1>
                     <p class="text-sm">{{ agent.grade }}</p>
                     <a href="/lspd/agent/delete/{{ agent.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a>
-                    <a href="/lspd/agent/{{ agent.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-pen"></i></a>
                 </div>
-            {% endfor %}
             </div>
             <div class="bg-gray-400 rounded-md p-3">
-                <h2 class="text-lg font-bold mt-5">Ajouter un ou plusieurs agent :</h2>
-                {% block createDoc %}
+                <h2 class="text-lg font-bold mt-5">Modifier le docteur</h2>
+                {% block modifDoc %}
                     <form method="post" class="flex flex-col">
                         {{ form.hidden_tag() }}
-                        <div class="text-black my-1">
-                            {{ form.zoneText }}
-                        </div>
                         <div class="text-black my-1">
                             {{ form.grade }}
                         </div>
@@ -64,6 +58,6 @@
         </div>
     </body>
     <footer>
-        {% include "lspd/fragments/footer.html" %}
+        {% include "lsms/fragments/footer.html" %}
     </footer>
 </html>

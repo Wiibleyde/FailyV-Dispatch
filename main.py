@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import argparse
 
-from services.flaskForms import AddLsmsForm, AddLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm
+from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
 from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj
@@ -249,6 +249,20 @@ def lsmsDoctors():
     sortDocsByGrade(doctorsObj)
     return render_template('lsms/doctors.html', form=form, doctors=doctorsObj)
 
+@app.route('/lsms/doctor/<int:doctor_id>', methods=['GET', 'POST'])
+@login_required
+def lsmsDoctor(doctor_id):
+    form = EditLsmsForm()
+    doctor = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(doctor_id)
+    doctor = DocteurObj(*doctor)
+    if form.validate_on_submit():
+        LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(doctor_id, doctor.nom, doctor.prenom, form.grade.data, doctor.service, doctor.indispo, doctor.inInter, doctor.inSalle)
+        flash(f'{doctor.prenom} {doctor.nom} modifié avec succès !', 'success')
+        return redirect(url_for('lsmsDoctors'))
+    doctor = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(doctor_id)
+    doctorObj = DocteurObj(*doctor)
+    return render_template('lsms/doctor.html', form=form, doctor=doctorObj)
+
 @app.route('/lspd/agents', methods=['GET', 'POST'])
 @login_required
 def lspdAgents():
@@ -278,6 +292,20 @@ def lspdAgents():
         agentsObj.append(agent)
     sortAgentsByGrade(agentsObj)
     return render_template('lspd/agents.html', form=form, agents=agentsObj)
+
+@app.route('/lspd/agent/<int:agent_id>', methods=['GET', 'POST'])
+@login_required
+def lspdAgent(agent_id):
+    form = EditLspdForm()
+    agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
+    agent = AgentObj(*agent)
+    if form.validate_on_submit():
+        LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(agent_id, agent.nom, agent.prenom, form.grade.data, agent.service, agent.indispo, agent.inInter, agent.inSalle)
+        flash(f'{agent.prenom} {agent.nom} modifié avec succès !', 'success')
+        return redirect(url_for('lspdAgents'))
+    agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
+    agentObj = AgentObj(*agent)
+    return render_template('lspd/agent.html', form=form, agent=agentObj)
 
 @app.route('/lsms/salles', methods=['GET', 'POST'])
 @login_required

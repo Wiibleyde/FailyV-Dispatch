@@ -74,20 +74,24 @@
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for agent in enService %}
-                    {% if agent.grade == "Directeur"%}
-                    <div class="bg-red-600 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Directeur Adjoint" %}
-                    <div class="bg-red-500 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Chef de service" %}
-                    <div class="bg-orange-300 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Spécialiste" %}
+                    {% if agent.grade == "Commissaire"%}
+                    <div class="bg-blue-800 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Capitaine" %}
+                    <div class="bg-blue-900 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Lieutenant" %}
+                    <div class="bg-blue-700 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Inspecteur" %}
                     <div class="bg-blue-600 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Titulaire" %}
-                    <div class="bg-blue-400 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Résident" %}
-                    <div class="bg-blue-200 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Interne" %}
+                    {% elif agent.grade == "Sergent Chef" %}
+                    <div class="bg-blue-500 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Sergent" %}
+                    <div class="bg-cyan-300 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Officier Supérieur" %}
                     <div class="bg-green-400 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Officier" %}
+                    <div class="bg-green-600 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Cadet" %}
+                    <div class="bg-green-300 rounded-md shadow-md p-1">
                     {% else %}
                     <div class="bg-gray-300 rounded-md shadow-md p-1">
                     {% endif %}
@@ -148,20 +152,24 @@
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for agent in horsService %}
-                    {% if agent.grade == "Directeur"%}
-                    <div class="bg-red-600 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Directeur Adjoint" %}
-                    <div class="bg-red-500 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Chef de service" %}
-                    <div class="bg-orange-300 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Spécialiste" %}
+                    {% if agent.grade == "Commissaire"%}
+                    <div class="bg-blue-800 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Capitaine" %}
+                    <div class="bg-blue-900 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Lieutenant" %}
+                    <div class="bg-blue-700 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Inspecteur" %}
                     <div class="bg-blue-600 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Titulaire" %}
-                    <div class="bg-blue-400 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Résident" %}
-                    <div class="bg-blue-200 rounded-md shadow-md p-1">
-                    {% elif agent.grade == "Interne" %}
+                    {% elif agent.grade == "Sergent Chef" %}
+                    <div class="bg-blue-500 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Sergent" %}
+                    <div class="bg-cyan-300 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Officier Supérieur" %}
                     <div class="bg-green-400 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Officier" %}
+                    <div class="bg-green-600 rounded-md shadow-md p-1">
+                    {% elif agent.grade == "Cadet" %}
+                    <div class="bg-green-300 rounded-md shadow-md p-1">
                     {% else %}
                     <div class="bg-gray-300 rounded-md shadow-md p-1">
                     {% endif %}
