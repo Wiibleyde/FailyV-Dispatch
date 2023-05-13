@@ -70,7 +70,7 @@
         {% if warnings %}
             <div class="py-5 px-5">
                 {% for compteur in range(0, warnings|length) %}
-                    <div class="bg-neutral-300 border border-yellow-400 text-yellow-500 px-4 py-3 rounded relative" id="warning{{ compteur }}">
+                    <div class="bg-neutral-300 border border-yellow-400 text-yellow-500 px-4 py-3 rounded relative dark:bg-gray-950" id="warning{{ compteur }}">
                         <div class="bg-yellow-500 h-1 absolute top-0 left-0" id="warningProgressBar{{ compteur }}"></div>
                         <strong class="font-bold">Attention : </strong>
                         <span class="block sm:inline">{{ warnings[compteur] }}</span>
