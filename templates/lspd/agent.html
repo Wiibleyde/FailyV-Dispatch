@@ -12,9 +12,9 @@
     <header>
         {% include "fragments/message.html" %}
     </header>
-    <body class="bg-gray-100">
-        <div class="container py-4 mx-auto grid grid-cols-2 gap-4">
-            <div id="agentList" class="grid grid-cols-5 gap-4">
+    <body class="bg-gray-100 dark:bg-gray-900">
+        <div class="container py-4 mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div id="agentList" class="grid grid-cols-1 gap-4">
                 {% if agent.grade == "Commissaire" %}
                 <div class="bg-blue-800 rounded-md shadow-md p-4 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Capitaine" %}
@@ -45,19 +45,20 @@
                 <h2 class="text-lg font-bold mb-4">Modifier l'agent</h2>
                 {% block modifAgent %}
                 <form method="post" class="flex flex-col">
-                {{ form.hidden_tag() }}
-                <div class="text-black my-1">
-                    {{ form.grade }}
-                </div>
-                <div>
-                    {{ form.submitAgent }}
-                </div>
+                    {{ form.hidden_tag() }}
+                    <div class="text-black my-2">
+                        <label class="block font-bold mb-2" for="{{ form.grade.id }}">Grade:</label>
+                        {{ form.grade(class="px-4 py-2 border rounded-md w-full") }}
+                    </div>
+                    <div>
+                        {{ form.submitDoc(class="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 mt-4") }}
+                    </div>
                 </form>
                 {% endblock %}
             </div>
         </div>
     </body>      
     <footer>
-        {% include "lsms/fragments/footer.html" %}
+        {% include "lspd/fragments/footer.html" %}
     </footer>
 </html>

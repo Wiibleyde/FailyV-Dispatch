@@ -30,8 +30,8 @@ class AddSalleForm(FlaskForm):
     submitSalle = SubmitField('submitSalle', render_kw={"value": "Créer la salle"})
 
 class LoginForm(FlaskForm):
-    usernameLogin = StringField('usernameLogin', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True})
-    passwordLogin = PasswordField('passwordLogin', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    usernameLogin = StringField('usernameLogin', validators=[DataRequired()], render_kw={"placeholder": "Nom d'utilisateur","autofocus": True, "class": "text-black"})
+    passwordLogin = PasswordField('passwordLogin', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe", "class": "text-black"})
     submitLogin = SubmitField('submitLogin', render_kw={"value": "Se connecter"})
 
 class RegisterForm(FlaskForm):

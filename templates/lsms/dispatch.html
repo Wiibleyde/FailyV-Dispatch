@@ -12,11 +12,11 @@
     <header>
         {% include "fragments/message.html" %}
     </header>
-    <body class="bg-gray-100 mb-[13rem]">
+    <body class="bg-gray-100 mb-[13rem] dark:bg-gray-900">
         <div class="container mx-auto py-2 px-2">
             <div class="grid grid-cols-3 gap-4">
                 <div class="justify-start">
-                    <h1 class="text-2xl font-bold">Dispatch</h1>
+                    <h1 class="text-2xl font-bold dark:text-white">Dispatch</h1>
                     <div class="bg-gray-400 rounded-md p-3">
                         <p class='block text-gray-700 font-bold mb-2'>Créer une intervention :</p>
                         {% block createInter %}
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="justify-center">
-                    <h2 class="text-lg font-bold mt-5">Salles :</h2>
+                    <h2 class="text-lg font-bold mt-5 dark:text-white">Salles :</h2>
                     <div class="grid grid-cols-4 gap-4">
                         {% for salle in salles %}
                             <div class="bg-white rounded-md shadow-md p-3">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="justify-end">
-                    <h2 class="text-lg font-bold mt-5">Inter :</h2>
+                    <h2 class="text-lg font-bold mt-5 dark:text-white">Inter :</h2>
                     <div class="grid grid-cols-3 gap-4">
                         {% for intervention in interventions %}
                             {% if intervention.nom == 'Triage' %}
@@ -98,7 +98,7 @@
             </div>
             <div class="mt-4">
                 {% if enService|length > 0 %}
-                    <h2 class="text-2xl font-bold mt-5">En service :</h2>
+                    <h2 class="text-2xl font-bold mt-5 dark:text-white">En service :</h2>
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for doctor in enService %}
@@ -172,7 +172,7 @@
                 {% endfor %}
                 </div>
                 {% if horsService|length > 0 %}
-                    <h2 class="text-2xl font-bold mb-2">Hors service :</h2>
+                    <h2 class="text-2xl font-bold mb-2 dark:text-white">Hors service :</h2>
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for doctor in horsService %}

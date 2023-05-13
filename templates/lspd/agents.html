@@ -12,7 +12,7 @@
     <header>
         {% include "fragments/message.html" %}
     </header>
-    <body class="bg-gray-100">
+    <body class="bg-gray-100 dark:bg-gray-900">
         <div class="container py-2 mx-auto grid grid-cols-2 gap-4">
             <div id="doctorList" class="grid grid-cols-5 gap-4">
             {% for agent in agents %}
@@ -48,7 +48,7 @@
             </div>
             <div class="bg-gray-400 rounded-md p-3">
                 <h2 class="text-lg font-bold mt-5">Ajouter un ou plusieurs agent :</h2>
-                {% block createDoc %}
+                {% block createAge %}
                     <form method="post" class="flex flex-col">
                         {{ form.hidden_tag() }}
                         <div class="text-black my-1">
