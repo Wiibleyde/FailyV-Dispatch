@@ -17,26 +17,28 @@
             <div id="doctorList" class="grid grid-cols-5 gap-4">
             {% for doctor in doctors %}
                 {% if doctor.grade == "Directeur"%}
-                <div class="bg-red-600 rounded-md shadow-md p-1">
+                <div class="bg-red-600 rounded-md shadow-md p-4 text-white flex flex-col justify-between">
                 {% elif doctor.grade == "Directeur Adjoint" %}
-                <div class="bg-red-500 rounded-md shadow-md p-1">
+                <div class="bg-red-500 rounded-md shadow-md p-4 text-white flex flex-col justify-between">
                 {% elif doctor.grade == "Chef de service" %}
-                <div class="bg-orange-300 rounded-md shadow-md p-1">
+                <div class="bg-orange-300 rounded-md shadow-md p-4 text-black flex flex-col justify-between">
                 {% elif doctor.grade == "Spécialiste" %}
-                <div class="bg-blue-600 rounded-md shadow-md p-1">
+                <div class="bg-blue-600 rounded-md shadow-md p-4 text-white flex flex-col justify-between">
                 {% elif doctor.grade == "Titulaire" %}
-                <div class="bg-blue-400 rounded-md shadow-md p-1">
+                <div class="bg-blue-400 rounded-md shadow-md p-4 text-white flex flex-col justify-between">
                 {% elif doctor.grade == "Résident" %}
-                <div class="bg-blue-200 rounded-md shadow-md p-1">
+                <div class="bg-blue-200 rounded-md shadow-md p-4 text-black flex flex-col justify-between">
                 {% elif doctor.grade == "Interne" %}
-                <div class="bg-green-400 rounded-md shadow-md p-1">
+                <div class="bg-green-400 rounded-md shadow-md p-4 text-white flex flex-col justify-between">
                 {% else %}
-                <div class="bg-gray-300 rounded-md shadow-md p-1">
+                <div class="bg-gray-300 rounded-md shadow-md p-4 text-black flex flex-col justify-between">
                 {% endif %}
                     <h1 class="text-xl font-bold">{{ doctor.prenom }} {{ doctor.nom }}</h1>
                     <p class="text-sm">{{ doctor.grade }}</p>
-                    <a href="/lsms/doctor/delete/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a>
-                    <a href="/lsms/doctor/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-blue-600 hover:bg-blue-700"><i class="bi bi-pen"></i></a>
+                    <div class="flex justify-between">
+                        <a href="/lsms/doctor/delete/{{ doctor.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-trash3"></i></a>
+                        <a href="/lsms/doctor/{{ doctor.id }}" class="py-1 px-2 rounded-md text-black bg-teal-300 hover:bg-teal-400"><i class="bi bi-pen"></i></a>
+                    </div>
                 </div>
             {% endfor %}
             </div>

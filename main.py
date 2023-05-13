@@ -93,6 +93,11 @@ def login():
             flash("Mauvais nom d'utilisateur ou mot de passe.", 'danger')
     return render_template('login.html', form=form)
 
+@app.route('/forgotPassword')
+def forgotPassword():
+    flash("Indisponible, contactez Wiibleyde", 'warning')
+    return redirect(url_for('index'))
+
 @app.route('/logout')
 @login_required
 def logout():

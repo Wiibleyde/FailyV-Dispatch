@@ -16,31 +16,33 @@
         <div class="container py-2 mx-auto grid grid-cols-2 gap-4">
             <div id="doctorList" class="grid grid-cols-5 gap-4">
             {% for agent in agents %}
-                {% if agent.grade == "Commissaire"%}
-                <div class="bg-blue-800 rounded-md shadow-md p-1">
+                {% if agent.grade == "Commissaire" %}
+                <div class="bg-blue-800 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Capitaine" %}
-                <div class="bg-blue-900 rounded-md shadow-md p-1">
+                <div class="bg-blue-900 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Lieutenant" %}
-                <div class="bg-blue-700 rounded-md shadow-md p-1">
+                <div class="bg-blue-700 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Inspecteur" %}
-                <div class="bg-blue-600 rounded-md shadow-md p-1">
+                <div class="bg-blue-600 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Sergent Chef" %}
-                <div class="bg-blue-500 rounded-md shadow-md p-1">
+                <div class="bg-blue-500 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Sergent" %}
-                <div class="bg-cyan-300 rounded-md shadow-md p-1">
+                <div class="bg-cyan-300 rounded-md shadow-md p-2 flex flex-col justify-between text-black">
                 {% elif agent.grade == "Officier Supérieur" %}
-                <div class="bg-green-400 rounded-md shadow-md p-1">
+                <div class="bg-green-400 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Officier" %}
-                <div class="bg-green-600 rounded-md shadow-md p-1">
+                <div class="bg-green-600 rounded-md shadow-md p-2 flex flex-col justify-between text-white">
                 {% elif agent.grade == "Cadet" %}
-                <div class="bg-green-300 rounded-md shadow-md p-1">
+                <div class="bg-green-300 rounded-md shadow-md p-2 flex flex-col justify-between text-black">
                 {% else %}
-                <div class="bg-gray-300 rounded-md shadow-md p-1">
+                <div class="bg-gray-300 rounded-md shadow-md p-2 flex flex-col justify-between text-black">
                 {% endif %}
                     <h1 class="text-xl font-bold">{{ agent.prenom }} {{ agent.nom }}</h1>
                     <p class="text-sm">{{ agent.grade }}</p>
-                    <a href="/lspd/agent/delete/{{ agent.id }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a>
-                    <a href="/lspd/agent/{{ agent.id }}" class="py-1 px-2 rounded-md text-white bg-blue-600 hover:bg-blue-700"><i class="bi bi-pen"></i></a>
+                    <div class="flex justify-between">
+                        <a href="/lspd/agent/delete/{{ agent.id }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-trash3"></i></a>
+                        <a href="/lspd/agent/{{ agent.id }}" class="py-1 px-2 rounded-md text-black bg-teal-300 hover:bg-teal-400"><i class="bi bi-pen"></i></a>
+                    </div>
                 </div>
             {% endfor %}
             </div>
