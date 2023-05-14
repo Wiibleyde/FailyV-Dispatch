@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import argparse
+from os import getrandom
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm
 from services.regexFunc import RegexUtils
@@ -10,7 +11,7 @@ from services.AccountService import AccountService
 
 # ======================================================================================================================
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret key'
+app.config['SECRET_KEY'] = getrandom(32)
 login_manager = LoginManager()
 login_manager.init_app(app)
 # ======================================================================================================================
