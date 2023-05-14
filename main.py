@@ -43,6 +43,7 @@ def readArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--debug", help="Run in debug mode", action="store_true")
     parser.add_argument("-p", "--port", help="Port to run on", type=int)
+    parser.add_argument("-ho", "--host", help="Host to run on", type=str)
     args = parser.parse_args()
     return args
 
@@ -549,7 +550,10 @@ def lspdUnsetAgentFromIntervention(idAgent, idInt):
 if __name__=='__main__':
     args = readArgs()
     port = 9123
+    host = '0.0.0.0'
     if args.port != None:
         port = args.port
+    if args.host != None:
+        host = args.host
     accounts = AccountService("accounts.db")
-    app.run(port=port,host='0.0.0.0', debug=args.debug)
+    app.run(port=port,host=host,debug=args.debug)
