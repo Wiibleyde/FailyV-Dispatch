@@ -1,4 +1,2 @@
 TODO :
 - Corriger bug : si suppresion inter (ou salle supposement) : personne (dans user.db) encore marqué en inter / salle
-- Améliorer la clareté de l'interface
-- Revoir le fonctionnement de l'indisponibilité
