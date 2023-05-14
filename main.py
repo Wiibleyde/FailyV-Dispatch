@@ -57,10 +57,30 @@ def unauthorized():
     flash('Vous devez être connecté pour accèder à cette page !', 'warning')
     return redirect(url_for('login'))
 
+@app.errorhandler(400)
+def bad_request(e):
+    flash("Requête invalide, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
+    return render_template('error.html', ErrorCode="400", ErrorMsg="Requête invalide"), 400
+
 @app.errorhandler(404)
 def page_not_found(e):
     flash("Page introuvable, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
-    return redirect(url_for('index'))
+    return render_template('error.html', ErrorCode="404", ErrorMsg="Page introuvable"), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
+    return render_template('error.html', ErrorCode="500", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 500
+
+@app.errorhandler(502)
+def bad_gateway(e):
+    flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
+    return render_template('error.html', ErrorCode="502", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 502
+
+@app.errorhandler(503)
+def service_unavailable(e):
+    flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
+    return render_template('error.html', ErrorCode="503", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 503
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
