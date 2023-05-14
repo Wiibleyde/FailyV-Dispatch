@@ -41,11 +41,12 @@ http://localhost:9123
 
 ## Flags
 
-| Flag | Description |
-| --- | --- |
-| -p | Port to listen on (default: 9123) |
-| -d | Debug mode (default: false) |
-| -h | Help message |
+| Flag | Description | Alias | Usage |
+| --- | --- | --- | --- |
+| -p | Port to listen on (default: 9123) | --port | ```-p 9123``` |
+| -d | Debug mode (default: false) | --debug | ```-d``` |
+| -ho | Host to listen on (default:0.0.0.0) | --host | ```-ho x.x.x.x``` |
+| -h | Help message | --help | ```-h``` |
 
 ## License
 
