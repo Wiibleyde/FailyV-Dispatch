@@ -1,9 +1,7 @@
 FROM python:3.10
 
-# Path: /app
 WORKDIR /app
 
-# Path: /app/requirements.txt
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -14,5 +12,4 @@ RUN ./tailwindcss -i static/style.css -o static/output.css
 
 CMD ["python", "main.py"]
 
-# Path: /app
 COPY . .
