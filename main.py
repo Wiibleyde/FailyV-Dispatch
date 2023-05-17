@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import argparse
 from os import getrandom
+from urllib.parse import urlparse, urljoin
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm
 from services.regexFunc import RegexUtils
@@ -48,6 +49,11 @@ def readArgs():
     args = parser.parse_args()
     return args
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
@@ -55,7 +61,11 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     flash('Vous devez être connecté pour accèder à cette page !', 'warning')
-    return redirect(url_for('login'))
+    return redirect('/login?next=' + request.path)
+
+@app.before_first_request
+def before_first_request():
+    flash('Nouveau ! Thème sombre disponible !', 'success')
 
 @app.errorhandler(400)
 def bad_request(e):
@@ -104,13 +114,16 @@ def login():
     if current_user.is_authenticated:
         flash("Vous êtes déjà connecté.", 'warning')
         return redirect(url_for('index'))
+    next = request.args.get('next')
+    if not is_safe_url(next):
+        return abort(400)
     form = LoginForm()
     if form.validate_on_submit():
         if accounts.checkAccount(form.usernameLogin.data, form.passwordLogin.data):
             user = User(form.usernameLogin.data)
             user.id = form.usernameLogin.data
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(next or url_for('index'))
         else:
             flash("Mauvais nom d'utilisateur ou mot de passe.", 'danger')
     return render_template('login.html', form=form)
@@ -128,6 +141,8 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/')
+@app.route('/index')
+@app.route('/home')
 @login_required
 def index():
     return render_template('index.html')
@@ -145,6 +160,7 @@ def bcms():
     return redirect(url_for('index'))
 
 @app.route('/lsms/dispatch', methods=['GET', 'POST'])
+@app.route('/lsms', methods=['GET', 'POST'])
 @login_required
 def lsmsDispatch():
     form = AddInterventionForm()
