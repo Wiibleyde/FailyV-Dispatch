@@ -63,10 +63,6 @@ def unauthorized():
     flash('Vous devez être connecté pour accèder à cette page !', 'warning')
     return redirect('/login?next=' + request.path)
 
-@app.before_first_request
-def before_first_request():
-    flash('Nouveau ! Thème sombre disponible !', 'success')
-
 @app.errorhandler(400)
 def bad_request(e):
     flash("Requête invalide, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
