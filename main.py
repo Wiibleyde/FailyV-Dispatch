@@ -504,7 +504,7 @@ def lspdUnsetAgentIndispo(id):
     flash(f"{agent[2]} {agent[1]} retiré de l\'indisponibilité avec succès !", 'success')
     return redirect(url_for('lspdDispatch'))
 
-@app.route('/lsms/setDoctor/<int:idDoc>/toSalle/<string:idSalle>', methods=['GET', 'POST'])
+@app.route('/lsms/setDoctor/<int:idDoc>/toSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lsmsSetDoctorToSalle(idDoc, idSalle):
     LSMSSqlService(f"{current_user.id}-lsms.db").insertSalleDoc(idSalle, idDoc)
@@ -513,7 +513,7 @@ def lsmsSetDoctorToSalle(idDoc, idSalle):
     flash(f'{doc[2]} {doc[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
-@app.route('/lspd/setAgent/<int:idAgent>/toSalle/<string:idSalle>', methods=['GET', 'POST'])
+@app.route('/lspd/setAgent/<int:idAgent>/toSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lspdSetAgentToSalle(idAgent, idSalle):
     LSPDSqlService(f"{current_user.id}-lspd.db").insertSalleAge(idSalle, idAgent)
@@ -522,7 +522,7 @@ def lspdSetAgentToSalle(idAgent, idSalle):
     flash(f'{agent[2]} {agent[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
-@app.route('/lsms/unsetDoctor/<int:idDoc>/fromSalle/<string:idSalle>', methods=['GET', 'POST'])
+@app.route('/lsms/unsetDoctor/<int:idDoc>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lsmsUnsetDoctorFromSalle(idDoc, idSalle):
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteSalleDoc(idDoc, idSalle)
@@ -531,7 +531,7 @@ def lsmsUnsetDoctorFromSalle(idDoc, idSalle):
     flash(f'{doc[2]} {doc[1]} retiré de la salle avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
-@app.route('/lspd/unsetAgent/<int:idAgent>/fromSalle/<string:idSalle>', methods=['GET', 'POST'])
+@app.route('/lspd/unsetAgent/<int:idAgent>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentFromSalle(idAgent, idSalle):
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalleAge(idAgent, idSalle)
