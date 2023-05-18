@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import argparse
-from os import getrandom
+from random import randrange
 from urllib.parse import urlparse, urljoin
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
@@ -12,7 +12,7 @@ from services.AccountService import AccountService
 
 # ======================================================================================================================
 app = Flask(__name__)
-app.config['SECRET_KEY'] = getrandom(32)
+app.config['SECRET_KEY'] = str(randrange(0,100))
 login_manager = LoginManager()
 login_manager.init_app(app)
 # ======================================================================================================================
