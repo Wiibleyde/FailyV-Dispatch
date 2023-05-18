@@ -39,3 +39,8 @@ class RegisterForm(FlaskForm):
     passwordRegister = PasswordField('passwordRegister', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
     confirmPasswordRegister = PasswordField('confirmPasswordRegister', validators=[DataRequired()], render_kw={"placeholder": "Confirmer le mot de passe"})
     submitRegister = SubmitField('submitRegister', render_kw={"value": "S'inscrire"})
+
+class ModifyAccountForm(FlaskForm):
+    passwordModify = PasswordField('passwordModify', validators=[DataRequired()], render_kw={"placeholder": "Mot de passe"})
+    confirmPasswordModify = PasswordField('confirmPasswordModify', validators=[DataRequired()], render_kw={"placeholder": "Confirmer le mot de passe"})
+    submitModify = SubmitField('submitModify', render_kw={"value": "Modifier le compte"})

@@ -59,10 +59,11 @@ class AccountService:
         connection.close()
 
     def updateAccount(self,id,newUsername,newPassword):
+        newPassword256 = hashlib.sha256(newPassword.encode()).hexdigest()
         connection = sqlite3.connect(self.filename)
         cursor = connection.cursor()
         req = "UPDATE Accounts SET username=?, password=? WHERE id=?"
-        cursor.execute(req,(newUsername,newPassword,id))
+        cursor.execute(req,(newUsername,newPassword256,id))
         connection.commit()
         connection.close()
 
@@ -70,6 +71,30 @@ class AccountService:
         connection = sqlite3.connect(self.filename)
         cursor = connection.cursor()
         req = "SELECT id FROM Accounts WHERE username=?"
+        cursor.execute(req,(username,))
+        result = cursor.fetchone()
+        connection.close()
+        if result == None:
+            return None
+        else:
+            return result[0]
+        
+    def getUsernameById(self,id):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "SELECT username FROM Accounts WHERE id=?"
+        cursor.execute(req,(id,))
+        result = cursor.fetchone()
+        connection.close()
+        if result == None:
+            return None
+        else:
+            return result[0]
+        
+    def getAccountPassword(self,username):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "SELECT password FROM Accounts WHERE username=?"
         cursor.execute(req,(username,))
         result = cursor.fetchone()
         connection.close()

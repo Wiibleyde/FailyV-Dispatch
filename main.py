@@ -4,7 +4,7 @@ import argparse
 from os import getrandom
 from urllib.parse import urlparse, urljoin
 
-from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm
+from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
 from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj
@@ -124,6 +124,20 @@ def login():
             flash("Mauvais nom d'utilisateur ou mot de passe.", 'danger')
     return render_template('login.html', form=form)
 
+@app.route('/modifyAccount', methods=['GET', 'POST'])
+@login_required
+def modifyAccount():
+    form = ModifyAccountForm()
+    if form.validate_on_submit():
+        if form.passwordModify.data != form.confirmPasswordModify.data:
+            flash('Les mots de passe sont différents.', 'danger')
+        else:
+            accountId = accounts.getIdByUsername(current_user.id)
+            accounts.updateAccount(accountId, current_user.id, form.passwordModify.data)
+            flash('Mot de passe modifié !', 'success')
+            return redirect(url_for('index'))
+    return render_template('modifyAccount.html', form=form)
+
 @app.route('/forgotPassword')
 def forgotPassword():
     flash("Indisponible, contactez Wiibleyde", 'warning')
@@ -141,6 +155,7 @@ def logout():
 @app.route('/home')
 @login_required
 def index():
+    flash("Nouveau sur le site : Modification de son mot de passe !", 'info')
     return render_template('index.html')
 
 @app.route('/lscs')
