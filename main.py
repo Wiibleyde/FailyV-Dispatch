@@ -1,18 +1,24 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
+import flask.cli
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import argparse
 from os import urandom
 from urllib.parse import urlparse, urljoin
+import logging
+import datetime
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
 from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj
 from services.AccountService import AccountService
+from services.LoggerService import LoggerService
 
 # ======================================================================================================================
 app = Flask(__name__)
-app.config['SECRET_KEY'] = urandom(32).hex()
+secretKey = urandom(32).hex()
+logger = LoggerService("logs.db", False).insertInfoLog("Server", "Server started with secret key: " + secretKey)
+app.config['SECRET_KEY'] = secretKey
 login_manager = LoginManager()
 login_manager.init_app(app)
 # ======================================================================================================================
@@ -60,36 +66,43 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    logger.insertWebLog("Unregistered",f"Unauthorized access to {request.path} from {request.remote_addr}")
     flash('Vous devez être connecté pour accèder à cette page !', 'warning')
     return redirect('/login?next=' + request.path)
 
 @app.errorhandler(400)
 def bad_request(e):
+    logger.insertErrorLog(current_user.id,f"Bad request from {request.remote_addr} on {request.path} : {e}")
     flash("Requête invalide, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
     return render_template('error.html', ErrorCode="400", ErrorMsg="Requête invalide"), 400
 
 @app.errorhandler(404)
 def page_not_found(e):
+    logger.insertErrorLog(current_user.id,f"Page not found from {request.remote_addr} on {request.path} : {e}")
     flash("Page introuvable, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
     return render_template('error.html', ErrorCode="404", ErrorMsg="Page introuvable"), 404
 
 @app.errorhandler(500)
 def internal_server_error(e):
+    logger.insertErrorLog(current_user.id,f"Internal server error from {request.remote_addr} on {request.path} : {e}")
     flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
     return render_template('error.html', ErrorCode="500", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 500
 
 @app.errorhandler(502)
 def bad_gateway(e):
+    logger.insertErrorLog(current_user.id,f"Bad gateway from {request.remote_addr} on {request.path} : {e}")
     flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
     return render_template('error.html', ErrorCode="502", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 502
 
 @app.errorhandler(503)
 def service_unavailable(e):
+    logger.insertErrorLog(current_user.id,f"Service unavailable from {request.remote_addr} on {request.path} : {e}")
     flash("Erreur interne, si vous estimez que cela n'est pas normal, contactez l'administrateur.", 'danger')
     return render_template('error.html', ErrorCode="503", ErrorMsg="Erreur interne, l'accès a cette page a fini sur une erreur."), 503
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    logger.insertWebLog("Unregistered",f"Access to {request.path} from {request.remote_addr}")
     if current_user.is_authenticated:
         flash("Vous êtes déjà connecté.", 'warning')
         return redirect(url_for('index'))
@@ -107,6 +120,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    logger.insertWebLog("Unregistered",f"Access to {request.path} from {request.remote_addr}")
     if current_user.is_authenticated:
         flash("Vous êtes déjà connecté.", 'warning')
         return redirect(url_for('index'))
@@ -119,6 +133,7 @@ def login():
             user = User(form.usernameLogin.data)
             user.id = form.usernameLogin.data
             login_user(user)
+            logger.insertWebLog(current_user.id,f"Login from {request.remote_addr}")
             return redirect(next or url_for('index'))
         else:
             flash("Mauvais nom d'utilisateur ou mot de passe.", 'danger')
@@ -127,6 +142,7 @@ def login():
 @app.route('/modifyAccount', methods=['GET', 'POST'])
 @login_required
 def modifyAccount():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = ModifyAccountForm()
     if form.validate_on_submit():
         if form.passwordModify.data != form.confirmPasswordModify.data:
@@ -135,19 +151,23 @@ def modifyAccount():
             accountId = accounts.getIdByUsername(current_user.id)
             accounts.updateAccount(accountId, current_user.id, form.passwordModify.data)
             flash('Mot de passe modifié !', 'success')
+            logger.insertWebLog(current_user.id,f"Password changed from {request.remote_addr}")
             return redirect(url_for('index'))
     return render_template('modifyAccount.html', form=form)
 
 @app.route('/forgotPassword')
 def forgotPassword():
+    logger.insertWebLog("Unregistered",f"Access to {request.path} from {request.remote_addr}")
     flash("Indisponible, contactez Wiibleyde", 'warning')
     return redirect(url_for('index'))
 
 @app.route('/logout')
 @login_required
 def logout():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     logout_user()
     flash('Vous êtes déconnecté.', 'success')
+    logger.insertWebLog(current_user.id,f"Logout from {request.remote_addr}")
     return redirect(url_for('login'))
 
 @app.route('/')
@@ -155,18 +175,21 @@ def logout():
 @app.route('/home')
 @login_required
 def index():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     flash("Nouveau sur le site : Modification de son mot de passe !", 'info')
     return render_template('index.html')
 
 @app.route('/lscs')
 @login_required
 def lscs():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     flash("Soon™ (Si quelqu'un demande)", 'warning')
     return redirect(url_for('index'))
 
 @app.route('/bcms')
 @login_required
 def bcms():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     flash("Soon™ (Si quelqu'un demande)", 'warning')
     return redirect(url_for('index'))
 
@@ -174,6 +197,7 @@ def bcms():
 @app.route('/lsms', methods=['GET', 'POST'])
 @login_required
 def lsmsDispatch():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddInterventionForm()
     if form.validate_on_submit():
         nom = form.nomInt.data
@@ -226,6 +250,7 @@ def lsmsDispatch():
 @app.route('/lspd', methods=['GET', 'POST'])
 @login_required
 def lspdDispatch():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddInterventionForm()
     if form.validate_on_submit():
         nom = form.nomInt.data
@@ -277,6 +302,7 @@ def lspdDispatch():
 @app.route('/lsms/doctors', methods=['GET', 'POST'])
 @login_required
 def lsmsDoctors():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddLsmsForm()
     if form.validate_on_submit():
         doc = RegexUtils.doctorToList(form.zoneText.data, form.grade.data)
@@ -307,6 +333,7 @@ def lsmsDoctors():
 @app.route('/lsms/doctor/<int:doctor_id>', methods=['GET', 'POST'])
 @login_required
 def lsmsDoctor(doctor_id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = EditLsmsForm()
     doctor = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(doctor_id)
     doctor = DocteurObj(*doctor)
@@ -321,6 +348,7 @@ def lsmsDoctor(doctor_id):
 @app.route('/lspd/agents', methods=['GET', 'POST'])
 @login_required
 def lspdAgents():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddLspdForm()
     if form.validate_on_submit():
         agent = RegexUtils.agentToList(form.zoneText.data, form.grade.data)
@@ -351,6 +379,7 @@ def lspdAgents():
 @app.route('/lspd/agent/<int:agent_id>', methods=['GET', 'POST'])
 @login_required
 def lspdAgent(agent_id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = EditLspdForm()
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
     agent = AgentObj(*agent)
@@ -365,6 +394,7 @@ def lspdAgent(agent_id):
 @app.route('/lsms/salles', methods=['GET', 'POST'])
 @login_required
 def lsmsSalles():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddSalleForm()
     if form.validate_on_submit():
         nom = form.nomSalle.data
@@ -381,6 +411,7 @@ def lsmsSalles():
 @app.route('/lspd/salles', methods=['GET', 'POST'])
 @login_required
 def lspdSalles():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddSalleForm()
     if form.validate_on_submit():
         nom = form.nomSalle.data
@@ -397,6 +428,7 @@ def lspdSalles():
 @app.route('/lsms/doctor/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsDeleteDoctor(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteDoc(id)
     flash(f'{doc[2]} {doc[1]} supprimé avec succès !', 'success')
@@ -405,6 +437,7 @@ def lsmsDeleteDoctor(id):
 @app.route('/lspd/agent/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdDeleteAgent(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteAge(id)
     flash(f'{agent[2]} {agent[1]} supprimé avec succès !', 'success')
@@ -413,6 +446,7 @@ def lspdDeleteAgent(id):
 @app.route('/lsms/salle/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsDeleteSalle(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     salle = LSMSSqlService(f"{current_user.id}-lsms.db").selectSalleById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteSalle(id)
     flash(f'{salle[1]} supprimée avec succès !', 'success')
@@ -421,6 +455,7 @@ def lsmsDeleteSalle(id):
 @app.route('/lspd/salle/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdDeleteSalle(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     salle = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalleById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalle(id)
     flash(f'{salle[1]} supprimée avec succès !', 'success')
@@ -429,6 +464,7 @@ def lspdDeleteSalle(id):
 @app.route('/lsms/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsDeleteIntervention(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     inter = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteInt(id)
     intDoc = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntDocById(id)
@@ -442,6 +478,7 @@ def lsmsDeleteIntervention(id):
 @app.route('/lspd/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdDeleteIntervention(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteInt(id)
     intAge = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntAgeById(id)
@@ -455,6 +492,7 @@ def lspdDeleteIntervention(id):
 @app.route('/lsms/setDoctorService/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsSetDoctorServer(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(id, doc[1], doc[2], doc[3], True, doc[5], doc[6], doc[7])
     flash(f'{doc[2]} {doc[1]} ajouté au service avec succès !', 'success')
@@ -463,6 +501,7 @@ def lsmsSetDoctorServer(id):
 @app.route('/lspd/setAgentService/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdSetAgentServer(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], True, agent[5], agent[6], agent[7])
     flash(f'{agent[2]} {agent[1]} ajouté au service avec succès !', 'success')
@@ -471,6 +510,7 @@ def lspdSetAgentServer(id):
 @app.route('/lsms/unsetDoctorService/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsUnsetDoctorServer(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(id, doc[1], doc[2], doc[3], False, False, False, False)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteIntDocByDocId(id)
@@ -481,6 +521,7 @@ def lsmsUnsetDoctorServer(id):
 @app.route('/lspd/unsetAgentService/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentServer(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], False, False, False, False)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgeByAgeId(id)
@@ -491,6 +532,7 @@ def lspdUnsetAgentServer(id):
 @app.route('/lsms/setDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsSetDoctorIndispo(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(id, doc[1], doc[2], doc[3], doc[4], True, doc[6], doc[7])
     flash(f"{doc[2]} {doc[1]} mis en indisponibilité avec succès !", 'success')
@@ -499,6 +541,7 @@ def lsmsSetDoctorIndispo(id):
 @app.route('/lspd/setAgentIndispo/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdSetAgentIndispo(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], agent[4], True, agent[6], agent[7])
     flash(f"{agent[2]} {agent[1]} mis en indisponibilité avec succès !", 'success')
@@ -507,6 +550,7 @@ def lspdSetAgentIndispo(id):
 @app.route('/lsms/unsetDoctorIndispo/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lsmsUnsetDoctorIndispo(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(id, doc[1], doc[2], doc[3], doc[4], False, doc[6], doc[7])
     flash(f"{doc[2]} {doc[1]} retiré de l\'indisponibilité avec succès !", 'success')
@@ -515,6 +559,7 @@ def lsmsUnsetDoctorIndispo(id):
 @app.route('/lspd/unsetAgentIndispo/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentIndispo(id):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], agent[4], False, agent[6], agent[7])
     flash(f"{agent[2]} {agent[1]} retiré de l\'indisponibilité avec succès !", 'success')
@@ -523,6 +568,7 @@ def lspdUnsetAgentIndispo(id):
 @app.route('/lsms/setDoctor/<int:idDoc>/toSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lsmsSetDoctorToSalle(idDoc, idSalle):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSMSSqlService(f"{current_user.id}-lsms.db").insertSalleDoc(idSalle, idDoc)
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], doc[6], True)
@@ -532,6 +578,7 @@ def lsmsSetDoctorToSalle(idDoc, idSalle):
 @app.route('/lspd/setAgent/<int:idAgent>/toSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lspdSetAgentToSalle(idAgent, idSalle):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSPDSqlService(f"{current_user.id}-lspd.db").insertSalleAge(idSalle, idAgent)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], True)
@@ -541,6 +588,7 @@ def lspdSetAgentToSalle(idAgent, idSalle):
 @app.route('/lsms/unsetDoctor/<int:idDoc>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lsmsUnsetDoctorFromSalle(idDoc, idSalle):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteSalleDoc(idDoc, idSalle)
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], doc[6], False)
@@ -550,6 +598,7 @@ def lsmsUnsetDoctorFromSalle(idDoc, idSalle):
 @app.route('/lspd/unsetAgent/<int:idAgent>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentFromSalle(idAgent, idSalle):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalleAge(idAgent, idSalle)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], False)
@@ -559,6 +608,7 @@ def lspdUnsetAgentFromSalle(idAgent, idSalle):
 @app.route('/lsms/setDoctor/<int:idDoc>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
 @login_required
 def lsmsSetDoctorToIntervention(idDoc, idInt):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSMSSqlService(f"{current_user.id}-lsms.db").insertIntDoc(idInt, idDoc)
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], True, doc[7])
@@ -569,6 +619,7 @@ def lsmsSetDoctorToIntervention(idDoc, idInt):
 @app.route('/lspd/setAgent/<int:idAgent>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
 @login_required
 def lspdSetAgentToIntervention(idAgent, idInt):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSPDSqlService(f"{current_user.id}-lspd.db").insertIntAge(idInt, idAgent)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], True, agent[7])
@@ -579,6 +630,7 @@ def lspdSetAgentToIntervention(idAgent, idInt):
 @app.route('/lsms/unsetDoctor/<int:idDoc>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
 @login_required
 def lsmsUnsetDoctorFromIntervention(idDoc, idInt):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteDocFromInt(idDoc, idInt)
     doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc)
     LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(idDoc, doc[1], doc[2], doc[3], doc[4], doc[5], False, doc[7])
@@ -589,6 +641,7 @@ def lsmsUnsetDoctorFromIntervention(idDoc, idInt):
 @app.route('/lspd/unsetAgent/<int:idAgent>/fromIntervention/<int:idInt>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentFromIntervention(idAgent, idInt):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteAgeFromInt(idAgent, idInt)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
     LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], False, agent[7])
@@ -598,6 +651,8 @@ def lspdUnsetAgentFromIntervention(idAgent, idInt):
 
 if __name__=='__main__':
     args = readArgs()
+    logger = LoggerService("logs.db", args.debug)
+    logger.insertInfoLog("Server", "Starting server")
     port = 9123
     host = '0.0.0.0'
     if args.port != None:
@@ -605,4 +660,8 @@ if __name__=='__main__':
     if args.host != None:
         host = args.host
     accounts = AccountService("accounts.db")
+    flaskLog = logging.getLogger('werkzeug')
+    flaskLog.disabled = True
+    flask.cli.show_server_banner = lambda *args: None
+    logger.insertInfoLog("Web Server", "Starting web server")
     app.run(port=port,host=host,debug=args.debug)
