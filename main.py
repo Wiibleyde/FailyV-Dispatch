@@ -223,6 +223,7 @@ def lsmsDispatch():
     return render_template('lsms/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj, enService=enService, horsService=horsService)
 
 @app.route('/lspd/dispatch', methods=['GET', 'POST'])
+@app.route('/lspd', methods=['GET', 'POST'])
 @login_required
 def lspdDispatch():
     form = AddInterventionForm()

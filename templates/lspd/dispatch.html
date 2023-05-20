@@ -70,7 +70,7 @@
             </div>
             <div class="mt-4">
                 {% if enService|length > 0 %}
-                    <h2 class="text-2xl font-bold mt-5 dark:text-white">En service :</h2>
+                    <h2 class="text-2xl font-bold mt-5 dark:text-white">En service : {{ enService|length }} agent(s) :</h2>
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for agent in enService %}
@@ -148,7 +148,7 @@
                 {% endfor %}
                 </div>
                 {% if horsService|length > 0 %}
-                    <h2 class="text-2xl font-bold mb-2 dark:text-white">Hors service :</h2>
+                    <h2 class="text-2xl font-bold mb-2 dark:text-white">Hors service : {{ horsService|length }} agent(s) :</h2>
                 {% endif %}
                 <div class="grid grid-cols-5 gap-4">
                 {% for agent in horsService %}
@@ -184,6 +184,9 @@
                     </div>
                 {% endfor %}
                 </div>
+                {% if agents|length == 0 %}
+                    <h2 class="text-2xl font-bold mb-2 dark:text-gray-400 text-center">Aucun agent n'est rentré dans la base de données.</h2>
+                {% endif %}
             </div>
         </div>
     </body>

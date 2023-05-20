@@ -712,12 +712,12 @@ video {
   width: 24rem;
 }
 
-.w-full {
-  width: 100%;
-}
-
 .w-auto {
   width: auto;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .max-w-lg {
@@ -1049,6 +1049,10 @@ video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
 }
 
 .text-center {
