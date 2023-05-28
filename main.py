@@ -167,7 +167,7 @@ def logout():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     logout_user()
     flash('Vous êtes déconnecté.', 'success')
-    logger.insertWebLog(current_user.id,f"Logout from {request.remote_addr}")
+    logger.insertWebLog("Logout user",f"Logout from {request.remote_addr}")
     return redirect(url_for('login'))
 
 @app.route('/')
