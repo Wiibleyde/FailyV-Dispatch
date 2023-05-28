@@ -176,7 +176,6 @@ def logout():
 @login_required
 def index():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    flash("Nouveau sur le site : Modification de son mot de passe !", 'info')
     return render_template('index.html')
 
 @app.route('/lscs')
