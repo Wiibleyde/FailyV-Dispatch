@@ -5,7 +5,6 @@ import argparse
 from os import urandom
 from urllib.parse import urlparse, urljoin
 import logging
-import datetime
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
@@ -158,7 +157,14 @@ def modifyAccount():
 @app.route('/forgotPassword')
 def forgotPassword():
     logger.insertWebLog("Unregistered",f"Access to {request.path} from {request.remote_addr}")
-    flash("Indisponible, contactez Wiibleyde", 'warning')
+    flash("Indisponible sans manipulation administrateur, contactez Wiibleyde", 'warning')
+    return redirect(url_for('index'))
+
+@app.route('/deleteAccount')
+@login_required
+def deleteAccount():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    flash("Indisponible sans manipulation administrateur, contactez Wiibleyde", 'warning')
     return redirect(url_for('index'))
 
 @app.route('/logout')
