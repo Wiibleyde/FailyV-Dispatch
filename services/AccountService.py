@@ -2,6 +2,28 @@ import sqlite3
 import os
 import hashlib
 
+class AccountObject:
+    def __init__(self,id,username,password,admin):
+        self.id = id
+        self.username = username
+        self.password = password
+        self.admin = admin
+
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getId(self):
+        return self.id
+
+    def getUsername(self):
+        return self.username
+    
+    def getPassword(self):
+        return self.password
+    
+    def getAdmin(self):
+        return self.admin
+
 class AccountService:
     def __init__(self,filename):
         self.filename = "data/" + filename
@@ -10,7 +32,9 @@ class AccountService:
         connection = sqlite3.connect(self.filename)
         cursor = connection.cursor()
         req0 = "CREATE TABLE IF NOT EXISTS Accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)"
+        req1 = "CREATE TABLE IF NOT EXISTS Admins (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER, FOREIGN KEY(userId) REFERENCES Accounts(id))"
         cursor.execute(req0)
+        cursor.execute(req1)
         connection.commit()
         connection.close()
 
@@ -58,6 +82,14 @@ class AccountService:
         connection.commit()
         connection.close()
 
+    def deleteAccountById(self,id):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "DELETE FROM Accounts WHERE id=?"
+        cursor.execute(req,(id,))
+        connection.commit()
+        connection.close()
+
     def updateAccount(self,id,newUsername,newPassword):
         newPassword256 = hashlib.sha256(newPassword.encode()).hexdigest()
         connection = sqlite3.connect(self.filename)
@@ -102,3 +134,43 @@ class AccountService:
             return None
         else:
             return result[0]
+        
+    def getAllAccounts(self):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "SELECT * FROM Accounts"
+        cursor.execute(req)
+        result = cursor.fetchall()
+        connection.close()
+        if result == None:
+            return None
+        else:
+            return result
+
+    def checkIfAdmin(self,id):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "SELECT * FROM Admins WHERE userId=?"
+        cursor.execute(req,(id,))
+        result = cursor.fetchone()
+        connection.close()
+        if result == None:
+            return False
+        else:
+            return True
+        
+    def unsetAdmin(self,id):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "DELETE FROM Admins WHERE userId=?"
+        cursor.execute(req,(id,))
+        connection.commit()
+        connection.close()
+        
+    def setAdmin(self,id):
+        connection = sqlite3.connect(self.filename)
+        cursor = connection.cursor()
+        req = "INSERT INTO Admins (userId) VALUES (?)"
+        cursor.execute(req,(id,))
+        connection.commit()
+        connection.close()

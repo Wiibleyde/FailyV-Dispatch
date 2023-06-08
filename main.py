@@ -10,7 +10,7 @@ from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspd
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
 from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj
-from services.AccountService import AccountService
+from services.AccountService import AccountService, AccountObject
 from services.LoggerService import LoggerService
 
 # ======================================================================================================================
@@ -183,6 +183,64 @@ def logout():
 def index():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     return render_template('index.html')
+
+@app.route('/admin')
+@login_required
+def admin():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    currentAccount = accounts.getIdByUsername(current_user.id)
+    if accounts.checkIfAdmin(currentAccount):
+        accountsList = accounts.getAllAccounts()
+        accountObjects = []
+        for account in accountsList:
+            account = AccountObject(account[0], account[1], account[2], accounts.checkIfAdmin(account[0]))
+            accountObjects.append(account)
+        return render_template('admin.html', accounts=accountObjects)
+    else:
+        flash("Vous n'êtes pas administrateur.", 'danger')
+        return redirect(url_for('index'))
+
+@app.route('/admin/delete/<accountId>')
+@login_required
+def adminDeleteAccount(accountId):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    currentAccount = accounts.getIdByUsername(current_user.id)
+    if accounts.checkIfAdmin(currentAccount):
+        accounts.deleteAccountById(accountId)
+        flash("Compte supprimé.", 'success')
+        logger.insertWebLog(current_user.id,f"Account {accountId} deleted from {request.remote_addr}")
+        return redirect(url_for('admin'))
+    else:
+        flash("Vous n'êtes pas administrateur.", 'danger')
+        return redirect(url_for('index'))
+    
+@app.route('/admin/setAdmin/<accountId>')
+@login_required
+def adminSetAdmin(accountId):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    currentAccount = accounts.getIdByUsername(current_user.id)
+    if accounts.checkIfAdmin(currentAccount):
+        accounts.setAdmin(accountId)
+        flash("Compte promu administrateur.", 'success')
+        logger.insertWebLog(current_user.id,f"Account {accountId} promoted from {request.remote_addr}")
+        return redirect(url_for('admin'))
+    else:
+        flash("Vous n'êtes pas administrateur.", 'danger')
+        return redirect(url_for('index'))
+    
+@app.route('/admin/unsetAdmin/<accountId>')
+@login_required
+def adminUnsetAdmin(accountId):
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    currentAccount = accounts.getIdByUsername(current_user.id)
+    if accounts.checkIfAdmin(currentAccount):
+        accounts.unsetAdmin(accountId)
+        flash("Compte dégradé.", 'success')
+        logger.insertWebLog(current_user.id,f"Account {accountId} degraded from {request.remote_addr}")
+        return redirect(url_for('admin'))
+    else:
+        flash("Vous n'êtes pas administrateur.", 'danger')
+        return redirect(url_for('index'))
 
 @app.route('/lscs')
 @login_required
