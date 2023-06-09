@@ -1,0 +1,97 @@
+body,
+.website-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+body {
+    height: 100vh;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+}
+
+.website-counter {
+    background-color: #ff4957;
+    height: 50px;
+    width: 80px;
+    color: white;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 25px;
+    margin-top: 10px;
+}
+
+.visite {
+    color: white;
+}
+
+.trouve {
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2vh;
+}
+
+.keyboard {
+    color: rgb(0, 0, 0);
+    font-size: 360%;
+}
+
+#reset {
+    margin-top: 20px;
+    background-color: #008cba;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 8px 20px;
+    color: white;
+    border: 0;
+}
+
+.urgent {
+    font-size: 7vh;
+    color: red;
+}
+
+.urgent-text-ter {
+    font-size: 5vh;
+    color: red;
+}
+
+.urgent-link {
+    color: red;
+    text-decoration: underline;
+}
+
+.urgent-text {
+    font-size: 4vh;
+    color: red;
+}
+
+.pix {
+    position: absolute;
+    width: 100%;
+    color: red;
+    font-weight: bolder;
+    text-align: center;
+    background-color: rgba(240, 235, 235, 0.7);
+}
+
+#messageDiv {
+    animation: messageDiv 3s infinite;
+}
+
+@keyframes messageDiv {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

@@ -184,6 +184,12 @@ def index():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     return render_template('index.html')
 
+@app.route('/secret')
+@login_required
+def secret():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    return render_template('easterEgg/index.html')
+
 @app.route('/admin')
 @login_required
 def admin():
