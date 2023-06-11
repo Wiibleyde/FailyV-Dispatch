@@ -5,6 +5,8 @@ import argparse
 from os import urandom
 from urllib.parse import urlparse, urljoin
 import logging
+from datetime import datetime
+from hashlib import sha256
 
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
@@ -15,7 +17,7 @@ from services.LoggerService import LoggerService
 
 # ======================================================================================================================
 app = Flask(__name__)
-secretKey = urandom(32).hex()
+secretKey = sha256(datetime.now().strftime("%d%m%Y").encode()).hexdigest()
 logger = LoggerService("logs.db", False).insertInfoLog("Server", "Server started with secret key: " + secretKey)
 app.config['SECRET_KEY'] = secretKey
 login_manager = LoginManager()
