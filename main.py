@@ -536,11 +536,11 @@ def lsmsDeleteIntervention(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     inter = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntById(id)
     LSMSSqlService(f"{current_user.id}-lsms.db").deleteInt(id)
-    intDoc = LSMSSqlService(f"{current_user.id}-lsms.db").selectIntDocById(id)
-    if intDoc:
-        for idDoc in intDoc:
+    docsId = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocByIntId(id)
+    if docsId:
+        for idDoc in docsId:
             doc = LSMSSqlService(f"{current_user.id}-lsms.db").selectDocById(idDoc[2])
-            LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(doc[0], doc[1], doc[3], doc[4], doc[5], doc[6], False, doc[8])
+            LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5], False, doc[7])
     flash(f'{inter[1]} supprimée avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
@@ -550,11 +550,11 @@ def lspdDeleteIntervention(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteInt(id)
-    intAge = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntAgeById(id)
-    if intAge:
-        for idAge in intAge:
+    agesId = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeByIntId(id)
+    if agesId:
+        for idAge in agesId:
             age = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAge[2])
-            LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(age[0], age[1], age[3], age[4], age[5], age[6], False, age[8])
+            LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(age[0], age[1], age[2], age[3], age[4], age[5], False, age[7])
     flash(f'{inter[1]} supprimée avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 

@@ -119,6 +119,13 @@ class LSMSSqlService:
             req = "SELECT * FROM InterventionsDocteurs WHERE id = ?"
             cursor.execute(req, (id,))
             return cursor.fetchone()
+
+    def selectDocByIntId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ?"
+            cursor.execute(req, (id,))
+            return cursor.fetchall()
         
     def selectIntDocByIntIdDocId(self, idIntervention, idDocteur):
         with sqlite3.connect(self.filename) as connection:
@@ -445,6 +452,13 @@ class LSPDSqlService:
             req = "SELECT * FROM InterventionsAgents WHERE id = ?"
             cursor.execute(req, (id,))
             return cursor.fetchone()
+        
+    def selectAgeByIntId(self, id):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
+            cursor.execute(req, (id,))
+            return cursor.fetchall()
         
     def selectIntAgeByIntIdAgeId(self, idIntervention, idAgent):
         with sqlite3.connect(self.filename) as connection:
