@@ -1,6 +1,6 @@
 class DocteurObj:
-    def __init__(self, id, nom, prenom, grade, service, indispo, inInter, inSalle):
-        self.id = id
+    def __init__(self, idDoc, nom, prenom, grade, service, indispo, inInter, inSalle):
+        self.idDoc = idDoc
         self.nom = nom
         self.prenom = prenom
         self.grade = grade
@@ -19,7 +19,7 @@ class DocteurObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idDoc
     
     def getNom(self):
         return self.nom
@@ -43,8 +43,8 @@ class DocteurObj:
         return self.inSalle
     
 class AgentObj:
-    def __init__(self, id, nom, prenom, grade, service, indispo, inInter, inSalle):
-        self.id = id
+    def __init__(self, idAge, nom, prenom, grade, service, indispo, inInter, inSalle):
+        self.idAge = idAge
         self.nom = nom
         self.prenom = prenom
         self.grade = grade
@@ -63,7 +63,7 @@ class AgentObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idAge
     
     def getNom(self):
         return self.nom
@@ -87,8 +87,8 @@ class AgentObj:
         return self.inSalle
 
 class InterventionObj:
-    def __init__(self, id, nom, exterieur):
-        self.id = id
+    def __init__(self, idInt, nom, exterieur):
+        self.idInt = idInt
         self.nom = nom
         self.exterieur = exterieur
     
@@ -102,7 +102,7 @@ class InterventionObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idInt
 
     def getNom(self):
         return self.nom
@@ -111,8 +111,8 @@ class InterventionObj:
         return self.exterieur
     
 class SalleObj:
-    def __init__(self, id, nom):
-        self.id = id
+    def __init__(self, idSalle, nom):
+        self.idSalle = idSalle
         self.nom = nom
     
     def __str__(self):
@@ -125,14 +125,14 @@ class SalleObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idSalle
     
     def getNom(self):
         return self.nom
 
 class InterventionDocteursObj:
-    def __init__(self, id, idIntervention, idDocteur):
-        self.id = id
+    def __init__(self, idIntDoc, idIntervention, idDocteur):
+        self.idIntDoc = idIntDoc
         self.idIntervention = idIntervention
         self.idDocteur = idDocteur
         
@@ -146,7 +146,7 @@ class InterventionDocteursObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idIntDoc
     
     def getIdIntervention(self):
         return self.idIntervention
@@ -155,8 +155,8 @@ class InterventionDocteursObj:
         return self.idDocteur
     
 class InterventionAgentsObj:
-    def __init__(self, id, idIntervention, idAgent):
-        self.id = id
+    def __init__(self, idIntAge, idIntervention, idAgent):
+        self.idIntAge = idIntAge
         self.idIntervention = idIntervention
         self.idAgent = idAgent
         
@@ -170,7 +170,7 @@ class InterventionAgentsObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idIntAge
     
     def getIdIntervention(self):
         return self.idIntervention
@@ -179,8 +179,8 @@ class InterventionAgentsObj:
         return self.idAgent
     
 class SalleDocteurObj:
-    def __init__(self, id, idSalle, idDocteur):
-        self.id = id
+    def __init__(self, idDocSalle, idSalle, idDocteur):
+        self.idDocSalle = idDocSalle
         self.idSalle = idSalle
         self.idDocteur = idDocteur
         
@@ -194,7 +194,7 @@ class SalleDocteurObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idDocSalle
     
     def getIdSalle(self):
         return self.idSalle
@@ -203,8 +203,8 @@ class SalleDocteurObj:
         return self.idDocteur
     
 class SalleAgentObj:
-    def __init__(self, id, idSalle, idAgent):
-        self.id = id
+    def __init__(self, idSalleAge, idSalle, idAgent):
+        self.idSalleAge = idSalleAge
         self.idSalle = idSalle
         self.idAgent = idAgent
         
@@ -218,7 +218,7 @@ class SalleAgentObj:
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.id
+        return self.idSalleAge
     
     def getIdSalle(self):
         return self.idSalle
