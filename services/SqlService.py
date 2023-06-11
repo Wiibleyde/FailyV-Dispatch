@@ -71,11 +71,11 @@ class LSMSSqlService:
 
     # Selection functions
 
-    def selectDocById(self, id):
+    def selectDocById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Docteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
         
     def selectDocByNomPrenom(self, nom, prenom):
@@ -99,32 +99,32 @@ class LSMSSqlService:
             cursor.execute(req, (nom,))
             return cursor.fetchone()
     
-    def selectIntById(self, id):
+    def selectIntById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Interventions WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
-    def selectSalleById(self, id):
+    def selectSalleById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Salles WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
-    def selectIntDocById(self, id):
+    def selectIntDocById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsDocteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
 
-    def selectDocByIntId(self, id):
+    def selectDocByIntId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
         
     def selectIntDocByIntIdDocId(self, idIntervention, idDocteur):
@@ -134,32 +134,32 @@ class LSMSSqlService:
             cursor.execute(req, (idIntervention, idDocteur))
             return cursor.fetchone()
     
-    def selectSalleByDocId(self, id):
+    def selectSalleByDocId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesDocteurs WHERE idDocteur = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
     
-    def selectDocBySalleId(self, id):
+    def selectDocBySalleId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesDocteurs WHERE idSalle = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
     
-    def selectSalleDocById(self, id):
+    def selectSalleDocById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesDocteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
         
-    def selectSalleDocByDocId(self, id):
+    def selectSalleDocByDocId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesDocteurs WHERE idDocteur = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
     def selectSalleDocByDocIdSalleId(self, idSalle, idDocteur):
@@ -169,11 +169,11 @@ class LSMSSqlService:
             cursor.execute(req, (idSalle, idDocteur))
             return cursor.fetchone()
     
-    def selectIntBySalleId(self, id):
+    def selectIntBySalleId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesDocteurs WHERE idSalle = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
 
     def selectDoc(self):
@@ -213,50 +213,50 @@ class LSMSSqlService:
     
     # Delete functions
 
-    def deleteDoc(self, id):
+    def deleteDoc(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Docteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
             self.deleteSalleDocByDocId(id)
             self.deleteIntDocByDocId(id)
 
-    def deleteInt(self, id):
+    def deleteInt(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Interventions WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
-            if self.selectIntDocByIntIdDocId(id, None) != None:
+            if self.selectIntDocByIntIdDocId(iden, None) != None:
                 self.deleteIntDocByIntId(id)
 
-    def deleteSalle(self, id):
+    def deleteSalle(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Salles WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
-    def deleteIntDoc(self, id):
+    def deleteIntDoc(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsDocteurs WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
-    def deleteIntDocByDocId(self, id):
+    def deleteIntDocByDocId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsDocteurs WHERE idDocteur = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
             
-    def deleteIntDocByIntId(self, id):
+    def deleteIntDocByIntId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsDocteurs WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
     def deleteDocFromInt(self, idDoc, idInt):
@@ -266,11 +266,11 @@ class LSMSSqlService:
             cursor.execute(req, (idDoc, idInt))
             connection.commit()
 
-    def deleteSalleDocByDocId(self, id):
+    def deleteSalleDocByDocId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM SallesDocteurs WHERE idDocteur = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
     def deleteSalleDoc(self, idDoc, idSalle):
@@ -282,39 +282,39 @@ class LSMSSqlService:
 
     # Update functions
     
-    def updateDoc(self, id, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
+    def updateDoc(self, iden, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Docteurs SET nom = ?, prenom = ?, grade = ?, service = ?, indisponible = ?, inIntervention = ?, inSalle = ? WHERE id = ?"
-            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle, id))
+            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle, iden))
             connection.commit()
 
-    def updateInt(self, id, nom, exterieur):
+    def updateInt(self, iden, nom, exterieur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Interventions SET nom = ?, exterieur = ? WHERE id = ?"
-            cursor.execute(req, (nom, exterieur, id))
+            cursor.execute(req, (nom, exterieur, iden))
             connection.commit()
 
-    def updateSalle(self, id, nom, exterieur):
+    def updateSalle(self, iden, nom, exterieur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Salles SET nom = ?, exterieur = ? WHERE id = ?"
-            cursor.execute(req, (nom, exterieur, id))
+            cursor.execute(req, (nom, exterieur, iden))
             connection.commit()
 
-    def updateIntDoc(self, id, idIntervention, idDocteur):
+    def updateIntDoc(self, iden, idIntervention, idDocteur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE InterventionsDocteurs SET idIntervention = ?, idDocteur = ? WHERE id = ?"
-            cursor.execute(req, (idIntervention, idDocteur, id))
+            cursor.execute(req, (idIntervention, idDocteur, iden))
             connection.commit()
 
-    def updateSalleDoc(self, id, idSalle, idDocteur):
+    def updateSalleDoc(self, iden, idSalle, idDocteur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE SallesDocteurs SET idSalle = ?, idDocteur = ? WHERE id = ?"
-            cursor.execute(req, (idSalle, idDocteur, id))
+            cursor.execute(req, (idSalle, idDocteur, iden))
             connection.commit()
 
     # Insert functions
@@ -404,11 +404,11 @@ class LSPDSqlService:
 
     # Selection functions
 
-    def selectAgeById(self, id):
+    def selectAgeById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Agents WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
         
     def selectAgeByNomPrenom(self, nom, prenom):
@@ -432,32 +432,32 @@ class LSPDSqlService:
             cursor.execute(req, (nom,))
             return cursor.fetchone()
     
-    def selectIntById(self, id):
+    def selectIntById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Interventions WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
-    def selectSalleById(self, id):
+    def selectSalleById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM Salles WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
-    def selectIntAgeById(self, id):
+    def selectIntAgeById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsAgents WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
         
-    def selectAgeByIntId(self, id):
+    def selectAgeByIntId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
         
     def selectIntAgeByIntIdAgeId(self, idIntervention, idAgent):
@@ -474,39 +474,39 @@ class LSPDSqlService:
             cursor.execute(req, (idAgent,))
             return cursor.fetchall()
     
-    def selectIntByAgeId(self, id):
+    def selectIntByAgeId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM InterventionsAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
     
-    def selectSalleByAgeId(self, id):
+    def selectSalleByAgeId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
     
-    def selectAgeBySalleId(self, id):
+    def selectAgeBySalleId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesAgents WHERE idSalle = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
     
-    def selectSalleAgeById(self, id):
+    def selectSalleAgeById(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesAgents WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
         
-    def selectSalleAgeByAgeId(self, id):
+    def selectSalleAgeByAgeId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchone()
     
     def selectSalleAgeByAgeIdSalleId(self, idSalle, idAgent):
@@ -516,11 +516,11 @@ class LSPDSqlService:
             cursor.execute(req, (idSalle, idAgent))
             return cursor.fetchone()
     
-    def selectIntBySalleId(self, id):
+    def selectIntBySalleId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM SallesAgents WHERE idSalle = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             return cursor.fetchall()
 
     def selectAge(self):
@@ -560,50 +560,50 @@ class LSPDSqlService:
     
     # Delete functions
 
-    def deleteAge(self, id):
+    def deleteAge(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Agents WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
             self.deleteSalleAgeByAgeId(id)
             self.deleteIntAgeByAgeId(id)
 
-    def deleteInt(self, id):
+    def deleteInt(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Interventions WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
-            if self.selectIntAgeByIntIdAgeId(id, None) != None:
+            if self.selectIntAgeByIntIdAgeId(iden, None) != None:
                 self.deleteIntAgeByIntId(id)
 
-    def deleteSalle(self, id):
+    def deleteSalle(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM Salles WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
-    def deleteIntAge(self, id):
+    def deleteIntAge(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsAgents WHERE id = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
-    def deleteIntAgeByAgeId(self, id):
+    def deleteIntAgeByAgeId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
-    def deleteIntAgeByIntId(self, id):
+    def deleteIntAgeByIntId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsAgents WHERE idIntervention = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
             
     def deleteAgeFromInt(self, idAge, idInt):
@@ -613,11 +613,11 @@ class LSPDSqlService:
             cursor.execute(req, (idAge, idInt))
             connection.commit()
 
-    def deleteSalleAgeByAgeId(self, id):
+    def deleteSalleAgeByAgeId(self, iden):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM SallesAgents WHERE idAgent = ?"
-            cursor.execute(req, (id,))
+            cursor.execute(req, (iden,))
             connection.commit()
 
     def deleteSalleAge(self, idAge, idSalle):
@@ -629,39 +629,39 @@ class LSPDSqlService:
 
     # Update functions
     
-    def updateAge(self, id, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
+    def updateAge(self, iden, nom, prenom, grade, service, indisponible, inIntervention, inSalle):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Agents SET nom = ?, prenom = ?, grade = ?, service = ?, indisponible = ?, inIntervention = ?, inSalle = ? WHERE id = ?"
-            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle, id))
+            cursor.execute(req, (nom, prenom, grade, service, indisponible, inIntervention, inSalle, iden))
             connection.commit()
 
-    def updateInt(self, id, nom, exterieur):
+    def updateInt(self, iden, nom, exterieur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Interventions SET nom = ?, exterieur = ? WHERE id = ?"
-            cursor.execute(req, (nom, exterieur, id))
+            cursor.execute(req, (nom, exterieur, iden))
             connection.commit()
 
-    def updateSalle(self, id, nom, exterieur):
+    def updateSalle(self, iden, nom, exterieur):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Salles SET nom = ?, exterieur = ? WHERE id = ?"
-            cursor.execute(req, (nom, exterieur, id))
+            cursor.execute(req, (nom, exterieur, iden))
             connection.commit()
 
-    def updateIntAge(self, id, idIntervention, idAgent):
+    def updateIntAge(self, iden, idIntervention, idAgent):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE InterventionsAgents SET idIntervention = ?, idAgent = ? WHERE id = ?"
-            cursor.execute(req, (idIntervention, idAgent, id))
+            cursor.execute(req, (idIntervention, idAgent, iden))
             connection.commit()
 
-    def updateSalleAge(self, id, idSalle, idAgent):
+    def updateSalleAge(self, iden, idSalle, idAgent):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE SallesAgents SET idSalle = ?, idAgent = ? WHERE id = ?"
-            cursor.execute(req, (idSalle, idAgent, id))
+            cursor.execute(req, (idSalle, idAgent, iden))
             connection.commit()
 
     # Insert functions
