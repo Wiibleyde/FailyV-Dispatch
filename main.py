@@ -734,5 +734,5 @@ if __name__=='__main__':
     flaskLog = logging.getLogger('werkzeug')
     flaskLog.disabled = True
     flask.cli.show_server_banner = lambda *args: None
-    logger.insertInfoLog("Web Server", "Starting web server")
+    logger.insertInfoLog("Web Server", f"Starting web server on {host}:{port}")
     app.run(port=port,host=host,debug=args.debug)
