@@ -289,6 +289,7 @@ def lsmsDispatch():
             inSalle = True
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5], inInter, inSalle)
         doctorsObj.append(doc)
+        print(doc.idDoc)
     sortDocsByGrade(doctorsObj)
     for doc in doctorsObj:
         if doc.service:
