@@ -219,8 +219,8 @@ class LSMSSqlService:
             req = "DELETE FROM Docteurs WHERE id = ?"
             cursor.execute(req, (iden,))
             connection.commit()
-            self.deleteSalleDocByDocId(id)
-            self.deleteIntDocByDocId(id)
+            # self.deleteSalleDocByDocId(id)
+            # self.deleteIntDocByDocId(id)
 
     def deleteInt(self, iden):
         with sqlite3.connect(self.filename) as connection:
@@ -566,8 +566,8 @@ class LSPDSqlService:
             req = "DELETE FROM Agents WHERE id = ?"
             cursor.execute(req, (iden,))
             connection.commit()
-            self.deleteSalleAgeByAgeId(id)
-            self.deleteIntAgeByAgeId(id)
+            # self.deleteSalleAgeByAgeId(id)
+            # self.deleteIntAgeByAgeId(id)
 
     def deleteInt(self, iden):
         with sqlite3.connect(self.filename) as connection:
