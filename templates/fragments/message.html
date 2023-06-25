@@ -1,17 +1,50 @@
 <div class="z-[100] fixed bottom-16 right-0 w-2/5">
     <script>
         function closeMessageAfterTimeout(id) {
-            setTimeout(function() {
-                $(id).fadeOut()
-            }, 3000)
+            var element = document.querySelector(id);
+            if (element.style.opacity !== '0') {
+                setTimeout(function () {
+                    var opacity = 1;
+                    var interval = setInterval(function () {
+                        if (opacity <= 0) {
+                            clearInterval(interval);
+                            element.style.display = 'none';
+                        } else {
+                            opacity -= 0.1;
+                            element.style.opacity = opacity;
+                        }
+                    }, 100);
+                }, 3000);
+            }
         }
 
         function closeMessageOnClick(id) {
-            $(id).fadeOut()
+            var element = document.querySelector(id);
+            if (element.style.opacity !== '0') {
+                var opacity = 1;
+                var interval = setInterval(function () {
+                    if (opacity <= 0) {
+                        clearInterval(interval);
+                        element.style.display = 'none';
+                    } else {
+                        opacity -= 0.1;
+                        element.style.opacity = opacity;
+                    }
+                }, 100);
+            }
         }
 
         function progressBar(id) {
-            $(id).animate({ width: '100%' }, 3000)
+            var element = document.querySelector(id);
+            var width = 0;
+            var interval = setInterval(function () {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    element.style.width = width + '%';
+                }
+            }, 30);
         }
     </script>
     {% with errors = get_flashed_messages(category_filter=["danger"]) %}
