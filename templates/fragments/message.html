@@ -1,11 +1,11 @@
 <div class="z-[100] fixed bottom-16 right-0 w-2/5">
     <script>
         function closeMessageAfterTimeout(id) {
-            var element = document.querySelector(id);
+            let element = document.querySelector(id);
             if (element.style.opacity !== '0') {
                 setTimeout(function () {
-                    var opacity = 1;
-                    var interval = setInterval(function () {
+                    let opacity = 1;
+                    let interval = setInterval(function () {
                         if (opacity <= 0) {
                             clearInterval(interval);
                             element.style.display = 'none';
@@ -19,10 +19,10 @@
         }
 
         function closeMessageOnClick(id) {
-            var element = document.querySelector(id);
+            let element = document.querySelector(id);
             if (element.style.opacity !== '0') {
-                var opacity = 1;
-                var interval = setInterval(function () {
+                let opacity = 1;
+                let interval = setInterval(function () {
                     if (opacity <= 0) {
                         clearInterval(interval);
                         element.style.display = 'none';
@@ -35,9 +35,9 @@
         }
 
         function progressBar(id) {
-            var element = document.querySelector(id);
-            var width = 0;
-            var interval = setInterval(function () {
+            let element = document.querySelector(id);
+            let width = 0;
+            let interval = setInterval(function () {
                 if (width >= 100) {
                     clearInterval(interval);
                 } else {
