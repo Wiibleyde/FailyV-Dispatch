@@ -33,7 +33,6 @@ class User(UserMixin):
 
 def addDoctorsToDatabase(userId,docs):
     for doc in docs:
-        print(doc)
         LSMSSqlService(f"{userId}-lsms.db").insertDoc(doc.nom, doc.prenom, doc.grade, doc.service, doc.indispo, doc.inInter, doc.inSalle)
 
 def addAgentsToDatabase(userId,agents):
@@ -289,7 +288,6 @@ def lsmsDispatch():
             inSalle = True
         doc = DocteurObj(doc[0], doc[1], doc[2], doc[3], doc[4], doc[5], inInter, inSalle)
         doctorsObj.append(doc)
-        print(doc.idDoc)
     sortDocsByGrade(doctorsObj)
     for doc in doctorsObj:
         if doc.service:

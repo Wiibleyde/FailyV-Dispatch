@@ -134,7 +134,7 @@
                                     </button>
                                     <div id="interDrop{{ doctor.idDoc }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
                                         {% if doctor.inInter %}
-                                            <p class="block px-4 py-2">Déjà en intervention</p>
+                                            <p class="block px-4 py-2 bg-gray-300 rounded-md">Déjà en intervention</p>
                                         {% endif %}
                                         {% for intervention in interventions %}
                                             <a href="/lsms/setDoctor/{{ doctor.idDoc }}/toIntervention/{{ intervention.idInt }}" class="block px-4 py-2 hover:bg-gray-300">{{ intervention }}</a>
@@ -147,7 +147,7 @@
                                     </button>
                                     <div id="salleDrop{{ doctor.idDoc }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
                                         {% if doctor.inSalle %}
-                                            <p class="block px-4 py-2">Déjà en salle</p>
+                                            <p class="block px-4 py-2 bg-gray-300 rounded-md">Déjà en salle</p>
                                         {% endif %}
                                         {% for salle in salles %}
                                             <a href="/lsms/setDoctor/{{ doctor.idDoc }}/toSalle/{{ salle.idSalle }}" class="block px-4 py-2 hover:bg-gray-300">{{ salle }}</a>
