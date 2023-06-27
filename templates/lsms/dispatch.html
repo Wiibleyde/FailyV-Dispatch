@@ -13,8 +13,8 @@
         {% include "fragments/message.html" %}
     </header>
     <body class="bg-gray-100 mb-[13rem] dark:bg-gray-900">
-        <div class="container mx-auto py-2 px-2">
-            <div class="grid grid-cols-3 gap-4">
+        <div class="container max-w-full mx-auto px-5">
+            <div class="grid grid-cols-4 gap-1">
                 <div class="justify-start">
                     <h1 class="text-2xl font-bold dark:text-white">Dispatch</h1>
                     <div class="bg-gray-400 rounded-md p-3">
@@ -22,7 +22,7 @@
                         {% block createInter %}
                             <form method="post" class="flex flex-col">
                                 {{ form.hidden_tag() }}
-                                <div class="text-black my-1">
+                                <div class="text-black my-1 flex flex-col">
                                     {{ form.nomInt }}
                                 </div>
                             </form>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Salles :</h2>
-                    <div class="grid grid-cols-4 gap-4">
+                    <div class="grid grid-cols-3 gap-1">
                         {% for salle in salles %}
                             <div class="bg-white rounded-md shadow-md p-3">
                                 <p class="mb-1">{{ salle }}</p>
@@ -48,9 +48,9 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="justify-end">
+                <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Inter :</h2>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-3 gap-1">
                         {% for intervention in interventions %}
                             {% if intervention.nom == 'Triage' %}
                                 <div class="bg-blue-400 rounded-md shadow-md p-3">
@@ -93,6 +93,67 @@
                                 </div>
                             {% endif %}
                         {% endfor %}
+                    </div>
+                </div>
+                <div class="justify-end text-lg font-bold mt-5 dark:text-white">
+                    <h2>Liste docteurs :</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-green-700 bg-opacity-50 rounded-md shadow-md px-3">
+                            <h2 class="text-lg font-bold mt-1 dark:text-white">Disponibles :</h2>
+                            <div class="grid grid-cols-1 gap-0">
+                                {% for doctor in enService %}
+                                    {% if doctor.inInter == 0 and doctor.indispo == 0 and doctor.inSalle == 0 %}
+                                        {% if doctor.grade == "Directeur"%}
+                                        <div class="text-red-600">
+                                        {% elif doctor.grade == "Directeur Adjoint" %}
+                                        <div class="text-red-500">
+                                        {% elif doctor.grade == "Chef de service" %}
+                                        <div class="text-orange-300">
+                                        {% elif doctor.grade == "Spécialiste" %}
+                                        <div class="text-blue-600">
+                                        {% elif doctor.grade == "Titulaire" %}
+                                        <div class="text-blue-400">
+                                        {% elif doctor.grade == "Résident" %}
+                                        <div class="text-blue-200">
+                                        {% elif doctor.grade == "Interne" %}
+                                        <div class="text-green-400">
+                                        {% else %}
+                                        <div class="text-gray-300">
+                                        {% endif %}
+                                            <p>{{ doctor.prenom }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="bg-red-400 bg-opacity-50 rounded-md shadow-md px-3">
+                            <h2 class="text-lg font-bold mt-1 dark:text-white">Indisponible :</h2>
+                            <div class="grid grid-cols-1 gap-0">
+                                {% for doctor in enService %}
+                                    {% if doctor.inInter or doctor.indispo or doctor.inSalle %}
+                                        {% if doctor.grade == "Directeur"%}
+                                        <div class="text-red-600">
+                                        {% elif doctor.grade == "Directeur Adjoint" %}
+                                        <div class="text-red-500">
+                                        {% elif doctor.grade == "Chef de service" %}
+                                        <div class="text-orange-300">
+                                        {% elif doctor.grade == "Spécialiste" %}
+                                        <div class="text-blue-600">
+                                        {% elif doctor.grade == "Titulaire" %}
+                                        <div class="text-blue-400">
+                                        {% elif doctor.grade == "Résident" %}
+                                        <div class="text-blue-200">
+                                        {% elif doctor.grade == "Interne" %}
+                                        <div class="text-green-400">
+                                        {% else %}
+                                        <div class="text-gray-300">
+                                        {% endif %}
+                                            <p>{{ doctor.prenom }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

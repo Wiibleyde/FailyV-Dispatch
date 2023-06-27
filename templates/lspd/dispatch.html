@@ -13,8 +13,8 @@
         {% include "fragments/message.html" %}
     </header>
     <body class="bg-gray-100 mb-[13rem] dark:bg-gray-900">
-        <div class="container mx-auto py-2 px-2">
-            <div class="grid grid-cols-3 gap-4">
+        <div class="container max-w-full mx-auto px-5">
+            <div class="grid grid-cols-4 gap-1">
                 <div class="justify-start">
                     <h1 class="text-2xl font-bold dark:text-white">Dispatch</h1>
                     <div class="bg-gray-400 rounded-md p-3">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Salles :</h2>
-                    <div class="grid grid-cols-4 gap-4">
+                    <div class="grid grid-cols-3 gap-1">
                         {% for salle in salles %}
                             <div class="bg-white rounded-md shadow-md p-3">
                                 <p class="mb-1">{{ salle }}</p>
@@ -48,9 +48,9 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="justify-end">
+                <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Inter :</h2>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-3 gap-1">
                         {% for intervention in interventions %}
                             <div class="bg-gray-100 rounded-md shadow-md p-3">
                                 <p class="mb-1">{{ intervention }} <a href="/lspd/deleteIntervention/{{ intervention.idInt }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
@@ -65,6 +65,75 @@
                                 {% endfor %}
                             </div>
                         {% endfor %}
+                    </div>
+                </div>
+                <div class="justify-end text-lg font-bold mt-5 dark:text-white">
+                    <h2>Liste agent :</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-green-700 bg-opacity-50 rounded-md shadow-md px-3">
+                            <h2 class="text-lg font-bold mt-1 dark:text-white">Disponibles :</h2>
+                            <div class="grid grid-cols-1 gap-0">
+                                {% for agent in enService %}
+                                    {% if agent.inInter == 0 and agent.indispo == 0 and agent.inSalle == 0 %}
+                                        {% if agent.grade == "Commissaire"%}
+                                        <div class="text-blue-800">
+                                        {% elif agent.grade == "Capitaine" %}
+                                        <div class="text-blue-900">
+                                        {% elif agent.grade == "Lieutenant" %}
+                                        <div class="text-blue-700">
+                                        {% elif agent.grade == "Inspecteur" %}
+                                        <div class="text-blue-600">
+                                        {% elif agent.grade == "Sergent Chef" %}
+                                        <div class="text-blue-500">
+                                        {% elif agent.grade == "Sergent" %}
+                                        <div class="text-cyan-300">
+                                        {% elif agent.grade == "Officier Supérieur" %}
+                                        <div class="text-green-400">
+                                        {% elif agent.grade == "Officier" %}
+                                        <div class="text-green-600">
+                                        {% elif agent.grade == "Cadet" %}
+                                        <div class="text-green-300">
+                                        {% else %}
+                                        <div class="text-gray-300">
+                                        {% endif %}
+                                            <p>{{ agent.prenom }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="bg-red-400 bg-opacity-50 rounded-md shadow-md px-3">
+                            <h2 class="text-lg font-bold mt-1 dark:text-white">Indisponible :</h2>
+                            <div class="grid grid-cols-1 gap-0">
+                                {% for agent in enService %}
+                                    {% if agent.inInter or agent.indispo or agent.inSalle %}
+                                        {% if agent.grade == "Commissaire"%}
+                                        <div class="text-blue-800">
+                                        {% elif agent.grade == "Capitaine" %}
+                                        <div class="text-blue-900">
+                                        {% elif agent.grade == "Lieutenant" %}
+                                        <div class="text-blue-700">
+                                        {% elif agent.grade == "Inspecteur" %}
+                                        <div class="text-blue-600">
+                                        {% elif agent.grade == "Sergent Chef" %}
+                                        <div class="text-blue-500">
+                                        {% elif agent.grade == "Sergent" %}
+                                        <div class="text-cyan-300">
+                                        {% elif agent.grade == "Officier Supérieur" %}
+                                        <div class="text-green-400">
+                                        {% elif agent.grade == "Officier" %}
+                                        <div class="text-green-600">
+                                        {% elif agent.grade == "Cadet" %}
+                                        <div class="text-green-300">
+                                        {% else %}
+                                        <div class="text-gray-300">
+                                        {% endif %}
+                                            <p>{{ agent.prenom }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
