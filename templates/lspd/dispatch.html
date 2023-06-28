@@ -141,7 +141,7 @@
                 {% if enService|length > 0 %}
                     <h2 class="text-2xl font-bold mt-5 dark:text-white">En service : {{ enService|length }} agent(s) :</h2>
                 {% endif %}
-                <div class="grid grid-cols-5 gap-4">
+                <div class="grid grid-cols-6 gap-4">
                 {% for agent in enService %}
                     {% if agent.grade == "Commissaire"%}
                     <div class="bg-blue-800 rounded-md shadow-md p-1">
@@ -219,7 +219,7 @@
                 {% if horsService|length > 0 %}
                     <h2 class="text-2xl font-bold mb-2 dark:text-white">Hors service : {{ horsService|length }} agent(s) :</h2>
                 {% endif %}
-                <div class="grid grid-cols-5 gap-4">
+                <div class="grid grid-cols-6 gap-4">
                 {% for agent in horsService %}
                     {% if agent.grade == "Commissaire"%}
                     <div class="bg-blue-800 rounded-md shadow-md p-1">
