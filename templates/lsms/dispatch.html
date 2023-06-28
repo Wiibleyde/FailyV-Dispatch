@@ -50,7 +50,7 @@
                 </div>
                 <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Inter :</h2>
-                    <div class="grid grid-cols-3 gap-1">
+                    <div class="grid grid-cols-4 gap-1">
                         {% for intervention in interventions %}
                             {% if intervention.nom == 'Triage' %}
                                 <div class="bg-blue-400 rounded-md shadow-md p-3">
@@ -100,7 +100,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-green-700 bg-opacity-50 rounded-md shadow-md px-3">
                             <h2 class="text-lg font-bold mt-1 dark:text-white">Disponibles :</h2>
-                            <div class="grid grid-cols-1 gap-0">
+                            <div class="grid grid-cols-2 gap-0">
                                 {% for doctor in enService %}
                                     {% if doctor.inInter == 0 and doctor.indispo == 0 and doctor.inSalle == 0 %}
                                         {% if doctor.grade == "Directeur"%}
@@ -128,7 +128,7 @@
                         </div>
                         <div class="bg-red-400 bg-opacity-50 rounded-md shadow-md px-3">
                             <h2 class="text-lg font-bold mt-1 dark:text-white">Indisponible :</h2>
-                            <div class="grid grid-cols-1 gap-0">
+                            <div class="grid grid-cols-2 gap-0">
                                 {% for doctor in enService %}
                                     {% if doctor.inInter or doctor.indispo or doctor.inSalle %}
                                         {% if doctor.grade == "Directeur"%}
