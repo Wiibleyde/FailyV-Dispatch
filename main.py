@@ -11,9 +11,10 @@ from hashlib import sha256
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
-from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj
+from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj, InjuredTypeObj
 from services.AccountService import AccountService, AccountObject
 from services.LoggerService import LoggerService
+from services.InjuredService import InjuredService
 
 # ======================================================================================================================
 app = Flask(__name__)
@@ -314,7 +315,11 @@ def lsmsDispatch():
     for salleDoc in salleDocs:
         salleDoc = InterventionDocteursObj(salleDoc[0], salleDoc[1], salleDoc[2])
         salleDocsObj.append(salleDoc)
-    return render_template('lsms/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj, enService=enService, horsService=horsService)
+    injuredUR = injured.getUR()
+    injuredUA = injured.getUA()
+    injuredDelta = injured.getDelta()
+    injureds = InjuredTypeObj(injuredUR, injuredUA, injuredDelta)
+    return render_template('lsms/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj, enService=enService, horsService=horsService, injureds=injureds)
 
 @app.route('/lspd/dispatch', methods=['GET', 'POST'])
 @app.route('/lspd', methods=['GET', 'POST'])
@@ -719,9 +724,55 @@ def lspdUnsetAgentFromIntervention(idAgent, idInt):
     flash(f'{agent[2]} {agent[1]} retiré de l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
+@app.route('/lsms/addInjured', methods=['GET', 'POST'])
+@login_required
+def lsmsAddInjured():
+    injuredType = request.args.get('injuredType')
+    if injuredType == "UR":
+        injured.addUR()
+    elif injuredType == "UA":
+        injured.addUA()
+    elif injuredType == "DELTA":
+        injured.addDelta()
+    else:
+        flash(f'Erreur lors de l\'ajout du blessé !', 'danger')
+        return redirect(url_for('lsmsDispatch'))
+    flash(f'Blessé ajouté avec succès !', 'success')
+    return redirect(url_for('lsmsDispatch'))
+
+@app.route('/lsms/removeInjured', methods=['GET', 'POST'])
+@login_required
+def lsmsRemoveInjured():
+    injuredType = request.args.get('injuredType')
+    if injuredType == "UR":
+        if not injured.removeUR():
+            flash(f'Erreur lors de la suppression du blessé !', 'danger')
+            return redirect(url_for('lsmsDispatch'))
+    elif injuredType == "UA":
+        if not injured.removeUA():
+            flash(f'Erreur lors de la suppression du blessé !', 'danger')
+            return redirect(url_for('lsmsDispatch'))
+    elif injuredType == "DELTA":
+        if not injured.removeDelta():
+            flash(f'Erreur lors de la suppression du blessé !', 'danger')
+            return redirect(url_for('lsmsDispatch'))
+    else:
+        flash(f'Erreur lors de la suppression du blessé !', 'danger')
+        return redirect(url_for('lsmsDispatch'))
+    flash(f'Blessé supprimé avec succès !', 'success')
+    return redirect(url_for('lsmsDispatch'))
+
+@app.route('/lsms/resetInjured', methods=['GET', 'POST'])
+@login_required
+def lsmsResetInjured():
+    injured.reset()
+    flash(f'Blessés réinitialisés avec succès !', 'success')
+    return redirect(url_for('lsmsDispatch'))
+
 if __name__=='__main__':
     args = readArgs()
     logger = LoggerService("logs.db", args.debug)
+    injured = InjuredService("injured.json")
     logger.insertInfoLog("Server", "Starting server")
     port = 9123
     host = '0.0.0.0'

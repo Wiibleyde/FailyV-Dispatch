@@ -225,3 +225,27 @@ class SalleAgentObj:
     
     def getIdAgent(self):
         return self.idAgent
+    
+class InjuredTypeObj:
+    def __init__(self,UR,UA,Delta):
+        self.UR = UR
+        self.UA = UA
+        self.Delta = Delta
+
+    def __str__(self):
+        return self.UR + " " + self.UA + " " + self.Delta
+    
+    def __repr__(self):
+        return self.UR + " " + self.UA + " " + self.Delta
+    
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getUR(self):
+        return self.UR
+    
+    def getUA(self):
+        return self.UA
+    
+    def getDelta(self):
+        return self.Delta

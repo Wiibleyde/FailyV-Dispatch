@@ -28,6 +28,35 @@
                             </form>
                         {% endblock %}
                     </div>
+                    <div class="grid grid-cols-2 gap-1">
+                        <div class="bg-gray-400 rounded-md p-3 mt-3">
+                            <div class="inline-flex flex-row dark:text-white">
+                                <h2 class="text-lg font-bold">Blessé</h2>
+                                <a href="/lsms/resetInjured" class="text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 ml-3 rounded"><i class="bi bi-arrow-repeat"></i> Réinitialiser les blessés</a>
+                                <p class="text-lg font-bold ml-3">{{ injureds.UR + injureds.UA }} blessé(s)</p>
+                            </div>
+                            <div class="grid grid-cols-3 dark:text-white">
+                                <div class="text-center">
+                                    <h3 class="text-md font-bold mt-5">UR :</h3>
+                                    <a href="/lsms/addInjured?injuredType=UR" class="bg-green-500 hover:bg-green-700 py-1 px-2 rounded"><i class="bi bi-person-add"></i></a>
+                                    <p class="text-md font-bold">{{ injureds.UR }}</p>
+                                    <a href="/lsms/removeInjured?injuredType=UR" class="bg-red-500 hover:bg-red-700 py-1 px-2 rounded"><i class="bi bi-person-dash"></i></a>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-md font-bold mt-5">UA :</h3>
+                                    <a href="/lsms/addInjured?injuredType=UA" class="bg-green-500 hover:bg-green-700 py-1 px-2 rounded"><i class="bi bi-person-add"></i></a>
+                                    <p>{{ injureds.UA }}</p>
+                                    <a href="/lsms/removeInjured?injuredType=UA" class="bg-red-500 hover:bg-red-700 py-1 px-2 rounded"><i class="bi bi-person-dash"></i></a>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-md font-bold mt-5">Delta :</h3>
+                                    <a href="/lsms/addInjured?injuredType=DELTA" class="bg-green-500 hover:bg-green-700 py-1 px-2 rounded"><i class="bi bi-person-add "></i></a>
+                                    <p>{{ injureds.Delta }}</p>
+                                    <a href="/lsms/removeInjured?injuredType=DELTA" class="bg-red-500 hover:bg-red-700 py-1 px-2 rounded"><i class="bi bi-person-dash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="justify-center">
                     <h2 class="text-lg font-bold mt-5 dark:text-white">Salles :</h2>
