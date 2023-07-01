@@ -168,3 +168,5 @@ tailwindcss
 *.exe
 
 *.json
+
+.vscode/
