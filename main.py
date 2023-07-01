@@ -315,9 +315,9 @@ def lsmsDispatch():
     for salleDoc in salleDocs:
         salleDoc = InterventionDocteursObj(salleDoc[0], salleDoc[1], salleDoc[2])
         salleDocsObj.append(salleDoc)
-    injuredUR = injured.getUR()
-    injuredUA = injured.getUA()
-    injuredDelta = injured.getDelta()
+    injuredUR = InjuredService(f"{current_user.id}-lsms-injured.json").getUR()
+    injuredUA = InjuredService(f"{current_user.id}-lsms-injured.json").getUA()
+    injuredDelta = InjuredService(f"{current_user.id}-lsms-injured.json").getDelta()
     injureds = InjuredTypeObj(injuredUR, injuredUA, injuredDelta)
     return render_template('lsms/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, doctors=doctorsObj, intDocs=intDocsObj, salleDocs=salleDocsObj, enService=enService, horsService=horsService, injureds=injureds)
 
@@ -729,11 +729,11 @@ def lspdUnsetAgentFromIntervention(idAgent, idInt):
 def lsmsAddInjured():
     injuredType = request.args.get('injuredType')
     if injuredType == "UR":
-        injured.addUR()
+        InjuredService(f"{current_user.id}-lsms-injured.json").addUR()
     elif injuredType == "UA":
-        injured.addUA()
+        InjuredService(f"{current_user.id}-lsms-injured.json").addUA()
     elif injuredType == "DELTA":
-        injured.addDelta()
+        InjuredService(f"{current_user.id}-lsms-injured.json").addDelta()
     else:
         flash(f'Erreur lors de l\'ajout du blessé !', 'danger')
         return redirect(url_for('lsmsDispatch'))
@@ -745,15 +745,15 @@ def lsmsAddInjured():
 def lsmsRemoveInjured():
     injuredType = request.args.get('injuredType')
     if injuredType == "UR":
-        if not injured.removeUR():
+        if not InjuredService(f"{current_user.id}-lsms-injured.json").removeUR():
             flash(f'Erreur lors de la suppression du blessé !', 'danger')
             return redirect(url_for('lsmsDispatch'))
     elif injuredType == "UA":
-        if not injured.removeUA():
+        if not InjuredService(f"{current_user.id}-lsms-injured.json").removeUA():
             flash(f'Erreur lors de la suppression du blessé !', 'danger')
             return redirect(url_for('lsmsDispatch'))
     elif injuredType == "DELTA":
-        if not injured.removeDelta():
+        if not InjuredService(f"{current_user.id}-lsms-injured.json").removeDelta():
             flash(f'Erreur lors de la suppression du blessé !', 'danger')
             return redirect(url_for('lsmsDispatch'))
     else:
@@ -765,14 +765,13 @@ def lsmsRemoveInjured():
 @app.route('/lsms/resetInjured', methods=['GET', 'POST'])
 @login_required
 def lsmsResetInjured():
-    injured.reset()
+    InjuredService(f"{current_user.id}-lsms-injured.json").reset()
     flash(f'Blessés réinitialisés avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
 if __name__=='__main__':
     args = readArgs()
     logger = LoggerService("logs.db", args.debug)
-    injured = InjuredService("injured.json")
     logger.insertInfoLog("Server", "Starting server")
     port = 9123
     host = '0.0.0.0'
