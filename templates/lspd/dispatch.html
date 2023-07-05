@@ -39,7 +39,7 @@
                                     {% if salleAge.idIntervention == salle.idSalle %}
                                         {% for agent in enService %}
                                             {% if agent.idAge == salleAge.idAgent %}
-                                                <a href="/lspd/unsetAgent/{{ salleAge.idAgent }}/fromSalle/{{ salle.idSalle }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent.nom }}</a>
+                                                <a href="/lspd/unsetAgent/{{ salleAge.idAgent }}/fromSalle/{{ salle.idSalle }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent }}</a>
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -58,7 +58,7 @@
                                     {% if intAge.idIntervention == intervention.idInt %}
                                         {% for agent in enService %}
                                             {% if agent.idAge == intAge.idAgent %}
-                                                <a href="/lspd/unsetAgent/{{ intAge.idAgent }}/fromIntervention/{{ intervention.idInt }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent.nom }}</a>
+                                                <a href="/lspd/unsetAgent/{{ intAge.idAgent }}/fromIntervention/{{ intervention.idInt }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent }}</a>
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -96,7 +96,7 @@
                                         {% else %}
                                         <div class="text-gray-300">
                                         {% endif %}
-                                            <p>{{ agent.prenom }}</p>
+                                            <p>{{ agent }}</p>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -128,7 +128,7 @@
                                         {% else %}
                                         <div class="text-gray-300">
                                         {% endif %}
-                                            <p>{{ agent.prenom }}</p>
+                                            <p>{{ agent }}</p>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -168,7 +168,7 @@
                         {% if service == 1 and indispo == 0 %}
                         <div class="mb-2">
                             <div class="bg-gray-100 bg-opacity-70 rounded-md shadow-md p-1">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.nom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
                                 <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
@@ -204,7 +204,7 @@
                         {% elif service == 1 and indispo == 1 %}
                         <div class="mb-2">
                             <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.nom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
                                 <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
@@ -244,7 +244,7 @@
                     {% endif %}
                         <div class="text-yellow-500 mb-2">
                             <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.nom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-end">
                                 <a href="/lspd/setAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
