@@ -141,7 +141,7 @@
                 {% if enService|length > 0 %}
                     <h2 class="text-2xl font-bold mt-5 dark:text-white">En service : {{ enService|length }} agent(s) :</h2>
                 {% endif %}
-                <div class="grid grid-cols-6 gap-4">
+                <div class="grid grid-cols-9 gap-2">
                 {% for agent in enService %}
                     {% if agent.grade == "Commissaire"%}
                     <div class="bg-blue-800 rounded-md shadow-md p-1">
@@ -171,11 +171,11 @@
                                 <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
-                                <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
-                                <a href="/lspd/setAgentIndispo/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600">Indispo</a>                                            
+                                <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-person-fill-dash"></i></a>
+                                <a href="/lspd/setAgentIndispo/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-yellow-500 hover:bg-yellow-600"><i class="bi bi-person-fill-check"></i></a>                                            
                                 <div class="dropdown inline-block relative">
                                     <button onclick="interDropdown('{{ agent.idAge }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if agent.inInter %} bg-red-500 hover:bg-red-700 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
-                                        Inter
+                                        <i class="bi bi-send-fill"></i>
                                     </button>
                                     <div id="interDrop{{ agent.idAge }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
                                         {% if agent.inInter %}
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="dropdown inline-block relative">
                                     <button onclick="salleDropdown('{{ agent.idAge }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if agent.inSalle %} bg-red-500 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
-                                        Salle
+                                        <i class="bi bi-door-closed-fill"></i>
                                     </button>
                                     <div id="salleDrop{{ agent.idAge }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
                                         {% if agent.inSalle %}
@@ -207,8 +207,8 @@
                                 <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
-                                <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900">FDS</a>
-                                <a href="/lspd/unsetAgentIndispo/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600">Dispo</a>
+                                <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-person-fill-dash"></i></a>
+                                <a href="/lspd/unsetAgentIndispo/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-green-500 hover:bg-green-600"><i class="bi bi-person-fill-check"></i></a>
                             </div>
                         </div>
                         {% endif %}
@@ -219,7 +219,7 @@
                 {% if horsService|length > 0 %}
                     <h2 class="text-2xl font-bold mb-2 dark:text-white">Hors service : {{ horsService|length }} agent(s) :</h2>
                 {% endif %}
-                <div class="grid grid-cols-6 gap-4">
+                <div class="grid grid-cols-9 gap-2">
                 {% for agent in horsService %}
                     {% if agent.grade == "Commissaire"%}
                     <div class="bg-blue-800 rounded-md shadow-md p-1">
@@ -247,7 +247,7 @@
                                 <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-end">
-                                <a href="/lspd/setAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600">PDS</a>
+                                <a href="/lspd/setAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"><i class="bi bi-person-fill-add"></i></a>
                             </div>
                         </div>
                     </div>
