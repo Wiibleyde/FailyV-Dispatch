@@ -1,5 +1,10 @@
 TODO :
 - LSPD : 
   - Fix l'ajout d'agent
-  - Ajout de la possibilité de mettre un agent en Adam, Lincoln, Marie, Victor, Henry
+  - Retirer les salles et créer les équipes : Ajout de la possibilité de mettre un agent en Adam, Lincoln, Marie, Victor, Henry
   - Ajout de la possibilité d'ajouter des matricules
+  - Affichage type : Matricule - Nom
+  - Prendre en charge les hors dispach
+- All :
+  - Réduction de la taille des carte (réduire les textes à une icone)
+  
