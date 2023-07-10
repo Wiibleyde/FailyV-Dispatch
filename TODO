@@ -1,10 +1,14 @@
 TODO :
 - LSPD : 
-  - Fix l'ajout d'agent : KLogan (par exemple) ne fonctionne pas
-  - Retirer les salles et créer les équipes : 
-    - Ajout de la possibilité de mettre un agent en Adam, Lincoln, Marie, Victor, Henry
-  - Ajout de la possibilité d'ajouter des matricules
-  - Affichage type : 
-    - Matricule - Nom
-    - Ou alors de choisir avec des paramètres
-  - Prendre en charge les hors dispach
+  - Créer les équipes : 
+    - Ajout de la possibilité de mettre un agent en :
+      - Lincoln : Seul
+      - Adam : Plusieurs
+      - Sierra : Plusieurs
+      - Marie : Seul
+      - Henry : Plusieurs
+      - William : Plusieurs
+      - Victor : Seul
+      - David : Plusieurs
+      - Goliath : Plusieurs
+      (Front déjà fait)

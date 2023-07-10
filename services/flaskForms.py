@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired
 class AddLspdForm(FlaskForm):
     zoneText = TextAreaField('zoneText', validators=[DataRequired()], render_kw={"placeholder": "Ligne d'effectif","autofocus": True})
     grade = SelectField('grade', choices=[('Commissaire', 'Commissaire'), ('Capitaine', 'Capitaine'), ('Lieutenant', 'Lieutenant'), ('Inspecteur', 'Inspecteur'), ('Sergent Chef', 'Sergent Chef'), ('Sergent', 'Sergent'), ('Officier Supérieur','Officier Supérieur'), ('Officier','Officier'),('Cadet','Cadet')])
+    matricule = StringField('matricule', render_kw={"placeholder": "Matricule (vide si plusieurs agents)","autofocus": True})
     submitDoc = SubmitField('submitDoc', render_kw={"value": "Ajouter l'agent"})
 
 class EditLspdForm(FlaskForm):

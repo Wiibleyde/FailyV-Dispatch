@@ -43,15 +43,16 @@ class DocteurObj:
         return self.inSalle
     
 class AgentObj:
-    def __init__(self, idAge, nom, prenom, grade, service, indispo, inInter, inSalle):
+    def __init__(self, idAge, matricule, nom, prenom, grade, service, indispo, inInter, inAffiliation):
         self.idAge = idAge
+        self.matricule = matricule
         self.nom = nom
         self.prenom = prenom
         self.grade = grade
         self.service = service
         self.indispo = indispo
         self.inInter = inInter
-        self.inSalle = inSalle
+        self.inAffiliation = inAffiliation
 
     def __str__(self):
         return self.prenom + " " + self.nom
@@ -64,6 +65,9 @@ class AgentObj:
     
     def getId(self):
         return self.idAge
+    
+    def getMatricule(self):
+        return self.matricule
     
     def getNom(self):
         return self.nom
@@ -83,8 +87,8 @@ class AgentObj:
     def getInInter(self):
         return self.inInter
     
-    def getInSalle(self):
-        return self.inSalle
+    def getInAffiliation(self):
+        return self.inAffiliation
 
 class InterventionObj:
     def __init__(self, idInt, nom, exterieur):
@@ -126,6 +130,26 @@ class SalleObj:
     
     def getId(self):
         return self.idSalle
+    
+    def getNom(self):
+        return self.nom
+    
+class AffiliationObj:
+    def __init__(self, idAff, nom):
+        self.idAff = idAff
+        self.nom = nom
+    
+    def __str__(self):
+        return self.nom
+    
+    def __repr__(self):
+        return self.nom
+    
+    def __getattribute__(self, __name: str):
+        return object.__getattribute__(self, __name)
+    
+    def getId(self):
+        return self.idAff
     
     def getNom(self):
         return self.nom
@@ -202,26 +226,26 @@ class SalleDocteurObj:
     def getIdDocteur(self):
         return self.idDocteur
     
-class SalleAgentObj:
-    def __init__(self, idSalleAge, idSalle, idAgent):
-        self.idSalleAge = idSalleAge
-        self.idSalle = idSalle
+class AffiliationAgentsObj:
+    def __init__(self, idAffAge, idAffiliation, idAgent):
+        self.idAffAge = idAffAge
+        self.idAffiliation = idAffiliation
         self.idAgent = idAgent
         
     def __str__(self):
-        return self.idSalle + " " + self.idAgent
+        return self.idAffiliation + " " + self.idAgent
     
     def __repr__(self):
-        return self.idSalle + " " + self.idAgent
+        return self.idAffiliation + " " + self.idAgent
     
     def __getattribute__(self, __name: str):
         return object.__getattribute__(self, __name)
     
     def getId(self):
-        return self.idSalleAge
+        return self.idAffAge
     
-    def getIdSalle(self):
-        return self.idSalle
+    def getIdAffiliation(self):
+        return self.idAffiliation
     
     def getIdAgent(self):
         return self.idAgent

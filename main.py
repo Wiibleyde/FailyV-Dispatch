@@ -11,7 +11,7 @@ from hashlib import sha256
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
-from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj, InjuredTypeObj
+from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, AffiliationObj, InterventionDocteursObj, InterventionAgentsObj, AffiliationAgentsObj,InjuredTypeObj
 from services.AccountService import AccountService, AccountObject
 from services.LoggerService import LoggerService
 from services.InjuredService import InjuredService
@@ -38,7 +38,7 @@ def addDoctorsToDatabase(userId,docs):
 
 def addAgentsToDatabase(userId,agents):
     for agent in agents:
-        LSPDSqlService(f"{userId}-lspd.db").insertAgent(agent.nom, agent.prenom, agent.grade, agent.indispo, agent.inIntervention)
+        LSPDSqlService(f"{userId}-lspd.db").insertAgent(agent.matricule, agent.nom, agent.prenom, agent.grade)
 
 def sortDocsByGrade(docs):
     orderGrade = ["Directeur", "Directeur Adjoint", "Chef de service", "Spécialiste", "Titulaire", "Résident", "Interne"]
@@ -333,18 +333,18 @@ def lspdDispatch():
         LSPDSqlService(f"{current_user.id}-lspd.db").insertInt(nom, exterieur)
         flash(f'Intervention {nom} ajoutée avec succès !', 'success')
         return redirect(url_for('lspdDispatch'))
-    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAge()
+    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAgents()
     agentsObj = []
     enService = []
     horsService = []
     for agent in agents:
         inInter = False
-        inSalle = False
+        inAffiliation = False
         if agent[6] == 1:
             inInter = True
         if agent[7] == 1:
-            inSalle = True
-        agent = AgentObj(agent[0], agent[1], agent[2], agent[3], agent[4], agent[5], inInter, inSalle)
+            inAffiliation = True
+        agent = AgentObj(agent[0], agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], inInter, inAffiliation)
         agentsObj.append(agent)
     sortAgentsByGrade(agentsObj)
     for agent in agentsObj:
@@ -352,27 +352,27 @@ def lspdDispatch():
             enService.append(agent)
         else:
             horsService.append(agent)
-    interventions = LSPDSqlService(f"{current_user.id}-lspd.db").selectInt()
+    interventions = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllInterventions()
     interventionsObj = []
     for int in interventions:
         int = InterventionObj(int[0], int[1], int[2])
         interventionsObj.append(int)
-    salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
-    sallesObj = []
-    for salle in salles:
-        salle = SalleObj(salle[0], salle[1])
-        sallesObj.append(salle)
-    intAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntAge()
+    affiliations = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAffiliations()
+    affiliationsObj = []
+    for affiliation in affiliations:
+        affiliation = AffiliationObj(affiliation[0], affiliation[1])
+        affiliationsObj.append(affiliation)
+    intAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllInterventionsAgents()
     intAgentsObj = []
     for intAgent in intAgents:
         intAgent = InterventionAgentsObj(intAgent[0], intAgent[1], intAgent[2])
         intAgentsObj.append(intAgent)
-    salleAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalleAge()
-    salleAgentsObj = []
-    for salleAgent in salleAgents:
-        salleAgent = InterventionAgentsObj(salleAgent[0], salleAgent[1], salleAgent[2])
-        salleAgentsObj.append(salleAgent)
-    return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, agents=agentsObj, intAgents=intAgentsObj, salleAgents=salleAgentsObj, enService=enService, horsService=horsService)
+    affiliationAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAffiliationsAgents()
+    affiliationAgentsObj = []
+    for affiliationAgent in affiliationAgents:
+        affiliationAgent = AffiliationAgentsObj(affiliationAgent[0], affiliationAgent[1], affiliationAgent[2])
+        affiliationAgentsObj.append(affiliationAgent)
+    return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, affiliations=affiliationsObj, agents=agentsObj, intAgents=intAgentsObj, affiliationAgents=affiliationAgentsObj, enService=enService, horsService=horsService)
 
 @app.route('/lsms/doctors', methods=['GET', 'POST'])
 @login_required
@@ -426,24 +426,28 @@ def lspdAgents():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddLspdForm()
     if form.validate_on_submit():
-        agent = RegexUtils.agentToList(form.zoneText.data, form.grade.data)
-        if len(agent) == 0:
-            agent = RegexUtils.agentToString(form.zoneText.data, form.grade.data)
+        if form.matricule.data == '':
+            agent = RegexUtils.agentToList(form.zoneText.data, form.grade.data)
+            if len(agent) == 0:
+                flash(f"Veuillez entrer une ligne d'effectif valide : `    - 00 : Nom Prenom (555-0000)`", 'danger')
+                return redirect(url_for('lspdAgents'))
+            print(agent)
+            addAgentsToDatabase(current_user.id, agent)
+            strAgent = ''
+            for a in agent:
+                strAgent += f'{a.matricule} - {a.nom}, '
+            flash(f'{strAgent} ajoutés avec succès !', 'success')
+            return redirect(url_for('lspdAgents'))
+        else:
+            agent = RegexUtils.agentToString(form.zoneText.data, form.matricule.data, form.grade.data)
             if agent == None:
                 flash(f'Veuillez entrer agent valide ([Prénom] [Nom]) !', 'danger')
                 return redirect(url_for('lspdAgents'))
             else:
-                LSPDSqlService(f"{current_user.id}-lspd.db").insertAge(agent.nom, agent.prenom, agent.grade, agent.service, agent.indispo, agent.inInter, agent.inSalle)
-                flash(f'{agent.prenom} {agent.nom} ajouté avec succès !', 'success')
+                LSPDSqlService(f"{current_user.id}-lspd.db").insertAgent(agent.matricule, agent.nom, agent.prenom, agent.grade)
+                flash(f'{agent.matricule} - {agent.nom} ajouté avec succès !', 'success')
                 return redirect(url_for('lspdAgents'))
-        else:
-            addAgentsToDatabase(current_user.id, agent)
-            strAgent = ''
-            for a in agent:
-                strAgent += f'{a.prenom} {a.nom}, '
-            flash(f'{strAgent} ajoutés avec succès !', 'success')
-            return redirect(url_for('lspdAgents'))
-    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAge()
+    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAgents()
     agentsObj = []
     for agent in agents:
         agent = AgentObj(*agent)
@@ -459,7 +463,7 @@ def lspdAgent(agent_id):
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
     agent = AgentObj(*agent)
     if form.validate_on_submit():
-        LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(agent_id, agent.nom, agent.prenom, form.grade.data, agent.service, agent.indispo, agent.inInter, agent.inSalle)
+        LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(agent.idAge, agent.matricule, agent.nom, agent.prenom, form.grade.data)
         flash(f'{agent.prenom} {agent.nom} modifié avec succès !', 'success')
         return redirect(url_for('lspdAgents'))
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
