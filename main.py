@@ -487,22 +487,29 @@ def lsmsSalles():
         sallesObj.append(salle)
     return render_template('lsms/salles.html', form=form, salles=sallesObj)
 
-@app.route('/lspd/salles', methods=['GET', 'POST'])
+# @app.route('/lspd/salles', methods=['GET', 'POST'])
+# @login_required
+# def lspdSalles():
+#     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+#     form = AddSalleForm()
+#     if form.validate_on_submit():
+#         nom = form.nomSalle.data
+#         LSPDSqlService(f"{current_user.id}-lspd.db").insertSalle(nom)
+#         flash(f'Salle {nom} ajoutée avec succès !', 'success')
+#         return redirect(url_for('lspdSalles'))
+#     salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
+#     sallesObj = []
+#     for salle in salles:
+#         salle = SalleObj(salle[0], salle[1])
+#         sallesObj.append(salle)
+#     return render_template('lspd/salles.html', form=form, salles=sallesObj)
+
+@app.route('/lspd/addAffiliation', methods=['GET','POST'])
 @login_required
-def lspdSalles():
-    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    form = AddSalleForm()
-    if form.validate_on_submit():
-        nom = form.nomSalle.data
-        LSPDSqlService(f"{current_user.id}-lspd.db").insertSalle(nom)
-        flash(f'Salle {nom} ajoutée avec succès !', 'success')
-        return redirect(url_for('lspdSalles'))
-    salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
-    sallesObj = []
-    for salle in salles:
-        salle = SalleObj(salle[0], salle[1])
-        sallesObj.append(salle)
-    return render_template('lspd/salles.html', form=form, salles=sallesObj)
+def lspdAddAffiliation():
+    affiliationType = request.args.get('affiliationType')
+    existingAffiliations = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAffiliations()
+    # TODO 
 
 @app.route('/lsms/doctor/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
