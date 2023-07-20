@@ -28,18 +28,57 @@
                             </form>
                         {% endblock %}
                     </div>
+                    <div class="grid grid-cols-3 gap-1">
+                        <div class="col-span-2 bg-gray-400 rounded-md p-3 mt-1">
+                            <div class="inline-flex flex-row dark:text-white">
+                                <h2 class="text-md font-bold">Affiliations</h2>
+                                <a href="/lspd/resetAffiliations" class="ml-1"><i class="bi bi-gear-fill"></i></a>
+                            </div>
+                            <div>
+                                <div class="grid grid-cols-3 gap-1 dark:text-white">
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Lincoln" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-person"></i> Lincoln</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Adam" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-people"></i> Adam</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Sierra" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-speedometer"></i> Sierra</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Marie" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-person"></i> Marie</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Henry" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-slash-circle"></i> Henry</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=William" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-water"></i> William</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Victor" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-bicycle"></i> Victor</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=David" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-shield-fill"></i> David</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a href="/lspd/addAffiliation?affiliationType=Goliath" class="bg-blue-500 hover:bg-blue-700 py-1 px-2 rounded"><i class="bi bi-shield"></i> Goliath</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="justify-center">
-                    <h2 class="text-lg font-bold mt-5 dark:text-white">Salles :</h2>
+                    <h2 class="text-lg font-bold mt-5 dark:text-white">Affiliations :</h2>
                     <div class="grid grid-cols-3 gap-1">
-                        {% for salle in salles %}
+                        {% for affiliation in affiliations %}
                             <div class="bg-white rounded-md shadow-md p-3">
-                                <p class="mb-1">{{ salle }}</p>
-                                {% for salleAge in salleAgents %}
-                                    {% if salleAge.idIntervention == salle.idSalle %}
+                                <p class="mb-1">{{ affiliation }} <a href="/lspd/deleteAffiliation/{{ affiliation.idAff }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700"><i class="bi bi-trash3"></i></a></p>
+                                {% for affiliationAge in affiliationAgents %}
+                                    {% if affiliationAge.idAffiliation == affiliation.idAff %}
                                         {% for agent in enService %}
-                                            {% if agent.idAge == salleAge.idAgent %}
-                                                <a href="/lspd/unsetAgent/{{ salleAge.idAgent }}/fromSalle/{{ salle.idSalle }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent }}</a>
+                                            {% if agent.idAge == affiliationAge.idAgent %}
+                                                <a href="/lspd/unsetAgent/{{ affiliationAge.idAgent }}/fromAffiliation/{{ affiliation.idAff }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent.matricule }} - {{ agent.nom }}</a>
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -58,7 +97,7 @@
                                     {% if intAge.idIntervention == intervention.idInt %}
                                         {% for agent in enService %}
                                             {% if agent.idAge == intAge.idAgent %}
-                                                <a href="/lspd/unsetAgent/{{ intAge.idAgent }}/fromIntervention/{{ intervention.idInt }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent }}</a>
+                                                <a href="/lspd/unsetAgent/{{ intAge.idAgent }}/fromIntervention/{{ intervention.idInt }}" class="py-1 px-2 rounded-md text-white bg-red-600 hover:bg-red-700">{{ agent.matricule }} - {{ agent.nom }}</a>
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -72,9 +111,9 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-green-700 bg-opacity-50 rounded-md shadow-md px-3">
                             <h2 class="text-lg font-bold mt-1 dark:text-white">Disponibles :</h2>
-                            <div class="grid grid-cols-2 gap-0">
+                            <div class="grid grid-cols-1 gap-0">
                                 {% for agent in enService %}
-                                    {% if agent.inInter == 0 and agent.indispo == 0 and agent.inSalle == 0 %}
+                                    {% if agent.inInter == 0 and agent.indispo == 0 %}
                                         {% if agent.grade == "Commissaire"%}
                                         <div class="text-blue-800">
                                         {% elif agent.grade == "Capitaine" %}
@@ -96,7 +135,7 @@
                                         {% else %}
                                         <div class="text-gray-300">
                                         {% endif %}
-                                            <p>{{ agent }}</p>
+                                            <p>{{ agent.matricule }} - {{ agent.nom }}</p>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -104,9 +143,9 @@
                         </div>
                         <div class="bg-red-400 bg-opacity-50 rounded-md shadow-md px-3">
                             <h2 class="text-lg font-bold mt-1 dark:text-white">Indisponible :</h2>
-                            <div class="grid grid-cols-2 gap-0">
+                            <div class="grid grid-cols-1 gap-0">
                                 {% for agent in enService %}
-                                    {% if agent.inInter or agent.indispo or agent.inSalle %}
+                                    {% if agent.inInter or agent.indispo %}
                                         {% if agent.grade == "Commissaire"%}
                                         <div class="text-blue-800">
                                         {% elif agent.grade == "Capitaine" %}
@@ -128,7 +167,7 @@
                                         {% else %}
                                         <div class="text-gray-300">
                                         {% endif %}
-                                            <p>{{ agent }}</p>
+                                            <p>{{ agent.matricule }} - {{ agent.nom }}</p>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -168,7 +207,7 @@
                         {% if service == 1 and indispo == 0 %}
                         <div class="mb-2">
                             <div class="bg-gray-100 bg-opacity-70 rounded-md shadow-md p-1">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.matricule }} - {{ agent.nom }} <i class="bi bi-circle-fill text-green-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
                                 <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-person-fill-dash"></i></a>
@@ -187,15 +226,15 @@
                                     </div>
                                 </div>
                                 <div class="dropdown inline-block relative">
-                                    <button onclick="salleDropdown('{{ agent.idAge }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if agent.inSalle %} bg-red-500 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
+                                    <button onclick="affiliationDropdown('{{ agent.idAge }}')" class="dropbtn py-1 px-2 rounded-md text-white {% if agent.inAffiliation %} bg-red-500 hover:bg-red-600 {% else %} bg-green-400 hover:bg-green-600 {% endif %}">
                                         <i class="bi bi-door-closed-fill"></i>
                                     </button>
-                                    <div id="salleDrop{{ agent.idAge }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
-                                        {% if agent.inSalle %}
-                                            <p class="block px-4 py-2 bg-gray-300 rounded-md">Déjà en salle</p>
+                                    <div id="affiliationDrop{{ agent.idAge }}" class="dropdown-content absolute bg-gray-100 shadow-md rounded-md z-10">
+                                        {% if agent.inAffiliation %}
+                                            <p class="block px-4 py-2 bg-gray-300 rounded-md">Déjà en affiliation</p>
                                         {% endif %}
-                                        {% for salle in salles %}
-                                            <a href="/lspd/setAgent/{{ agent.idAge }}/toSalle/{{ salle.idSalle }}" class="block px-4 py-2 hover:bg-gray-300">{{ salle }}</a>
+                                        {% for affiliation in affiliations %}
+                                            <a href="/lspd/setAgent/{{ agent.idAge }}/toAffiliation/{{ affiliation.idAff }}" class="block px-4 py-2 hover:bg-gray-300">{{ affiliation }}</a>
                                         {% endfor %}
                                     </div>
                                 </div>      
@@ -204,7 +243,7 @@
                         {% elif service == 1 and indispo == 1 %}
                         <div class="mb-2">
                             <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.matricule }} - {{ agent.nom }} <i class="bi bi-circle-fill text-red-600 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-between">
                                 <a href="/lspd/unsetAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-person-fill-dash"></i></a>
@@ -244,7 +283,7 @@
                     {% endif %}
                         <div class="text-yellow-500 mb-2">
                             <div class="bg-gray-100 rounded-md shadow-md p-1 bg-opacity-70">
-                                <p class="mb-1 flex items-center text-black font-bold">{{ agent }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
+                                <p class="mb-1 flex items-center text-black font-bold">{{ agent.matricule }} - {{ agent.nom }} <i class="bi bi-circle-fill text-yellow-500 text-xs ml-1"></i></p>
                             </div>
                             <div class="flex justify-end">
                                 <a href="/lspd/setAgentService/{{ agent.idAge }}" class="py-1 px-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"><i class="bi bi-person-fill-add"></i></a>
