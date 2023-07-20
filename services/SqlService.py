@@ -368,6 +368,8 @@ class LSPDSqlService:
             connection.commit()
 
     def insertIntAgent(self, idIntervention, idAgent):
+        if self.selectIntAgentByIdAgentIdInt(idAgent, idIntervention) is not None:
+            return
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "INSERT INTO InterventionsAgents (idIntervention, idAgent) VALUES (?, ?)"
@@ -375,7 +377,10 @@ class LSPDSqlService:
             connection.commit()
 
     def insertAffAgent(self, idAffiliation, idAgent):
-        # si Affiliation.nom = "Lincoln" ou Marie ou Victor pas d'affiliation sinon affiliation
+        if self.selectAffAgentByIdAgentIdAff(idAgent, idAffiliation) is not None:
+            return
+        if self.selectAffAgentByIdAgent(idAgent) is not None:
+            self.deleteAffAgentByIdAgent(idAgent)
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "INSERT INTO AffiliationsAgents (idAffiliation, idAgent) VALUES (?, ?)"
@@ -461,11 +466,25 @@ class LSPDSqlService:
             cursor.execute(req, (idAgent,))
             return cursor.fetchone()
         
+    def selectIntAgentByIdAgentIdInt(self,idAgent,idInt):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsAgents WHERE idAgent = ? AND idIntervention = ?"
+            cursor.execute(req, (idAgent,idInt))
+            return cursor.fetchone()
+        
     def selectAffAgentById(self,idAffAge):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM AffiliationsAgents WHERE id = ?"
             cursor.execute(req, (idAffAge,))
+            return cursor.fetchone()
+        
+    def selectAffAgentByIdAgent(self,idAgent):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM AffiliationsAgents WHERE idAgent = ?"
+            cursor.execute(req, (idAgent,))
             return cursor.fetchone()
         
     def selectAffAgentByIdAgentIdAff(self,idAgent,idAff):
