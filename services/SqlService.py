@@ -332,7 +332,7 @@ class LSPDSqlService:
         cursor = connection.cursor()
         req0 = "CREATE TABLE IF NOT EXISTS Agents (id INTEGER PRIMARY KEY AUTOINCREMENT, matricule VARCHAR(2), nom TEXT, prenom TEXT, grade TEXT, service BOOLEAN, indisponible BOOLEAN, inIntervention BOOLEAN, inAffiliation BOOLEAN)"
         req2 = "CREATE TABLE IF NOT EXISTS Interventions (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, exterieur BOOLEAN)"
-        req3 = "CREATE TABLE IF NOT EXISTS Affiliations (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT)"
+        req3 = "CREATE TABLE IF NOT EXISTS Affiliations (id INTEGER PRIMARY KEY, nom TEXT)"
         req4 = "CREATE TABLE IF NOT EXISTS InterventionsAgents (id INTEGER PRIMARY KEY AUTOINCREMENT, idIntervention INTEGER, idAgent INTEGER, FOREIGN KEY(idIntervention) REFERENCES Interventions(id), FOREIGN KEY(idAgent) REFERENCES Agents(id))"
         req5 = "CREATE TABLE IF NOT EXISTS AffiliationsAgents (id INTEGER PRIMARY KEY AUTOINCREMENT, idAffiliation INTEGER, idAgent INTEGER, FOREIGN KEY(idAffiliation) REFERENCES Affiliations(id), FOREIGN KEY(idAgent) REFERENCES Agents(id))"
         cursor.execute(req0)
@@ -426,6 +426,13 @@ class LSPDSqlService:
             cursor.execute(req, (idAge,))
             return cursor.fetchone()
         
+    def selectAgentByIdInt(self,idInt):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsAgents WHERE idIntervention = ?"
+            cursor.execute(req, (idInt,))
+            return cursor.fetchall()
+        
     def selectIntById(self,idInt):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
@@ -447,12 +454,34 @@ class LSPDSqlService:
             cursor.execute(req, (idIntAge,))
             return cursor.fetchone()
         
+    def selectIntAgentByIdAgent(self,idAgent):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM InterventionsAgents WHERE idAgent = ?"
+            cursor.execute(req, (idAgent,))
+            return cursor.fetchone()
+        
     def selectAffAgentById(self,idAffAge):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "SELECT * FROM AffiliationsAgents WHERE id = ?"
             cursor.execute(req, (idAffAge,))
             return cursor.fetchone()
+        
+    def selectAffAgentByIdAgentIdAff(self,idAgent,idAff):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM AffiliationsAgents WHERE idAgent = ? AND idAffiliation = ?"
+            cursor.execute(req, (idAgent,idAff))
+            return cursor.fetchone()
+
+        
+    def selectAffAgentByIdAff(self,idAff):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "SELECT * FROM AffiliationsAgents WHERE idAffiliation = ?"
+            cursor.execute(req, (idAff,))
+            return cursor.fetchall()
         
     def selectAllInterventions(self):
         with sqlite3.connect(self.filename) as connection:
@@ -490,12 +519,35 @@ class LSPDSqlService:
             req = "DELETE FROM Affiliations WHERE id = ?"
             cursor.execute(req, (idAff,))
             connection.commit()
+            if self.selectAffAgentByIdAgentIdAff(None, idAff) != None:
+                self.deleteAffAgentByIdAff(idAff)
 
     def deleteIntAgent(self, idIntAge):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "DELETE FROM InterventionsAgents WHERE id = ?"
             cursor.execute(req, (idIntAge,))
+            connection.commit()
+
+    def deleteIntAgentByIdAgent(self, idAgent):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsAgents WHERE idAgent = ?"
+            cursor.execute(req, (idAgent,))
+            connection.commit()
+
+    def deleteIntAgentByIdInt(self, idInt):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsAgents WHERE idIntervention = ?"
+            cursor.execute(req, (idInt,))
+            connection.commit()
+
+    def deleteAgentFromInt(self, idAgent, idInt):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM InterventionsAgents WHERE idAgent = ? AND idIntervention = ?"
+            cursor.execute(req, (idAgent, idInt))
             connection.commit()
 
     def deleteAffAgent(self, idAffAge):
@@ -505,15 +557,35 @@ class LSPDSqlService:
             cursor.execute(req, (idAffAge,))
             connection.commit()
 
+    def deleteAgentFromAff(self, idAgent, idAff):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM AffiliationsAgents WHERE idAgent = ? AND idAffiliation = ?"
+            cursor.execute(req, (idAgent, idAff))
+            connection.commit()
+
+    def deleteAffAgentByIdAgent(self, idAgent):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM AffiliationsAgents WHERE idAgent = ?"
+            cursor.execute(req, (idAgent,))
+            connection.commit()
+
+    def deleteAffAgentByIdAff(self, idAff):
+        with sqlite3.connect(self.filename) as connection:
+            cursor = connection.cursor()
+            req = "DELETE FROM AffiliationsAgents WHERE idAffiliation = ?"
+            cursor.execute(req, (idAff,))
+            connection.commit()
+
     # Update functions
 
-    def updateAgent(self,id,matricule,nom,prenom,grade):
-        agent = self.selectAgeById(id)
+    def updateAgent(self,id,matricule,nom,prenom,grade,service,indisponible,inIntervention,inAffiliation):
         with sqlite3.connect(self.filename) as connection:
             cursor = connection.cursor()
             req = "UPDATE Agents SET matricule = ?, nom = ?, prenom = ?, grade = ?, service = ?, indisponible = ?, inIntervention = ?, inAffiliation = ? WHERE id = ?"
-            cursor.execute(req, (matricule,nom,prenom,grade,agent[5],agent[6],agent[7],agent[8],id))
-            connection.commit()
+            cursor.execute(req, (matricule,nom,prenom,grade,service,indisponible,inIntervention,inAffiliation,id))
+            connection.commit()        
 
     def updateInt(self,id,nom,exterieur):
         with sqlite3.connect(self.filename) as connection:
