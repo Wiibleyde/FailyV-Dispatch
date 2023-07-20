@@ -527,9 +527,9 @@ def lsmsDeleteSalle(id):
 def lspdDeleteAffiliation(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     affiliation = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAff(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteAff(id)
     agesId = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffAgentByIdAff(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAff(id)
     if agesId:
         for idAge in agesId:
             age = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAge[2])
