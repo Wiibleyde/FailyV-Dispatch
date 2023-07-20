@@ -372,6 +372,7 @@ def lspdDispatch():
     for affiliationAgent in affiliationAgents:
         affiliationAgent = AffiliationAgentsObj(affiliationAgent[0], affiliationAgent[1], affiliationAgent[2])
         affiliationAgentsObj.append(affiliationAgent)
+    flash("Gros changement dans la partie LSPD, les bases de données on été reset, désolé !", 'warning')
     return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, affiliations=affiliationsObj, agents=agentsObj, intAgents=intAgentsObj, affiliationAgents=affiliationAgentsObj, enService=enService, horsService=horsService)
 
 @app.route('/lsms/doctors', methods=['GET', 'POST'])
@@ -485,23 +486,6 @@ def lsmsSalles():
         salle = SalleObj(salle[0], salle[1])
         sallesObj.append(salle)
     return render_template('lsms/salles.html', form=form, salles=sallesObj)
-
-# @app.route('/lspd/salles', methods=['GET', 'POST'])
-# @login_required
-# def lspdSalles():
-#     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-#     form = AddSalleForm()
-#     if form.validate_on_submit():
-#         nom = form.nomSalle.data
-#         LSPDSqlService(f"{current_user.id}-lspd.db").insertSalle(nom)
-#         flash(f'Salle {nom} ajoutée avec succès !', 'success')
-#         return redirect(url_for('lspdSalles'))
-#     salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
-#     sallesObj = []
-#     for salle in salles:
-#         salle = SalleObj(salle[0], salle[1])
-#         sallesObj.append(salle)
-#     return render_template('lspd/salles.html', form=form, salles=sallesObj)
 
 @app.route('/lspd/addAffiliation', methods=['GET','POST'])
 @login_required
