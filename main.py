@@ -11,7 +11,7 @@ from hashlib import sha256
 from services.flaskForms import AddLsmsForm, EditLsmsForm, AddLspdForm, EditLspdForm ,AddInterventionForm, AddSalleForm, LoginForm, RegisterForm, ModifyAccountForm
 from services.regexFunc import RegexUtils
 from services.SqlService import LSMSSqlService, LSPDSqlService
-from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, InterventionDocteursObj, InterventionAgentsObj, InjuredTypeObj
+from services.ObjectsService import DocteurObj, AgentObj, InterventionObj, SalleObj, AffiliationObj, InterventionDocteursObj, InterventionAgentsObj, AffiliationAgentsObj,InjuredTypeObj
 from services.AccountService import AccountService, AccountObject
 from services.LoggerService import LoggerService
 from services.InjuredService import InjuredService
@@ -38,7 +38,7 @@ def addDoctorsToDatabase(userId,docs):
 
 def addAgentsToDatabase(userId,agents):
     for agent in agents:
-        LSPDSqlService(f"{userId}-lspd.db").insertAgent(agent.nom, agent.prenom, agent.grade, agent.indispo, agent.inIntervention)
+        LSPDSqlService(f"{userId}-lspd.db").insertAgent(agent.matricule, agent.nom, agent.prenom, agent.grade)
 
 def sortDocsByGrade(docs):
     orderGrade = ["Directeur", "Directeur Adjoint", "Chef de service", "Spécialiste", "Titulaire", "Résident", "Interne"]
@@ -333,18 +333,18 @@ def lspdDispatch():
         LSPDSqlService(f"{current_user.id}-lspd.db").insertInt(nom, exterieur)
         flash(f'Intervention {nom} ajoutée avec succès !', 'success')
         return redirect(url_for('lspdDispatch'))
-    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAge()
+    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAgents()
     agentsObj = []
     enService = []
     horsService = []
     for agent in agents:
         inInter = False
-        inSalle = False
-        if agent[6] == 1:
-            inInter = True
+        inAffiliation = False
         if agent[7] == 1:
-            inSalle = True
-        agent = AgentObj(agent[0], agent[1], agent[2], agent[3], agent[4], agent[5], inInter, inSalle)
+            inInter = True
+        if agent[8] == 1:
+            inAffiliation = True
+        agent = AgentObj(agent[0], agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], inInter, inAffiliation)
         agentsObj.append(agent)
     sortAgentsByGrade(agentsObj)
     for agent in agentsObj:
@@ -352,27 +352,27 @@ def lspdDispatch():
             enService.append(agent)
         else:
             horsService.append(agent)
-    interventions = LSPDSqlService(f"{current_user.id}-lspd.db").selectInt()
+    interventions = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllInterventions()
     interventionsObj = []
     for int in interventions:
         int = InterventionObj(int[0], int[1], int[2])
         interventionsObj.append(int)
-    salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
-    sallesObj = []
-    for salle in salles:
-        salle = SalleObj(salle[0], salle[1])
-        sallesObj.append(salle)
-    intAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntAge()
+    affiliations = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAffiliations()
+    affiliationsObj = []
+    for affiliation in affiliations:
+        affiliation = AffiliationObj(affiliation[0], affiliation[1])
+        affiliationsObj.append(affiliation)
+    intAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllInterventionsAgents()
     intAgentsObj = []
     for intAgent in intAgents:
         intAgent = InterventionAgentsObj(intAgent[0], intAgent[1], intAgent[2])
         intAgentsObj.append(intAgent)
-    salleAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalleAge()
-    salleAgentsObj = []
-    for salleAgent in salleAgents:
-        salleAgent = InterventionAgentsObj(salleAgent[0], salleAgent[1], salleAgent[2])
-        salleAgentsObj.append(salleAgent)
-    return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, salles=sallesObj, agents=agentsObj, intAgents=intAgentsObj, salleAgents=salleAgentsObj, enService=enService, horsService=horsService)
+    affiliationAgents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAffiliationsAgents()
+    affiliationAgentsObj = []
+    for affiliationAgent in affiliationAgents:
+        affiliationAgent = AffiliationAgentsObj(affiliationAgent[0], affiliationAgent[1], affiliationAgent[2])
+        affiliationAgentsObj.append(affiliationAgent)
+    return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, affiliations=affiliationsObj, agents=agentsObj, intAgents=intAgentsObj, affiliationAgents=affiliationAgentsObj, enService=enService, horsService=horsService)
 
 @app.route('/lsms/doctors', methods=['GET', 'POST'])
 @login_required
@@ -426,24 +426,27 @@ def lspdAgents():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     form = AddLspdForm()
     if form.validate_on_submit():
-        agent = RegexUtils.agentToList(form.zoneText.data, form.grade.data)
-        if len(agent) == 0:
-            agent = RegexUtils.agentToString(form.zoneText.data, form.grade.data)
+        if form.matricule.data == '':
+            agent = RegexUtils.agentToList(form.zoneText.data, form.grade.data)
+            if len(agent) == 0:
+                flash(f"Veuillez entrer une ligne d'effectif valide : `    - 00 : Nom Prenom (555-0000)`", 'danger')
+                return redirect(url_for('lspdAgents'))
+            addAgentsToDatabase(current_user.id, agent)
+            strAgent = ''
+            for a in agent:
+                strAgent += f'{a.matricule} - {a.nom}, '
+            flash(f'{strAgent} ajoutés avec succès !', 'success')
+            return redirect(url_for('lspdAgents'))
+        else:
+            agent = RegexUtils.agentToString(form.zoneText.data, form.matricule.data, form.grade.data)
             if agent == None:
                 flash(f'Veuillez entrer agent valide ([Prénom] [Nom]) !', 'danger')
                 return redirect(url_for('lspdAgents'))
             else:
-                LSPDSqlService(f"{current_user.id}-lspd.db").insertAge(agent.nom, agent.prenom, agent.grade, agent.service, agent.indispo, agent.inInter, agent.inSalle)
-                flash(f'{agent.prenom} {agent.nom} ajouté avec succès !', 'success')
+                LSPDSqlService(f"{current_user.id}-lspd.db").insertAgent(agent.matricule, agent.nom, agent.prenom, agent.grade)
+                flash(f'{agent.matricule} - {agent.nom} ajouté avec succès !', 'success')
                 return redirect(url_for('lspdAgents'))
-        else:
-            addAgentsToDatabase(current_user.id, agent)
-            strAgent = ''
-            for a in agent:
-                strAgent += f'{a.prenom} {a.nom}, '
-            flash(f'{strAgent} ajoutés avec succès !', 'success')
-            return redirect(url_for('lspdAgents'))
-    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAge()
+    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAgents()
     agentsObj = []
     for agent in agents:
         agent = AgentObj(*agent)
@@ -459,7 +462,7 @@ def lspdAgent(agent_id):
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
     agent = AgentObj(*agent)
     if form.validate_on_submit():
-        LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(agent_id, agent.nom, agent.prenom, form.grade.data, agent.service, agent.indispo, agent.inInter, agent.inSalle)
+        LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(agent.idAge, agent.matricule, agent.nom, agent.prenom, form.grade.data, agent.service, agent.indispo, agent.inInter, agent.inAffiliation)
         flash(f'{agent.prenom} {agent.nom} modifié avec succès !', 'success')
         return redirect(url_for('lspdAgents'))
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(agent_id)
@@ -483,22 +486,30 @@ def lsmsSalles():
         sallesObj.append(salle)
     return render_template('lsms/salles.html', form=form, salles=sallesObj)
 
-@app.route('/lspd/salles', methods=['GET', 'POST'])
+# @app.route('/lspd/salles', methods=['GET', 'POST'])
+# @login_required
+# def lspdSalles():
+#     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+#     form = AddSalleForm()
+#     if form.validate_on_submit():
+#         nom = form.nomSalle.data
+#         LSPDSqlService(f"{current_user.id}-lspd.db").insertSalle(nom)
+#         flash(f'Salle {nom} ajoutée avec succès !', 'success')
+#         return redirect(url_for('lspdSalles'))
+#     salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
+#     sallesObj = []
+#     for salle in salles:
+#         salle = SalleObj(salle[0], salle[1])
+#         sallesObj.append(salle)
+#     return render_template('lspd/salles.html', form=form, salles=sallesObj)
+
+@app.route('/lspd/addAffiliation', methods=['GET','POST'])
 @login_required
-def lspdSalles():
-    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    form = AddSalleForm()
-    if form.validate_on_submit():
-        nom = form.nomSalle.data
-        LSPDSqlService(f"{current_user.id}-lspd.db").insertSalle(nom)
-        flash(f'Salle {nom} ajoutée avec succès !', 'success')
-        return redirect(url_for('lspdSalles'))
-    salles = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalle()
-    sallesObj = []
-    for salle in salles:
-        salle = SalleObj(salle[0], salle[1])
-        sallesObj.append(salle)
-    return render_template('lspd/salles.html', form=form, salles=sallesObj)
+def lspdAddAffiliation():
+    affiliationType = request.args.get('affiliationType')
+    LSPDSqlService(f"{current_user.id}-lspd.db").insertAff(affiliationType)
+    flash(f'Affiliation {affiliationType} ajoutée avec succès !', 'success')
+    return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/doctor/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -514,7 +525,7 @@ def lsmsDeleteDoctor(id):
 def lspdDeleteAgent(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAge(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAgent(id)
     flash(f'{agent[2]} {agent[1]} supprimé avec succès !', 'success')
     return redirect(url_for('lspdAgents'))
 
@@ -527,14 +538,20 @@ def lsmsDeleteSalle(id):
     flash(f'{salle[1]} supprimée avec succès !', 'success')
     return redirect(url_for('lsmsSalles'))
 
-@app.route('/lspd/salle/delete/<int:id>', methods=['GET', 'POST'])
+@app.route('/lspd/deleteAffiliation/<int:id>', methods=['GET', 'POST'])
 @login_required
-def lspdDeleteSalle(id):
+def lspdDeleteAffiliation(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    salle = LSPDSqlService(f"{current_user.id}-lspd.db").selectSalleById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalle(id)
-    flash(f'{salle[1]} supprimée avec succès !', 'success')
-    return redirect(url_for('lspdSalles'))
+    affiliation = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffById(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAff(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAff(id)
+    agesId = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffAgentByIdAff(id)
+    if agesId:
+        for idAge in agesId:
+            age = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAge[2])
+            LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(age[0], age[1], age[2], age[3], age[4], age[5], age[6], age[7], False)
+    flash(f'{affiliation[1]} supprimée avec succès !', 'success')
+    return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/deleteIntervention/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -556,12 +573,12 @@ def lspdDeleteIntervention(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteInt(id)
-    agesId = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeByIntId(id)
+    agesId = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgentByIdInt(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgentByIdInt(id)
     if agesId:
         for idAge in agesId:
             age = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAge[2])
-            LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(age[0], age[1], age[2], age[3], age[4], age[5], False, age[7])
-    flash(f'{inter[1]} supprimée avec succès !', 'success')
+            LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(age[0], age[1], age[2], age[3], age[4], age[5], age[6], False, age[8])
     return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/setDoctorService/<int:id>', methods=['GET', 'POST'])
@@ -578,7 +595,7 @@ def lsmsSetDoctorServer(id):
 def lspdSetAgentServer(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], True, agent[5], agent[6], agent[7])
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(id, agent[1], agent[2], agent[3], agent[4], True, agent[6], agent[7], agent[8])
     flash(f'{agent[2]} {agent[1]} ajouté au service avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
@@ -598,9 +615,9 @@ def lsmsUnsetDoctorServer(id):
 def lspdUnsetAgentServer(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], False, False, False, False)
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgeByAgeId(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalleAgeByAgeId(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(id, agent[1], agent[2], agent[3], agent[4], False, False, False, False)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgentByIdAgent(id)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAgent(id)
     flash(f'{agent[2]} {agent[1]} retiré du service avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
@@ -618,7 +635,7 @@ def lsmsSetDoctorIndispo(id):
 def lspdSetAgentIndispo(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], agent[4], True, agent[6], agent[7])
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(id, agent[1], agent[2], agent[3], agent[4], agent[5], True, agent[7], agent[8])
     flash(f"{agent[2]} {agent[1]} mis en indisponibilité avec succès !", 'success')
     return redirect(url_for('lspdDispatch'))
 
@@ -636,7 +653,7 @@ def lsmsUnsetDoctorIndispo(id):
 def lspdUnsetAgentIndispo(id):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(id)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(id, agent[1], agent[2], agent[3], agent[4], False, agent[6], agent[7])
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(id, agent[1], agent[2], agent[3], agent[4], agent[5], False, agent[7], agent[8])
     flash(f"{agent[2]} {agent[1]} retiré de l\'indisponibilité avec succès !", 'success')
     return redirect(url_for('lspdDispatch'))
 
@@ -650,14 +667,15 @@ def lsmsSetDoctorToSalle(idDoc, idSalle):
     flash(f'{doc[2]} {doc[1]} ajouté à la salle avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
-@app.route('/lspd/setAgent/<int:idAgent>/toSalle/<int:idSalle>', methods=['GET', 'POST'])
+@app.route('/lspd/setAgent/<int:idDoc>/toAffiliation/<int:idAff>', methods=['GET', 'POST'])
 @login_required
-def lspdSetAgentToSalle(idAgent, idSalle):
+def lspdSetAgentToAffiliation(idDoc, idAff):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    LSPDSqlService(f"{current_user.id}-lspd.db").insertSalleAge(idSalle, idAgent)
-    agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], True)
-    flash(f'{agent[2]} {agent[1]} ajouté à la salle avec succès !', 'success')
+    LSPDSqlService(f"{current_user.id}-lspd.db").insertAffAgent(idAff, idDoc)
+    agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idDoc)
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(idDoc, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], agent[7], True)
+    aff = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffById(idAff)
+    flash(f'{agent[2]} {agent[1]} ajouté à l\'affiliation {aff[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/unsetDoctor/<int:idDoc>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
@@ -670,14 +688,15 @@ def lsmsUnsetDoctorFromSalle(idDoc, idSalle):
     flash(f'{doc[2]} {doc[1]} retiré de la salle avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
-@app.route('/lspd/unsetAgent/<int:idAgent>/fromSalle/<int:idSalle>', methods=['GET', 'POST'])
+@app.route('/lspd/unsetAgent/<int:idAgent>/fromAffiliation/<int:idAff>', methods=['GET', 'POST'])
 @login_required
-def lspdUnsetAgentFromSalle(idAgent, idSalle):
+def lspdUnsetAgentFromAffiliation(idAgent, idAff):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteSalleAge(idAgent, idSalle)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAgentFromAff(idAgent, idAff)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], False)
-    flash(f'{agent[2]} {agent[1]} retiré de la salle avec succès !', 'success')
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], agent[7], False)
+    aff = LSPDSqlService(f"{current_user.id}-lspd.db").selectAffById(idAff)
+    flash(f'{agent[2]} {agent[1]} retiré de l\'affiliation {aff[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/setDoctor/<int:idDoc>/toIntervention/<int:idInt>', methods=['GET', 'POST'])
@@ -695,9 +714,9 @@ def lsmsSetDoctorToIntervention(idDoc, idInt):
 @login_required
 def lspdSetAgentToIntervention(idAgent, idInt):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    LSPDSqlService(f"{current_user.id}-lspd.db").insertIntAge(idInt, idAgent)
+    LSPDSqlService(f"{current_user.id}-lspd.db").insertIntAgent(idInt, idAgent)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], True, agent[7])
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], True, agent[8])
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(idInt)
     flash(f'{agent[2]} {agent[1]} ajouté à l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
@@ -717,9 +736,9 @@ def lsmsUnsetDoctorFromIntervention(idDoc, idInt):
 @login_required
 def lspdUnsetAgentFromIntervention(idAgent, idInt):
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
-    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAgeFromInt(idAgent, idInt)
+    LSPDSqlService(f"{current_user.id}-lspd.db").deleteAgentFromInt(idAgent, idInt)
     agent = LSPDSqlService(f"{current_user.id}-lspd.db").selectAgeById(idAgent)
-    LSPDSqlService(f"{current_user.id}-lspd.db").updateAge(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], False, agent[7])
+    LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(idAgent, agent[1], agent[2], agent[3], agent[4], agent[5], agent[6], False, agent[8])
     inter = LSPDSqlService(f"{current_user.id}-lspd.db").selectIntById(idInt)
     flash(f'{agent[2]} {agent[1]} retiré de l\'intervention {inter[1]} avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
