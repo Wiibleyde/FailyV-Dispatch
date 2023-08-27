@@ -372,7 +372,6 @@ def lspdDispatch():
     for affiliationAgent in affiliationAgents:
         affiliationAgent = AffiliationAgentsObj(affiliationAgent[0], affiliationAgent[1], affiliationAgent[2])
         affiliationAgentsObj.append(affiliationAgent)
-    flash("Gros changement dans la partie LSPD, les bases de données on été reset, désolé !", 'warning')
     return render_template('lspd/dispatch.html', form=form, interventions=interventionsObj, affiliations=affiliationsObj, agents=agentsObj, intAgents=intAgentsObj, affiliationAgents=affiliationAgentsObj, enService=enService, horsService=horsService)
 
 @app.route('/lsms/doctors', methods=['GET', 'POST'])
@@ -594,6 +593,18 @@ def lsmsUnsetDoctorServer(id):
     flash(f'{doc[2]} {doc[1]} retiré du service avec succès !', 'success')
     return redirect(url_for('lsmsDispatch'))
 
+@app.route('/lsms/unsetAllDoctorsService', methods=['GET', 'POST'])
+@login_required
+def lsmsUnsetAllDoctorsServer():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    doctors = LSMSSqlService(f"{current_user.id}-lsms.db").selectDoc()
+    for doc in doctors:
+        LSMSSqlService(f"{current_user.id}-lsms.db").updateDoc(doc[0], doc[1], doc[2], doc[3], False, False, False, False)
+        LSMSSqlService(f"{current_user.id}-lsms.db").deleteIntDocByDocId(doc[0])
+        LSMSSqlService(f"{current_user.id}-lsms.db").deleteSalleDocByDocId(doc[0])
+    flash(f'Tous les docteurs retirés du service avec succès !', 'success')
+    return redirect(url_for('lsmsDispatch'))
+
 @app.route('/lspd/unsetAgentService/<int:id>', methods=['GET', 'POST'])
 @login_required
 def lspdUnsetAgentServer(id):
@@ -603,6 +614,18 @@ def lspdUnsetAgentServer(id):
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgentByIdAgent(id)
     LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAgent(id)
     flash(f'{agent[2]} {agent[1]} retiré du service avec succès !', 'success')
+    return redirect(url_for('lspdDispatch'))
+
+@app.route('/lspd/unsetAllAgentsService', methods=['GET', 'POST'])
+@login_required
+def lspdUnsetAllAgentsServer():
+    logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    agents = LSPDSqlService(f"{current_user.id}-lspd.db").selectAllAgents()
+    for agent in agents:
+        LSPDSqlService(f"{current_user.id}-lspd.db").updateAgent(agent[0], agent[1], agent[2], agent[3], agent[4], False, False, False, False)
+        LSPDSqlService(f"{current_user.id}-lspd.db").deleteIntAgentByIdAgent(agent[0])
+        LSPDSqlService(f"{current_user.id}-lspd.db").deleteAffAgentByIdAgent(agent[0])
+    flash(f'Tous les agents retirés du service avec succès !', 'success')
     return redirect(url_for('lspdDispatch'))
 
 @app.route('/lsms/setDoctorIndispo/<int:id>', methods=['GET', 'POST'])

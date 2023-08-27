@@ -178,7 +178,10 @@
             </div>
             <div class="mt-4">
                 {% if enService|length > 0 %}
-                    <h2 class="text-2xl font-bold mt-5 dark:text-white">En service : {{ enService|length }} agent(s) :</h2>
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold mt-5 dark:text-white">En service : {{ enService|length }} agent(s) : </h2>
+                        <a href="/lspd/unsetAllAgentsService" class="py-1 px-2 rounded-md text-white bg-red-800 hover:bg-red-900"><i class="bi bi-person-fill-dash"></i> Retirer toutes personnes en service</a>
+                    </div>
                 {% endif %}
                 <div class="grid grid-cols-9 gap-2">
                 {% for agent in enService %}
