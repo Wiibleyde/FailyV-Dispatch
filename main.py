@@ -121,6 +121,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    flash("Le site fermera après le 12/09/2023, merci à tout ceux qui ont utilisé le site ! ❤️", 'warning')
     logger.insertWebLog("Unregistered",f"Access to {request.path} from {request.remote_addr}")
     if current_user.is_authenticated:
         flash("Vous êtes déjà connecté.", 'warning')
@@ -184,12 +185,14 @@ def logout():
 @login_required
 def index():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    flash("Le site fermera après le 12/09/2023, merci à tout ceux qui ont utilisé le site ! ❤️", 'warning')
     return render_template('index.html')
 
 @app.route('/secret')
 @login_required
 def secret():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    flash("Le site fermera après le 12/09/2023, merci à tout ceux qui ont utilisé le site ! ❤️", 'warning')
     return render_template('easterEgg/index.html')
 
 @app.route('/admin')
@@ -269,6 +272,7 @@ def bcms():
 @login_required
 def lsmsDispatch():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    flash("Le site fermera après le 12/09/2023, merci à tout ceux qui ont utilisé le site ! ❤️", 'warning')
     form = AddInterventionForm()
     if form.validate_on_submit():
         nom = form.nomInt.data
@@ -326,6 +330,7 @@ def lsmsDispatch():
 @login_required
 def lspdDispatch():
     logger.insertWebLog(current_user.id,f"Access to {request.path} from {request.remote_addr}")
+    flash("Le site fermera après le 12/09/2023, merci à tout ceux qui ont utilisé le site ! ❤️", 'warning')
     form = AddInterventionForm()
     if form.validate_on_submit():
         nom = form.nomInt.data
